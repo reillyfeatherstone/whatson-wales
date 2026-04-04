@@ -1,10 +1,14 @@
 @import 'tailwindcss';
 @import 'tw-animate-css';
 @import 'shadcn/tailwind.css';
-@import "tw-animate-css";
-@import "shadcn/tailwind.css";
 
 @custom-variant dark (&:is(.dark *));
+
+@media (max-width: 49.99em) {
+  html {
+    font-size: 0.8em;
+  }
+}
 
 @theme inline {
   --font-heading: var(--font-sans);
