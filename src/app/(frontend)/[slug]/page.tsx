@@ -5,6 +5,7 @@ import type { Page } from '@/payload-types'
 
 import configPromise from '@payload-config'
 import { cache } from 'react'
+import WhatsOnBlock from '@/blocks/WhatsOnBlock'
 
 type Args = {
   params: Promise<{
@@ -30,6 +31,8 @@ export default async function Page({ params: paramsPromise }: Args) {
     switch (block.blockType) {
       case 'section':
         return <HomeHeroBlock block={block} key={block.id} />
+      case 'whatsOn':
+        return <WhatsOnBlock block={block} key={block.id} />
       default:
         return null
     }

@@ -43,6 +43,15 @@ export const Pages: CollectionConfig = {
             },
           ],
         },
+        {
+          slug: 'whatsOn',
+          fields: [
+            {
+              name: 'title',
+              type: 'text',
+            },
+          ],
+        },
       ],
     },
     slugField({

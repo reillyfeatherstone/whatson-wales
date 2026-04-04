@@ -167,14 +167,22 @@ export interface Page {
   id: number;
   title: string;
   active?: boolean | null;
-  layout: {
-    height?: number | null;
-    backgroundColour?: string | null;
-    heading?: string | null;
-    id?: string | null;
-    blockName?: string | null;
-    blockType: 'section';
-  }[];
+  layout: (
+    | {
+        height?: number | null;
+        backgroundColour?: string | null;
+        heading?: string | null;
+        id?: string | null;
+        blockName?: string | null;
+        blockType: 'section';
+      }
+    | {
+        title?: string | null;
+        id?: string | null;
+        blockName?: string | null;
+        blockType: 'whatsOn';
+      }
+  )[];
   /**
    * When enabled, the slug will auto-generate from the title field on save and autosave.
    */
@@ -320,6 +328,13 @@ export interface PagesSelect<T extends boolean = true> {
               height?: T;
               backgroundColour?: T;
               heading?: T;
+              id?: T;
+              blockName?: T;
+            };
+        whatsOn?:
+          | T
+          | {
+              title?: T;
               id?: T;
               blockName?: T;
             };

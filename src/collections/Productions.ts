@@ -2,6 +2,9 @@ import type { CollectionConfig } from 'payload'
 
 export const Productions: CollectionConfig = {
   slug: 'productions',
+  admin: {
+    useAsTitle: 'title',
+  },
   fields: [
     {
       name: 'title',

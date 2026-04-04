@@ -1,6 +1,8 @@
 import { Page } from '@/payload-types'
 
-export default function HomeHeroBlock({ block }: { block: Page['layout'][0] }) {
+type HomeHeroBlock = Extract<Page['layout'][0], { blockType: 'section' }>
+
+export default function HomeHeroBlock({ block }: { block: HomeHeroBlock }) {
   return (
     <div
       style={{
