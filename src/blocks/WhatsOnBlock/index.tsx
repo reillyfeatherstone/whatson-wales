@@ -1,3 +1,4 @@
+import { Button } from '@/components/ui/button'
 import { Page } from '@/payload-types'
 
 type WhatsOnBlock = Extract<Page['layout'][0], { blockType: 'whatsOn' }>
@@ -26,6 +27,9 @@ export default function WhatsOnBlock({ block }: { block: WhatsOnBlock }) {
                 16 Mar 2026 - 28 Apr 2026
               </span>
             </div>
+            <Button variant="default" size="default">
+              <span>Test</span>
+            </Button>
           </div>
         ))}
       </div>
