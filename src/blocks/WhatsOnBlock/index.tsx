@@ -13,6 +13,7 @@ export default async function WhatsOnBlock({ block }: { block: WhatsOnBlock }) {
     collection: 'productions',
     depth: 1,
     limit: 12,
+    overrideAccess: false,
     select: {
       title: true,
       genre: true,
@@ -26,7 +27,7 @@ export default async function WhatsOnBlock({ block }: { block: WhatsOnBlock }) {
   return (
     <div className="p-5 pb-100">
       <h2 className="text-4xl font-medium text-black text-center px-20 max-w-450 mx-auto">
-        {block.title}
+        What's On
       </h2>
       <div className="py-4 grid md:grid-cols-2 lg:grid-cols-3 gap-7 max-w-6xl mx-auto">
         {productions.docs.map((production) => (

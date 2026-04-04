@@ -1,9 +1,17 @@
+import { anyone } from '@/access/anyone'
+import { authenticated } from '@/access/authenticated'
 import type { CollectionConfig } from 'payload'
 
 export const Productions: CollectionConfig = {
   slug: 'productions',
   admin: {
     useAsTitle: 'title',
+  },
+  access: {
+    create: authenticated,
+    read: anyone,
+    update: authenticated,
+    delete: authenticated,
   },
   fields: [
     {
