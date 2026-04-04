@@ -1,6 +1,6 @@
 import { notFound, redirect } from 'next/navigation'
 import { getPayload, RequiredDataFromCollectionSlug } from 'payload'
-import SectionBlock from '@/blocks/SectionBlock/SectionBlock'
+import HomeHeroBlock from '@/blocks/HomeHeroBlock'
 import type { Page } from '@/payload-types'
 
 import configPromise from '@payload-config'
@@ -29,7 +29,7 @@ export default async function Page({ params: paramsPromise }: Args) {
   const renderBlocks = (block: Page['layout'][0]) => {
     switch (block.blockType) {
       case 'section':
-        return <SectionBlock block={block} key={block.id} />
+        return <HomeHeroBlock block={block} key={block.id} />
       default:
         return null
     }

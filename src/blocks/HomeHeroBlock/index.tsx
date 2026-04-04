@@ -1,6 +1,6 @@
 import { Page } from '@/payload-types'
 
-export default function SectionBlock({ block }: { block: Page['layout'][0] }) {
+export default function HomeHeroBlock({ block }: { block: Page['layout'][0] }) {
   return (
     <div
       style={{
@@ -9,7 +9,9 @@ export default function SectionBlock({ block }: { block: Page['layout'][0] }) {
       }}
       className="flex items-center justify-center"
     >
-      <h1 className="text-7xl text-white text-center">{block.heading}</h1>
+      <h1 className="text-7xl text-white text-center px-20 max-w-450 mx-auto -mb-10">
+        {block.heading}
+      </h1>
     </div>
   )
 }
