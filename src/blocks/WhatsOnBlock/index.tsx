@@ -62,7 +62,6 @@ export default async function WhatsOnBlock({ block }: { block: WhatsOnBlock }) {
           </div>
         ))}
       </div>
-      <div className="py-1000"></div>
     </div>
   )
 }
