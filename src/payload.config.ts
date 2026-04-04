@@ -9,6 +9,7 @@ import { Users } from './collections/Users'
 import { Media } from './collections/Media'
 import { Pages } from './collections/Pages'
 import { Header } from '@/app/(frontend)/globals/header/config'
+import { Productions } from '@/collections/Productions'
 
 const filename = fileURLToPath(import.meta.url)
 const dirname = path.dirname(filename)
@@ -21,7 +22,7 @@ export default buildConfig({
     },
   },
   globals: [Header],
-  collections: [Pages, Users, Media],
+  collections: [Productions, Pages, Users, Media],
   editor: lexicalEditor(),
   secret: process.env.PAYLOAD_SECRET || '',
   typescript: {
@@ -34,4 +35,10 @@ export default buildConfig({
   }),
   sharp,
   plugins: [],
+  bin: [
+    {
+      scriptPath: path.resolve(dirname, 'seed.ts'),
+      key: 'seed',
+    },
+  ],
 })

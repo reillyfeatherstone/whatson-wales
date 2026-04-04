@@ -31,7 +31,7 @@ export const Logo = async (props: Props) => {
         src={logoMedia.docs[0].url || 'null'}
         alt="WhatsOnWales Logo"
         width={125}
-        height={100}
+        height={40}
       />
     </Link>
   )
