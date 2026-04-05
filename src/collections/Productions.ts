@@ -21,7 +21,7 @@ export const Productions: CollectionConfig = {
     {
       name: 'genre',
       type: 'select',
-      defaultValue: 'Theatre',
+      defaultValue: 'Drama',
       hasMany: true,
       options: ['Drama', 'Comedy', 'Musical', 'Dance'],
     },

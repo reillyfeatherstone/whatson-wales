@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { ReactNode } from 'react'
 import './globals.css'
 import { Header } from '@/components/Header'
 import { Inter } from 'next/font/google'
@@ -9,13 +9,15 @@ const inter = Inter({
 })
 
 export const metadata = {
-  description: 'A blank template using Payload in a Next.js app.',
-  title: 'Payload Blank Template',
+  description: 'The Home for Theatre in Wales.',
+  title: 'Theatre shows | WhatsOnWales',
 }
 
-export default async function RootLayout(props: { children: React.ReactNode }) {
-  const { children } = props
+interface RootLayoutProps {
+  children: ReactNode
+}
 
+export default async function RootLayout({ children }: RootLayoutProps) {
   return (
     <html lang="en" className={inter.variable}>
       <body>

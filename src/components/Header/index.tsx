@@ -12,7 +12,7 @@ export async function Header() {
             size="lg"
             className="bg-[#D9A441] hover:bg-[#e4ae43] drop-shadow-sm hover:cursor-pointer"
           >
-            <div className="text-sm p-2">Submit</div>
+            <div className="text-base font-bold p-2">Submit</div>
           </Button>
         </div>
       </header>

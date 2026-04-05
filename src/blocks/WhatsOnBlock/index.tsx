@@ -3,6 +3,8 @@ import { Page } from '@/payload-types'
 import { MapPin } from 'lucide-react'
 import { getPayload } from 'payload'
 import configPromise from '@payload-config'
+import Image from 'next/image'
+import { Production } from '@/payload-types'
 
 type WhatsOnBlock = Extract<Page['layout'][0], { blockType: 'whatsOn' }>
 
@@ -30,38 +32,48 @@ export default async function WhatsOnBlock({ block }: { block: WhatsOnBlock }) {
         What's On
       </h2>
       <div className="py-4 grid md:grid-cols-2 lg:grid-cols-3 gap-7 max-w-6xl mx-auto">
-        {productions.docs.map((production) => (
-          <div key={production.id} className="m-2 border-gray-300 border-b pb-4">
-            <a href={production.link || '#'} className="flex flex-col h-full">
-              <figure className="w-full h-70 bg-gray-300 flex justify-center items-center">
-                <span className="font-medium text-gray-500 text-xl">Image</span>
-              </figure>
+        {productions.docs.map((production) => {
+          const { title, genre, language, description, image, link, id } = production
 
-              <div className="px-0.5 flex flex-col flex-1">
-                <h3 className="text-2xl font-bold pt-4">{production.title}</h3>
+          const validImage = image && typeof image !== 'number' && image.url
+          const imageUrl = validImage ? image.url : null
+          const imageAlt = validImage ? image.alt : null
 
-                <div className="font-medium text-sm text-gray-900 flex-1 py-1">
-                  {production.description}
-                </div>
+          return (
+            <div key={id} className="m-2 border-gray-300 border-b pb-4">
+              <a href={link || '#'} className="flex flex-col h-full">
+                <figure className="w-full h-70 bg-gray-300 flex justify-center items-center relative overflow-hidden">
+                  {imageUrl ? (
+                    <Image src={imageUrl} alt={imageAlt || ''} fill className="object-cover" />
+                  ) : (
+                    <span className="font-medium text-gray-500 text-xl">Image</span>
+                  )}
+                </figure>
 
-                <div className="font-bold text-base text-gray-900 pt-4 pb-2">
-                  27 March — 11 October 2026
-                </div>
+                <div className="px-0.5 flex flex-col flex-1">
+                  <h3 className="text-2xl font-bold pt-4">{title}</h3>
 
-                <div className="mt-auto flex justify-between items-center py-1">
-                  <Button variant="default" size="lg" className="hover:cursor-pointer">
-                    <span className="text-xs p-1 text-white font-bold">Find Out More</span>
-                  </Button>
+                  <div className="font-medium text-sm text-gray-900 flex-1 py-1">{description}</div>
 
-                  <div className="font-medium flex space-x-2">
-                    <MapPin size={16} />
-                    <span className="text-xs">Sherman Theatre</span>
+                  <div className="font-bold text-base text-gray-900 pt-4 pb-2">
+                    27 March — 11 October 2026
+                  </div>
+
+                  <div className="mt-auto flex justify-between items-center py-1">
+                    <Button variant="default" size="lg" className="hover:cursor-pointer">
+                      <span className="text-xs p-1 text-white font-bold">Find Out More</span>
+                    </Button>
+
+                    <div className="font-medium flex space-x-2">
+                      <MapPin size={16} />
+                      <span className="text-xs">Sherman Theatre</span>
+                    </div>
                   </div>
                 </div>
-              </div>
-            </a>
-          </div>
-        ))}
+              </a>
+            </div>
+          )
+        })}
       </div>
     </div>
   )
