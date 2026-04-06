@@ -20,7 +20,7 @@ export const Logo = async (props: Props) => {
     collection: 'media',
     where: {
       filename: {
-        equals: 'whatsonwales-logo-light-1.svg',
+        equals: 'whatsonwales-logo-light.svg',
       },
     },
   })
