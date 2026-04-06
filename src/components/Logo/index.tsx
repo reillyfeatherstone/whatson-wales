@@ -20,18 +20,18 @@ export const Logo = async (props: Props) => {
     collection: 'media',
     where: {
       filename: {
-        equals: 'logo-light.svg',
+        equals: 'whatsonwales-logo-light-1.svg',
       },
     },
   })
 
   return (
-    <Link href="/">
+    <Link href="/" className="relative w-46.25 h-20">
       <Image
         src={logoMedia.docs[0].url || 'null'}
         alt="WhatsOnWales Logo"
-        width={125}
-        height={40}
+        fill
+        className="object-contain"
       />
     </Link>
   )

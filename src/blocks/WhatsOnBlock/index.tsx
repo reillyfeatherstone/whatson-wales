@@ -44,7 +44,13 @@ export default async function WhatsOnBlock({ block }: { block: WhatsOnBlock }) {
               <a href={link || '#'} className="flex flex-col h-full">
                 <figure className="w-full h-70 bg-gray-300 flex justify-center items-center relative overflow-hidden">
                   {imageUrl ? (
-                    <Image src={imageUrl} alt={imageAlt || ''} fill className="object-cover" />
+                    <Image
+                      src={imageUrl}
+                      alt={imageAlt || ''}
+                      fill
+                      className="object-cover"
+                      sizes="(max-width: 767px) 100vw, (max-width: 1023px) 50vw, 33vw"
+                    />
                   ) : (
                     <span className="font-medium text-gray-500 text-xl">Image</span>
                   )}
