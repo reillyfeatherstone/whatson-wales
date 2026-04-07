@@ -430,6 +430,7 @@ export interface PayloadMigrationsSelect<T extends boolean = true> {
  */
 export interface Header {
   id: string;
+  logo?: (string | null) | Media;
   navItems?:
     | {
         linkType: 'internal' | 'custom';
@@ -447,6 +448,7 @@ export interface Header {
  * via the `definition` "header_select".
  */
 export interface HeaderSelect<T extends boolean = true> {
+  logo?: T;
   navItems?:
     | T
     | {

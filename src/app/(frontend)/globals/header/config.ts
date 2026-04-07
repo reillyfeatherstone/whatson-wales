@@ -4,6 +4,11 @@ export const Header: GlobalConfig = {
   slug: 'header',
   fields: [
     {
+      name: 'logo',
+      type: 'relationship',
+      relationTo: 'media',
+    },
+    {
       name: 'navItems',
       type: 'array',
       fields: [

@@ -1,5 +1,10 @@
 import { anyone } from '@/access/anyone'
 import { authenticated } from '@/access/authenticated'
+import { revalidatePage } from '@/collections/hooks/revalidatePage'
+import {
+  revalidateWhatsOnPagesOnChange,
+  revalidateWhatsOnPagesOnDelete,
+} from '@/collections/hooks/revalidateProduction'
 import type { CollectionConfig } from 'payload'
 
 export const Productions: CollectionConfig = {
@@ -50,4 +55,8 @@ export const Productions: CollectionConfig = {
     //   relationTo: 'productionCompanies'
     // }
   ],
+  hooks: {
+    afterChange: [revalidateWhatsOnPagesOnChange],
+    afterDelete: [revalidateWhatsOnPagesOnDelete],
+  },
 }

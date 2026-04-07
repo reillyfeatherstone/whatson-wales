@@ -10,7 +10,6 @@ type WhatsOnBlock = Extract<Page['layout'][0], { blockType: 'whatsOn' }>
 
 export default async function WhatsOnBlock({ block }: { block: WhatsOnBlock }) {
   const payload = await getPayload({ config: configPromise })
-
   const productions = await payload.find({
     collection: 'productions',
     depth: 1,
@@ -32,16 +31,16 @@ export default async function WhatsOnBlock({ block }: { block: WhatsOnBlock }) {
         What's On
       </h2>
       <div className="py-4 grid md:grid-cols-2 lg:grid-cols-3 gap-7 max-w-6xl mx-auto">
-        {productions.docs.map((production) => {
+        {productions.docs.map((production, index) => {
           const { title, genre, language, description, image, link, id } = production
 
-          const validImage = image && typeof image !== 'number' && image.url
+          const validImage = image && typeof image !== 'string' && image.url
           const imageUrl = validImage ? image.url : null
           const imageAlt = validImage ? image.alt : null
 
           return (
             <div key={id} className="m-2 border-gray-300 border-b pb-4">
-              <a href={link || '#'} className="flex flex-col h-full">
+              <a href={'#'} className="flex flex-col h-full">
                 <figure className="w-full h-70 bg-gray-300 flex justify-center items-center relative overflow-hidden">
                   {imageUrl ? (
                     <Image
@@ -50,6 +49,7 @@ export default async function WhatsOnBlock({ block }: { block: WhatsOnBlock }) {
                       fill
                       className="object-cover"
                       sizes="(max-width: 767px) 100vw, (max-width: 1023px) 50vw, 33vw"
+                      priority={index < 3}
                     />
                   ) : (
                     <span className="font-medium text-gray-500 text-xl">Image</span>

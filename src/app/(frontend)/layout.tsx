@@ -1,6 +1,6 @@
 import React, { ReactNode } from 'react'
 import './globals.css'
-import { Header } from '@/components/Header'
+import Header from '@/components/Header'
 import { Inter } from 'next/font/google'
 
 const inter = Inter({
@@ -21,8 +21,10 @@ export default async function RootLayout({ children }: RootLayoutProps) {
   return (
     <html lang="en" className={inter.variable}>
       <body>
-        <Header />
-        <main>{children}</main>
+        <main>
+          <Header />
+          {children}
+        </main>
       </body>
     </html>
   )

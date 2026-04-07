@@ -1,3 +1,4 @@
+import { revalidatePage } from '@/collections/hooks/revalidatePage'
 import type { CollectionConfig } from 'payload'
 import { slugField } from 'payload'
 
@@ -58,4 +59,7 @@ export const Pages: CollectionConfig = {
       useAsSlug: 'title',
     }),
   ],
+  hooks: {
+    afterChange: [revalidatePage],
+  },
 }

@@ -6,11 +6,25 @@ import type { Page } from '@/payload-types'
 import configPromise from '@payload-config'
 import { cache } from 'react'
 import WhatsOnBlock from '@/blocks/WhatsOnBlock'
+import payloadConfig from '@payload-config'
 
 type Args = {
   params: Promise<{
     slug?: string
   }>
+}
+
+export async function generateStaticParams() {
+  const payload = await getPayload({ config: payloadConfig })
+
+  const { docs } = await payload.find({
+    collection: 'pages',
+    limit: 0,
+  })
+
+  return docs.map((doc) => ({
+    slug: doc.slug,
+  }))
 }
 
 export default async function Page({ params: paramsPromise }: Args) {
@@ -45,7 +59,7 @@ export default async function Page({ params: paramsPromise }: Args) {
   )
 }
 
-const queryPageBySlug = cache(async ({ slug }: { slug: string }) => {
+const queryPageBySlug = async ({ slug }: { slug: string }) => {
   const payload = await getPayload({ config: configPromise })
 
   const result = await payload.find({
@@ -61,4 +75,4 @@ const queryPageBySlug = cache(async ({ slug }: { slug: string }) => {
   })
 
   return result.docs?.[0] || null
-})
+}

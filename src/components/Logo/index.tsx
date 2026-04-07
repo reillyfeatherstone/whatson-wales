@@ -1,23 +1,23 @@
+'use server'
+
+import payloadConfig from '@/payload.config'
 import Image from 'next/image'
-import { getPayload } from 'payload'
-import configPromise from '@payload-config'
 import Link from 'next/link'
+import { getPayload } from 'payload'
+import { Media } from '@/collections/Media'
 
-interface Props {
-  className?: string
-  loading?: 'lazy' | 'eager'
-  priority?: 'auto' | 'high' | 'low'
-}
+export default async function Logo() {
+  const payload = await getPayload({ config: payloadConfig })
 
-export const Logo = async (props: Props) => {
-  const payload = await getPayload({ config: configPromise })
-  const { loading: loadingFromProps, priority: priorityFromProps, className } = props
-
-  const loading = loadingFromProps || 'lazy'
-  const priority = priorityFromProps || 'low'
-
-  const logoMedia = await payload.find({
+  const image = await payload.find({
     collection: 'media',
+    depth: 1,
+    limit: 12,
+    overrideAccess: false,
+    select: {
+      filename: true,
+      url: true,
+    },
     where: {
       filename: {
         equals: 'whatsonwales-logo-light.svg',
@@ -28,10 +28,12 @@ export const Logo = async (props: Props) => {
   return (
     <Link href="/" className="relative w-46.25 h-20">
       <Image
-        src={logoMedia.docs[0].url || 'null'}
+        // src="https://pub-c2f9d27478004aa2a01e68db6030715d.r2.dev/whatsonwales/whatsonwales-logo-light.svg"
+        src={image.docs[0].url || ''}
         alt="WhatsOnWales Logo"
         fill
         className="object-contain"
+        priority
       />
     </Link>
   )
