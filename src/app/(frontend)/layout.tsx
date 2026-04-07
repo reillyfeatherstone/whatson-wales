@@ -21,10 +21,8 @@ export default async function RootLayout({ children }: RootLayoutProps) {
   return (
     <html lang="en" className={inter.variable}>
       <body>
-        <main>
-          <Header />
-          {children}
-        </main>
+        <Header />
+        <main>{children}</main>
       </body>
     </html>
   )

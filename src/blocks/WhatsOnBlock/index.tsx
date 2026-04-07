@@ -2,14 +2,14 @@ import { Button } from '@/components/ui/button'
 import { Page } from '@/payload-types'
 import { MapPin } from 'lucide-react'
 import { getPayload } from 'payload'
-import configPromise from '@payload-config'
+import payloadConfig from '@payload-config'
 import Image from 'next/image'
 import { Production } from '@/payload-types'
 
 type WhatsOnBlock = Extract<Page['layout'][0], { blockType: 'whatsOn' }>
 
 export default async function WhatsOnBlock({ block }: { block: WhatsOnBlock }) {
-  const payload = await getPayload({ config: configPromise })
+  const payload = await getPayload({ config: payloadConfig })
   const productions = await payload.find({
     collection: 'productions',
     depth: 1,
@@ -17,6 +17,7 @@ export default async function WhatsOnBlock({ block }: { block: WhatsOnBlock }) {
     overrideAccess: false,
     select: {
       title: true,
+      slug: true,
       genre: true,
       language: true,
       description: true,
@@ -32,7 +33,7 @@ export default async function WhatsOnBlock({ block }: { block: WhatsOnBlock }) {
       </h2>
       <div className="py-4 grid md:grid-cols-2 lg:grid-cols-3 gap-7 max-w-6xl mx-auto">
         {productions.docs.map((production, index) => {
-          const { title, genre, language, description, image, link, id } = production
+          const { title, genre, language, description, image, link, id, slug } = production
 
           const validImage = image && typeof image !== 'string' && image.url
           const imageUrl = validImage ? image.url : null
@@ -40,7 +41,7 @@ export default async function WhatsOnBlock({ block }: { block: WhatsOnBlock }) {
 
           return (
             <div key={id} className="m-2 border-gray-300 border-b pb-4">
-              <a href={'#'} className="flex flex-col h-full">
+              <a href={`productions/${slug}`} className="flex flex-col h-full">
                 <figure className="w-full h-70 bg-gray-300 flex justify-center items-center relative overflow-hidden">
                   {imageUrl ? (
                     <Image

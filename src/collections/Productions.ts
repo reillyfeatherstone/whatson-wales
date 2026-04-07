@@ -5,7 +5,7 @@ import {
   revalidateWhatsOnPagesOnChange,
   revalidateWhatsOnPagesOnDelete,
 } from '@/collections/hooks/revalidateProduction'
-import type { CollectionConfig } from 'payload'
+import { slugField, type CollectionConfig } from 'payload'
 
 export const Productions: CollectionConfig = {
   slug: 'productions',
@@ -49,6 +49,10 @@ export const Productions: CollectionConfig = {
       name: 'link',
       type: 'text',
     },
+    slugField({
+      useAsSlug: 'title',
+      disableUnique: false,
+    }),
     // {
     //   name: 'productionCompany',
     //   type: 'relationship',

@@ -3,7 +3,6 @@ import { getPayload, RequiredDataFromCollectionSlug } from 'payload'
 import HomeHeroBlock from '@/blocks/HomeHeroBlock'
 import type { Page } from '@/payload-types'
 
-import configPromise from '@payload-config'
 import { cache } from 'react'
 import WhatsOnBlock from '@/blocks/WhatsOnBlock'
 import payloadConfig from '@payload-config'
@@ -53,14 +52,15 @@ export default async function Page({ params: paramsPromise }: Args) {
   }
 
   return (
-    <div>
+    <div className="">
       <div className="page">{page.layout?.map((block) => renderBlocks(block))}</div>
+      {/* <pre>{JSON.stringify(page.layout, undefined, 2)}</pre> */}
     </div>
   )
 }
 
-const queryPageBySlug = async ({ slug }: { slug: string }) => {
-  const payload = await getPayload({ config: configPromise })
+const queryPageBySlug = cache(async ({ slug }: { slug: string }) => {
+  const payload = await getPayload({ config: payloadConfig })
 
   const result = await payload.find({
     collection: 'pages',
@@ -75,4 +75,4 @@ const queryPageBySlug = async ({ slug }: { slug: string }) => {
   })
 
   return result.docs?.[0] || null
-}
+})

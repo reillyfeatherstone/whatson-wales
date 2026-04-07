@@ -20,7 +20,7 @@ export default async function Logo() {
     },
     where: {
       filename: {
-        equals: 'whatsonwales-logo-light.svg',
+        equals: 'whatsonwales-logo-dark.svg',
       },
     },
   })

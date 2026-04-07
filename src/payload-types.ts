@@ -137,6 +137,11 @@ export interface Production {
   description?: string | null;
   image?: (string | null) | Media;
   link?: string | null;
+  /**
+   * When enabled, the slug will auto-generate from the title field on save and autosave.
+   */
+  generateSlug?: boolean | null;
+  slug: string;
   updatedAt: string;
   createdAt: string;
 }
@@ -168,6 +173,11 @@ export interface Page {
   title: string;
   active?: boolean | null;
   layout: (
+    | {
+        id?: string | null;
+        blockName?: string | null;
+        blockType: 'pageTitle';
+      }
     | {
         height?: number | null;
         backgroundColour?: string | null;
@@ -309,6 +319,8 @@ export interface ProductionsSelect<T extends boolean = true> {
   description?: T;
   image?: T;
   link?: T;
+  generateSlug?: T;
+  slug?: T;
   updatedAt?: T;
   createdAt?: T;
 }
@@ -322,6 +334,12 @@ export interface PagesSelect<T extends boolean = true> {
   layout?:
     | T
     | {
+        pageTitle?:
+          | T
+          | {
+              id?: T;
+              blockName?: T;
+            };
         section?:
           | T
           | {

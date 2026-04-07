@@ -26,6 +26,10 @@ export const Pages: CollectionConfig = {
       required: true,
       blocks: [
         {
+          slug: 'pageTitle',
+          fields: [],
+        },
+        {
           slug: 'section',
           fields: [
             {
