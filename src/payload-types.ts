@@ -132,11 +132,33 @@ export interface UserAuthOperations {
 export interface Production {
   id: string;
   title?: string | null;
+  dates?: {
+    start?: string | null;
+    end?: string | null;
+  };
+  runTime?: string | null;
   genre?: ('Drama' | 'Comedy' | 'Musical' | 'Dance')[] | null;
   language?: ('English' | 'Welsh')[] | null;
   description?: string | null;
-  image?: (string | null) | Media;
   link?: string | null;
+  credits?: {
+    cast?:
+      | {
+          name?: string | null;
+          role?: string | null;
+          id?: string | null;
+        }[]
+      | null;
+    creatives?:
+      | {
+          name?: string | null;
+          role?: ('Director' | 'Writer' | 'Other (Specify)') | null;
+          otherRole?: string | null;
+          id?: string | null;
+        }[]
+      | null;
+  };
+  image?: (string | null) | Media;
   /**
    * When enabled, the slug will auto-generate from the title field on save and autosave.
    */
@@ -314,11 +336,37 @@ export interface PayloadMigration {
  */
 export interface ProductionsSelect<T extends boolean = true> {
   title?: T;
+  dates?:
+    | T
+    | {
+        start?: T;
+        end?: T;
+      };
+  runTime?: T;
   genre?: T;
   language?: T;
   description?: T;
-  image?: T;
   link?: T;
+  credits?:
+    | T
+    | {
+        cast?:
+          | T
+          | {
+              name?: T;
+              role?: T;
+              id?: T;
+            };
+        creatives?:
+          | T
+          | {
+              name?: T;
+              role?: T;
+              otherRole?: T;
+              id?: T;
+            };
+      };
+  image?: T;
   generateSlug?: T;
   slug?: T;
   updatedAt?: T;

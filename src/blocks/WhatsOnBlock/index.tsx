@@ -10,6 +10,7 @@ type WhatsOnBlock = Extract<Page['layout'][0], { blockType: 'whatsOn' }>
 
 export default async function WhatsOnBlock({ block }: { block: WhatsOnBlock }) {
   const payload = await getPayload({ config: payloadConfig })
+
   const productions = await payload.find({
     collection: 'productions',
     depth: 1,
