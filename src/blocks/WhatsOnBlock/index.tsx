@@ -8,8 +8,19 @@ import { Production } from '@/payload-types'
 
 type WhatsOnBlock = Extract<Page['layout'][0], { blockType: 'whatsOn' }>
 
+const formatDate = (date: string, includeYear = true): string => {
+  const d = new Date(date)
+
+  const options: Intl.DateTimeFormatOptions = includeYear
+  ? { day: 'numeric', month: 'long', year: 'numeric' }
+  : { day: 'numeric', month: 'long' }
+
+  return new Intl.DateTimeFormat('en-GB', options).format(d)
+}
+
 export default async function WhatsOnBlock({ block }: { block: WhatsOnBlock }) {
   const payload = await getPayload({ config: payloadConfig })
+  const now = new Date()
 
   const productions = await payload.find({
     collection: 'productions',
@@ -24,7 +35,13 @@ export default async function WhatsOnBlock({ block }: { block: WhatsOnBlock }) {
       description: true,
       image: true,
       link: true,
+			dates: true,
     },
+    where: {
+      'dates.end': {
+        greater_than: now,
+      }
+    }
   })
 
   return (
@@ -34,7 +51,14 @@ export default async function WhatsOnBlock({ block }: { block: WhatsOnBlock }) {
       </h2>
       <div className="py-4 grid md:grid-cols-2 lg:grid-cols-3 gap-7 max-w-6xl mx-auto">
         {productions.docs.map((production, index) => {
-          const { title, genre, language, description, image, link, id, slug } = production
+          const { title, genre, language, description, image, link, id, slug, dates } = production
+
+          const startDate = new Date(dates.start)
+          const endDate = new Date(dates.end)
+          const startYear = new Date(dates.start).getFullYear()
+          const endYear = new Date(dates.end).getFullYear()
+          const isSameYear = startYear === endYear
+          const hasStarted = startDate < now
 
           const validImage = image && typeof image !== 'string' && image.url
           const imageUrl = validImage ? image.url : null
@@ -64,9 +88,16 @@ export default async function WhatsOnBlock({ block }: { block: WhatsOnBlock }) {
                   <div className="font-medium text-sm text-gray-900 flex-1 py-1">{description}</div>
 
                   <div className="font-bold text-base text-gray-900 pt-4 pb-2">
-                    27 March — 11 October 2026
+										{ hasStarted 
+                      ? "Until " 
+                      : isSameYear 
+                          ? formatDate(dates.start, false) + " - " 
+                          : formatDate(dates.start, true) + " - " 
+                    } 
+                    { 
+                      formatDate(dates.end, true) 
+                    }
                   </div>
-
                   <div className="mt-auto flex justify-between items-center py-1">
                     <Button variant="default" size="lg" className="hover:cursor-pointer">
                       <span className="text-xs p-1 text-white font-bold">Find Out More</span>
