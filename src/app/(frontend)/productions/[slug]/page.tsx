@@ -30,7 +30,7 @@ export default async function ProductionPage({ params: paramsPromise }: Args) {
 
   return (
     <div className="">
-      <div className="h-115 bg-gray-300 relative">
+      <div className="h-130 bg-gray-300 relative">
         <Image
           alt=""
           src={image?.url || null}
@@ -40,19 +40,19 @@ export default async function ProductionPage({ params: paramsPromise }: Args) {
         />
       </div>
       <div className="px-15 mt-5">
-        <h1 className="text-4xl font-bold">{title}</h1>
+        <div className="text-xl font-medium">Company/Creator Here</div>
+        <h1 className="text-5xl font-bold">{title}</h1>
         {(() => {
           const writers = credits?.creatives?.filter(person => person.role === "Writer")
           if (!writers?.length) return null
 
           const names = writers.map(person => person.name)
-          const formatted = names.length === 1
+          const formattedWriters = names.length === 1
             ? names[0]
             : names.slice(0, -1).join(', ') + ' & ' + names.at(-1)
 
-          return<div>Written by {formatted}</div>
+          return<div className="font-normal pt-3">by {formattedWriters}</div>
         })()}
-        <div> - production company - clickable to directory</div>
         <br />
         <div>
           {dates?.start} - {dates?.end}
