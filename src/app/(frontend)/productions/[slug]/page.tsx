@@ -39,8 +39,8 @@ export default async function ProductionPage({ params: paramsPromise }: Args) {
           sizes="(max-width: 767px) 100vw, 100vw"
         />
       </div>
-      <div className="px-5">
-        <h1>{title}</h1>
+      <div className="px-15 mt-5">
+        <h1 className="text-4xl font-bold">{title}</h1>
         <div> - writer</div>
         <div> - production company - clickable to directory</div>
         <br />
