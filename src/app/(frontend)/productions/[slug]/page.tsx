@@ -41,7 +41,17 @@ export default async function ProductionPage({ params: paramsPromise }: Args) {
       </div>
       <div className="px-15 mt-5">
         <h1 className="text-4xl font-bold">{title}</h1>
-        <div> - writer</div>
+        {(() => {
+          const writers = credits?.creatives?.filter(person => person.role === "Writer")
+          if (!writers?.length) return null
+
+          const names = writers.map(person => person.name)
+          const formatted = names.length === 1
+            ? names[0]
+            : names.slice(0, -1).join(', ') + ' & ' + names.at(-1)
+
+          return<div>Written by {formatted}</div>
+        })()}
         <div> - production company - clickable to directory</div>
         <br />
         <div>
