@@ -136,6 +136,7 @@ export interface Production {
     start?: string | null;
     end?: string | null;
   };
+  productionCompany?: string | null;
   runTime?: string | null;
   genre?: ('Drama' | 'Comedy' | 'Musical' | 'Dance')[] | null;
   language?: ('English' | 'Welsh')[] | null;
@@ -342,6 +343,7 @@ export interface ProductionsSelect<T extends boolean = true> {
         start?: T;
         end?: T;
       };
+  productionCompany?: T;
   runTime?: T;
   genre?: T;
   language?: T;

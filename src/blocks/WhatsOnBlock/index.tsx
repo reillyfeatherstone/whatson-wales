@@ -5,10 +5,11 @@ import { getPayload } from 'payload'
 import payloadConfig from '@payload-config'
 import Image from 'next/image'
 import { Production } from '@/payload-types'
+import formatDate from '@/lib/formatDate'
 
 type WhatsOnBlock = Extract<Page['layout'][0], { blockType: 'whatsOn' }>
 
-const formatDate = (date: string, includeYear = true): string => {
+/*const formatDate = (date: string, includeYear = true): string => {
   const d = new Date(date)
 
   const options: Intl.DateTimeFormatOptions = includeYear
@@ -16,7 +17,7 @@ const formatDate = (date: string, includeYear = true): string => {
   : { day: 'numeric', month: 'long' }
 
   return new Intl.DateTimeFormat('en-GB', options).format(d)
-}
+}*/
 
 export default async function WhatsOnBlock({ block }: { block: WhatsOnBlock }) {
   const payload = await getPayload({ config: payloadConfig })

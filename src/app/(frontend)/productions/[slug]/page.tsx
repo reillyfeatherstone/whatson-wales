@@ -7,6 +7,7 @@ import Link from 'next/link'
 import { notFound } from 'next/navigation'
 import { getPayload, RequiredDataFromCollectionSlug } from 'payload'
 import { cache } from 'react'
+import formatDate from '@/lib/formatDate'
 
 type Args = {
   params: Promise<{
@@ -25,7 +26,7 @@ export default async function ProductionPage({ params: paramsPromise }: Args) {
     notFound()
   }
 
-  const { title, genre, language, description, image, link, dates, runTime, credits } =
+  const { title, genre, language, description, image, link, dates, runTime, credits, productionCompany } =
     productionPage
 
   return (
@@ -39,40 +40,47 @@ export default async function ProductionPage({ params: paramsPromise }: Args) {
           sizes="(max-width: 767px) 100vw, 100vw"
         />
       </div>
-      <div className="px-15 mt-5">
-        <div className="text-xl font-medium">Company/Creator Here</div>
-        <h1 className="text-5xl font-bold">{title}</h1>
-        {(() => {
-          const writers = credits?.creatives?.filter(person => person.role === "Writer")
-          if (!writers?.length) return null
+      <div className="bg-gray-200 px-15">
+        <div className="section-1 mt-5 flex">
+          <div className="section-1-left w-[50%]">
+            <div className="text-xl font-medium">
+              {productionCompany}
+            </div>
+            <h1 className="text-5xl font-bold mt-1">{title}</h1>
+            {(() => {
+              const writers = credits?.creatives?.filter(person => person.role === "Writer")
+              if (!writers?.length) return null
 
-          const names = writers.map(person => person.name)
-          const formattedWriters = names.length === 1
-            ? names[0]
-            : names.slice(0, -1).join(', ') + ' & ' + names.at(-1)
+              const names = writers.map(person => person.name)
+              const formattedWriters = names.length === 1
+                ? names[0]
+                : names.slice(0, -1).join(', ') + ' & ' + names.at(-1)
 
-          return<div className="font-normal pt-3">by {formattedWriters}</div>
-        })()}
-        <br />
-        <div>
-          {dates?.start} - {dates?.end}
+              return<div className="font-normal pt-2 pb-5">by {formattedWriters}</div>
+            })()}
+            <div className="flex gap-5">
+              <Link href={link || ''}>
+                <Button size="lg">
+                  <span className="text-[14px]">Get Tickets</span>
+                </Button>
+              </Link>
+              {formatDate(dates?.start, true)} - {formatDate(dates?.end, true)}
+            </div>
+          </div>
+          <div className="section-1-right w-[50%]">
+            <br />
+            <div>{language}</div>
+            <div>{runTime}</div>
+            <br />
+            <div>{description}</div>
+            <br />
+            <div> - Venues - Check does this go first or cast?</div>
+            <div> - Tour Dates</div>
+            <div> - Addresses for each venue</div>
+            <div> - Link to each venue</div>
+            <div> - Access / Assisted Performances tickbox for each type of thing</div>
+          </div>
         </div>
-        <Link href={link || ''}>
-          <Button>Get Tickets</Button>
-        </Link>
-        <div>Quick Links</div>
-        <br />
-        <div>{language}</div>
-        <div>{runTime}</div>
-        <br />
-        <div>{description}</div>
-        <br />
-        <div> - Venues - Check does this go first or cast?</div>
-        <div> - Tour Dates</div>
-        <div> - Addresses for each venue</div>
-        <div> - Link to each venue</div>
-        <div> - Access / Assisted Performances tickbox for each type of thing</div>
-        <br />
         <div>Cast</div>
         <div>
           {credits?.cast?.map((person, index) => {

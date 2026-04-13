@@ -53,6 +53,10 @@ export const Productions: CollectionConfig = {
       ],
     },
     {
+      name: 'productionCompany',
+      type: 'text',
+    },
+    {
       name: 'runTime',
       type: 'text',
     },
