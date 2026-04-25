@@ -30,7 +30,7 @@ export const Pages: CollectionConfig = {
           fields: [],
         },
         {
-          slug: 'section',
+          slug: 'featured',
           fields: [
             {
               name: 'height',

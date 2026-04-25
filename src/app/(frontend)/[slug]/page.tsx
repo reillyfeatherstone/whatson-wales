@@ -42,7 +42,7 @@ export default async function Page({ params: paramsPromise }: Args) {
 
   const renderBlocks = (block: Page['layout'][0]) => {
     switch (block.blockType) {
-      case 'section':
+      case 'featured':
         return <HomeHeroBlock block={block} key={block.id} />
       case 'whatsOn':
         return <WhatsOnBlock block={block} key={block.id} />

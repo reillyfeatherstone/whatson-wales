@@ -1,19 +1,34 @@
 import { Page } from '@/payload-types'
+import { getPayload } from 'payload'
+import payloadConfig from '@/payload.config'
+import { FeaturedProductions } from '@/blocks/HomeHeroBlock/FeaturedProductions'
 
-type HomeHeroBlock = Extract<Page['layout'][0], { blockType: 'section' }>
+type HomeHeroBlock = Extract<Page['layout'][0], { blockType: 'featured' }>
 
-export default function HomeHeroBlock({ block }: { block: HomeHeroBlock }) {
+export default async function HomeHeroBlock({ block }: { block: HomeHeroBlock }) {
+  const featProds = await getFeaturedProductions()
+
   return (
-    <div
-      style={{
-        backgroundColor: '#' + block.backgroundColour || 'null',
-        minHeight: block.height || 'null',
-      }}
-      className="flex items-center justify-center"
-    >
-      <h1 className="text-5xl/15 font-medium sm:text-5xl/15 md:text-5xl/15 lg:text-6xl/20 xl:text-7xl text-white text-center px-20 max-w-450 mx-auto -mb-10">
-        {block.heading}
-      </h1>
+    <div className="px-5 max-w-7xl mx-auto">
+      <FeaturedProductions prods={featProds} />
     </div>
   )
+}
+
+const getFeaturedProductions = async () => {
+  const payload = await getPayload({ config: payloadConfig })
+  const now = new Date()
+
+  const result = await payload.find({
+    collection: 'productions',
+    limit: 5,
+    sort: 'dates.end',
+    where: {
+      'dates.end': {
+        greater_than: now,
+      },
+    },
+  })
+
+  return result.docs || null
 }

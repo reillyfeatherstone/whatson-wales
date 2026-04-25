@@ -159,7 +159,7 @@ export interface Production {
         }[]
       | null;
   };
-  image?: (string | null) | Media;
+  image: string | Media;
   /**
    * When enabled, the slug will auto-generate from the title field on save and autosave.
    */
@@ -207,7 +207,7 @@ export interface Page {
         heading?: string | null;
         id?: string | null;
         blockName?: string | null;
-        blockType: 'section';
+        blockType: 'featured';
       }
     | {
         title?: string | null;
@@ -390,7 +390,7 @@ export interface PagesSelect<T extends boolean = true> {
               id?: T;
               blockName?: T;
             };
-        section?:
+        featured?:
           | T
           | {
               height?: T;

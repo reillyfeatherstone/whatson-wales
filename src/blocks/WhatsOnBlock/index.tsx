@@ -27,6 +27,7 @@ export default async function WhatsOnBlock({ block }: { block: WhatsOnBlock }) {
     collection: 'productions',
     depth: 1,
     limit: 12,
+    sort: 'dates.start',
     overrideAccess: false,
     select: {
       title: true,
@@ -36,21 +37,21 @@ export default async function WhatsOnBlock({ block }: { block: WhatsOnBlock }) {
       description: true,
       image: true,
       link: true,
-			dates: true,
+      dates: true,
     },
     where: {
       'dates.end': {
         greater_than: now,
-      }
-    }
+      },
+    },
   })
 
   return (
-    <div className="p-5 pb-100">
+    <div className="p-5 pb-100 max-w-7xl mx-auto">
       <h2 className="text-4xl font-medium text-black text-center px-20 max-w-450 mx-auto">
         What's On
       </h2>
-      <div className="py-4 grid md:grid-cols-2 lg:grid-cols-3 gap-7 max-w-6xl mx-auto">
+      <div className="py-4 grid md:grid-cols-2 lg:grid-cols-3 gap-7">
         {productions.docs.map((production, index) => {
           const { title, genre, language, description, image, link, id, slug, dates } = production
 
@@ -66,7 +67,7 @@ export default async function WhatsOnBlock({ block }: { block: WhatsOnBlock }) {
           const imageAlt = validImage ? image.alt : null
 
           return (
-            <div key={id} className="m-2 border-gray-300 border-b pb-4">
+            <div key={id} className="border-gray-300 border-b pb-4">
               <a href={`productions/${slug}`} className="flex flex-col h-full">
                 <figure className="w-full h-70 bg-gray-300 flex justify-center items-center relative overflow-hidden">
                   {imageUrl ? (
@@ -89,15 +90,12 @@ export default async function WhatsOnBlock({ block }: { block: WhatsOnBlock }) {
                   <div className="font-medium text-sm text-gray-900 flex-1 py-1">{description}</div>
 
                   <div className="font-bold text-base text-gray-900 pt-4 pb-2">
-										{ hasStarted 
-                      ? "Until " 
-                      : isSameYear 
-                          ? formatDate(dates.start, false) + " - " 
-                          : formatDate(dates.start, true) + " - " 
-                    } 
-                    { 
-                      formatDate(dates.end, true) 
-                    }
+                    {hasStarted
+                      ? 'Until '
+                      : isSameYear
+                        ? formatDate(dates.start, false) + ' - '
+                        : formatDate(dates.start, true) + ' - '}
+                    {formatDate(dates.end, true)}
                   </div>
                   <div className="mt-auto flex justify-between items-center py-1">
                     <Button variant="default" size="lg" className="hover:cursor-pointer">

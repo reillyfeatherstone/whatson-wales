@@ -132,6 +132,7 @@ export const Productions: CollectionConfig = {
       name: 'image',
       type: 'upload',
       relationTo: 'media',
+      required: true,
     },
     slugField({
       useAsSlug: 'title',
