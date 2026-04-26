@@ -12,6 +12,7 @@ import { Pages } from './collections/Pages'
 import { Header } from '@/app/(frontend)/globals/header/config'
 import { Productions } from '@/collections/Productions'
 import { s3Storage } from '@payloadcms/storage-s3'
+import { Footer } from '@/app/(frontend)/globals/footer/config'
 
 const filename = fileURLToPath(import.meta.url)
 const dirname = path.dirname(filename)
@@ -22,7 +23,7 @@ export default buildConfig({
       baseDir: path.resolve(dirname),
     },
   },
-  globals: [Header],
+  globals: [Header, Footer],
   collections: [Productions, Pages, Users, Media],
   editor: lexicalEditor(),
   secret: process.env.PAYLOAD_SECRET || '',

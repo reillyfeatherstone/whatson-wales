@@ -2,6 +2,7 @@ import React, { ReactNode } from 'react'
 import './globals.css'
 import Header from '@/components/Header'
 import { Inter } from 'next/font/google'
+import Footer from '@/components/Footer'
 
 const inter = Inter({
   subsets: ['latin'],
@@ -23,6 +24,7 @@ export default async function RootLayout({ children }: RootLayoutProps) {
       <body>
         <Header />
         <main>{children}</main>
+        <Footer />
       </body>
     </html>
   )
