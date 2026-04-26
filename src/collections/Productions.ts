@@ -82,6 +82,10 @@ export const Productions: CollectionConfig = {
       type: 'text',
     },
     {
+      name: 'richDescription',
+      type: 'richText',
+    },
+    {
       name: 'credits',
       type: 'group',
       fields: [

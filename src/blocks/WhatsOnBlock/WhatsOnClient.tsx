@@ -135,7 +135,7 @@ export function WhatsOnClient({ productions }: { productions: Production[] }) {
 
 export function Filters({ onClose }: { onClose?: () => void }) {
   return (
-    <div className="filter p-5 gap-8 text-sm font-medium text-gray-500 flex flex-col md:gap-3 md:mt-8 md:mb-12 md:mx-auto md:flex-row md:border">
+    <div className="filter p-5 gap-8 text-sm font-medium text-muted-foreground flex flex-col md:gap-3 md:mt-8 md:mb-12 md:mx-auto md:flex-row md:border">
       <div className="md:w-[25%]">
         <Label className="text-sm md:text-xs mb-1">SEARCH</Label>
         <div className="relative w-full">

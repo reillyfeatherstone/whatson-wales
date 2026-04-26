@@ -144,6 +144,21 @@ export interface Production {
   language?: ('English' | 'Welsh')[] | null;
   description?: string | null;
   link?: string | null;
+  richDescription?: {
+    root: {
+      type: string;
+      children: {
+        type: any;
+        version: number;
+        [k: string]: unknown;
+      }[];
+      direction: ('ltr' | 'rtl') | null;
+      format: 'left' | 'start' | 'center' | 'right' | 'end' | 'justify' | '';
+      indent: number;
+      version: number;
+    };
+    [k: string]: unknown;
+  } | null;
   credits?: {
     cast?:
       | {
@@ -351,6 +366,7 @@ export interface ProductionsSelect<T extends boolean = true> {
   language?: T;
   description?: T;
   link?: T;
+  richDescription?: T;
   credits?:
     | T
     | {
