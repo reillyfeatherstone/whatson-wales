@@ -17,6 +17,7 @@ import {
   SelectValue,
 } from '@/components/ui/select'
 import { Label } from '@/components/ui/label'
+import Link from 'next/link'
 
 type WhatsOnBlock = Extract<Page['layout'][0], { blockType: 'whatsOn' }>
 
@@ -59,7 +60,7 @@ export default async function WhatsOnBlock({ block }: { block: WhatsOnBlock }) {
 
   return (
     <div className="p-5 pb-100 max-w-7xl mx-auto">
-      <div className="filter mt-5 mb-10 mx-auto flex flex-row flex-rows-3 gap-3 text-sm font-medium text-gray-500 border p-5">
+      <div className="filter mt-8 mb-12 mx-auto flex flex-row flex-rows-3 gap-3 text-sm font-medium text-gray-500 border p-5">
         <div className="w-[25%]">
           <Label className="text-xs mb-1">SEARCH</Label>
           <div className="relative w-full">
@@ -115,10 +116,12 @@ export default async function WhatsOnBlock({ block }: { block: WhatsOnBlock }) {
           </Button>
         </div>
       </div>
-      <h2 className="text-4xl font-medium text-black text-center px-20 max-w-450 mx-auto">
+
+      <h2 className="text-4xl font-medium text-black max-w-450 mx-auto border-0 border-b border-b-[#AFAFAF] py-2">
         What's On
       </h2>
-      <div className="py-4 grid md:grid-cols-2 lg:grid-cols-3 gap-7">
+
+      <div className="results py-8 grid md:grid-cols-2 lg:grid-cols-3 gap-7">
         {productions.docs.map((production, index) => {
           const { title, genre, language, description, image, link, id, slug, dates } = production
 
@@ -135,14 +138,14 @@ export default async function WhatsOnBlock({ block }: { block: WhatsOnBlock }) {
 
           return (
             <div key={id} className="border-gray-300 border-b pb-4">
-              <a href={`productions/${slug}`} className="flex flex-col h-full">
+              <Link href={`productions/${slug}`} className="flex flex-col h-full group">
                 <figure className="w-full h-70 bg-gray-300 flex justify-center items-center relative overflow-hidden">
                   {imageUrl ? (
                     <Image
                       src={imageUrl}
                       alt={imageAlt || ''}
                       fill
-                      className="object-cover"
+                      className="object-cover transition duration-400 group-hover:scale-105"
                       sizes="(max-width: 767px) 100vw, (max-width: 1023px) 50vw, 33vw"
                       priority={index < 3}
                     />
@@ -175,7 +178,7 @@ export default async function WhatsOnBlock({ block }: { block: WhatsOnBlock }) {
                     </div>
                   </div>
                 </div>
-              </a>
+              </Link>
             </div>
           )
         })}
