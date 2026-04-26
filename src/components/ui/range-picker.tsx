@@ -32,7 +32,7 @@ export function DatePickerWithRange() {
                 format(date.from, 'LLL dd, y')
               )
             ) : (
-              <span>Pick a date</span>
+              <span className="px-2 text-sm md:text-xs">Pick a date range</span>
             )}
           </Button>
         </PopoverTrigger>
@@ -40,7 +40,7 @@ export function DatePickerWithRange() {
           <Calendar
             mode="range"
             selected={date}
-            numberOfMonths={2}
+            numberOfMonths={1}
             onSelect={(range, selectedDay) => {
               const hasStart = !!date?.from
               const hasEnd = !!date?.to
