@@ -1,11 +1,22 @@
 import { Button } from '@/components/ui/button'
 import { Page } from '@/payload-types'
-import { MapPin } from 'lucide-react'
+import { MapPin, Search } from 'lucide-react'
 import { getPayload } from 'payload'
 import payloadConfig from '@payload-config'
 import Image from 'next/image'
 import { Production } from '@/payload-types'
 import formatDate from '@/lib/formatDate'
+import { Input } from '@/components/ui/input'
+import { DatePickerWithRange } from '@/components/ui/range-picker'
+import {
+  Select,
+  SelectContent,
+  SelectGroup,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from '@/components/ui/select'
+import { Label } from '@/components/ui/label'
 
 type WhatsOnBlock = Extract<Page['layout'][0], { blockType: 'whatsOn' }>
 
@@ -48,6 +59,62 @@ export default async function WhatsOnBlock({ block }: { block: WhatsOnBlock }) {
 
   return (
     <div className="p-5 pb-100 max-w-7xl mx-auto">
+      <div className="filter mt-5 mb-10 mx-auto flex flex-row flex-rows-3 gap-3 text-sm font-medium text-gray-500 border p-5">
+        <div className="w-[25%]">
+          <Label className="text-xs mb-1">SEARCH</Label>
+          <div className="relative w-full">
+            <Search className="absolute left-2 top-1/2 size-4 -translate-y-1/2 text-muted-foreground" />
+            <Input
+              type="text"
+              placeholder="Search productions"
+              className="h-8 border-0 border-b border-b-[#AFAFAF] bg-transparent rounded-none pl-8"
+            />
+          </div>
+        </div>
+        <div className="w-[25%]">
+          <Label className="text-xs mb-1">LOCATION</Label>
+          <div className="relative w-full">
+            <MapPin className="absolute left-2 top-1/2 size-4 -translate-y-1/2 text-muted-foreground" />
+            <Input
+              type="text"
+              placeholder="Postcode"
+              className="h-8 border-0 border-b border-b-[#AFAFAF] bg-transparent rounded-none pl-8"
+            />
+          </div>
+        </div>
+        <div className="w-[30%]">
+          <Label className="text-xs mb-1">DATE</Label>
+          <DatePickerWithRange />
+        </div>
+        <div className="w-[20%]">
+          <Label className="text-xs mb-1">LANGUAGE</Label>
+          <div className="w-full h-8 border-b border-b-[#AFAFAF]">
+            <Select defaultValue="all">
+              <SelectTrigger className="w-full rounded-none h-10 border-0 bg-transparent">
+                <SelectValue placeholder="Select language" />
+              </SelectTrigger>
+              <SelectContent className="w-full rounded-none border-0 border-b border-b-[#AFAFAF] p-0">
+                <SelectGroup className="p-0 rounded-none">
+                  <SelectItem className="rounded-none" value="all">
+                    All Languages
+                  </SelectItem>
+                  <SelectItem className="rounded-none" value="english">
+                    English
+                  </SelectItem>
+                  <SelectItem className="rounded-none" value="welsh">
+                    Welsh
+                  </SelectItem>
+                </SelectGroup>
+              </SelectContent>
+            </Select>
+          </div>
+        </div>
+        <div className="flex flex-col justify-end">
+          <Button variant="default" size="lg" className="hover:cursor-pointer">
+            <span className="text-xs p-1 text-white font-bold">Search</span>
+          </Button>
+        </div>
+      </div>
       <h2 className="text-4xl font-medium text-black text-center px-20 max-w-450 mx-auto">
         What's On
       </h2>

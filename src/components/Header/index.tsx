@@ -6,7 +6,7 @@ import Logo from '@/components/Logo'
 export default function Header() {
   return (
     <div className="w-full">
-      <header className="min-h-20 px-20 py-5 max-w-450 mx-auto flex items-center justify-center">
+      <header className="min-h-20 px-20 py-8 max-w-450 mx-auto flex items-center justify-center">
         <Logo />
         {/* <Link href="/" className="relative w-46.25 h-20">
           <Image

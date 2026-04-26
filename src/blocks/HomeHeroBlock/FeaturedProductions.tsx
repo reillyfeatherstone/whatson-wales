@@ -25,27 +25,31 @@ export function FeaturedProductions({ prods }: { prods: Production[] }) {
 
           return (
             <CarouselItem key={prod.id}>
-              <Link href={'/productions/' + prod.slug} className="block">
+              <Link href={'/productions/' + prod.slug} className="block group">
                 <div className="feat-prod relative w-full aspect-video max-h-120 overflow-hidden">
-                  <Image alt="Featured" src={imageUrl || ''} fill className="object-cover" />
+                  <Image
+                    alt="Featured"
+                    src={imageUrl || ''}
+                    fill
+                    className="object-cover transition duration-400 group-hover:scale-105"
+                  />
 
                   <div className="absolute inset-0 bg-linear-to-t from-black/70 to-transparent" />
 
-                  <div className="relative z-10 p-6 flex flex-col justify-end h-full text-white space-y-3">
+                  <div className="relative z-10 p-6 sm:p-10 flex flex-col justify-end h-full text-white space-y-3">
                     <div className="w-22 h-7 border border-white flex items-center justify-center backdrop-blur-sm bg-black/30 mb-4">
                       <span className="text-xs font-semibold">FEATURED</span>
                     </div>
-                    <h1 className="text-4xl font-bold">{prod.title}</h1>
-                    <p className="max-w-md text-base">{prod.description}</p>
-                    <div className="">
-                      <Button
-                        variant="default"
-                        size="lg"
-                        className="inline text-sm hover:cursor-pointer"
-                      >
-                        Find Out More
-                      </Button>
-                    </div>
+
+                    <h1 className="text-3xl md:text-4xl font-bold">{prod.title}</h1>
+                    <p className="max-w-md text-sm sm:text-base">{prod.description}</p>
+                    <Button
+                      variant="default"
+                      size="lg"
+                      className="text-xs sm:text-sm hover:cursor-pointer w-fit"
+                    >
+                      Find Out More
+                    </Button>
                   </div>
                 </div>
               </Link>
