@@ -82,8 +82,54 @@ export const Productions: CollectionConfig = {
       type: 'text',
     },
     {
-      name: 'richDescription',
-      type: 'richText',
+      type: 'group',
+      fields: [
+        {
+          name: 'richDescription',
+          label: 'Production Description',
+          type: 'richText',
+        },
+      ],
+    },
+    {
+      name: 'venues',
+      label: {
+        singular: 'Venue',
+        plural: 'Venues',
+      },
+      type: 'array',
+      fields: [
+        {
+          name: 'venueName',
+          type: 'relationship',
+          relationTo: 'venues',
+        },
+        {
+          name: 'StartDate',
+          type: 'date',
+          required: false,
+          admin: {
+            date: {
+              displayFormat: 'dd/MM/yyyy',
+            },
+          },
+        },
+        {
+          name: 'EndDate',
+          type: 'date',
+          required: false,
+          admin: {
+            date: {
+              displayFormat: 'dd/MM/yyyy',
+            },
+          },
+        },
+        {
+          name: 'ticketLink',
+          type: 'text',
+          required: false,
+        },
+      ],
     },
     {
       name: 'credits',

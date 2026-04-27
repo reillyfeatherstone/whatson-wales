@@ -68,6 +68,7 @@ export interface Config {
   blocks: {};
   collections: {
     productions: Production;
+    venues: Venue;
     pages: Page;
     users: User;
     media: Media;
@@ -79,6 +80,7 @@ export interface Config {
   collectionsJoins: {};
   collectionsSelect: {
     productions: ProductionsSelect<false> | ProductionsSelect<true>;
+    venues: VenuesSelect<false> | VenuesSelect<true>;
     pages: PagesSelect<false> | PagesSelect<true>;
     users: UsersSelect<false> | UsersSelect<true>;
     media: MediaSelect<false> | MediaSelect<true>;
@@ -159,6 +161,15 @@ export interface Production {
     };
     [k: string]: unknown;
   } | null;
+  venues?:
+    | {
+        venueName?: (string | null) | Venue;
+        StartDate?: string | null;
+        EndDate?: string | null;
+        ticketLink?: string | null;
+        id?: string | null;
+      }[]
+    | null;
   credits?: {
     cast?:
       | {
@@ -177,6 +188,30 @@ export interface Production {
       | null;
   };
   image: string | Media;
+  /**
+   * When enabled, the slug will auto-generate from the title field on save and autosave.
+   */
+  generateSlug?: boolean | null;
+  slug: string;
+  updatedAt: string;
+  createdAt: string;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "venues".
+ */
+export interface Venue {
+  id: string;
+  venueName: string;
+  description?: string | null;
+  venueWebsite?: string | null;
+  address?: {
+    venueCity?: string | null;
+    postcode?: string | null;
+    venueLong?: string | null;
+    venueLat?: string | null;
+  };
+  image?: (string | null) | Media;
   /**
    * When enabled, the slug will auto-generate from the title field on save and autosave.
    */
@@ -295,6 +330,10 @@ export interface PayloadLockedDocument {
         value: string | Production;
       } | null)
     | ({
+        relationTo: 'venues';
+        value: string | Venue;
+      } | null)
+    | ({
         relationTo: 'pages';
         value: string | Page;
       } | null)
@@ -367,6 +406,15 @@ export interface ProductionsSelect<T extends boolean = true> {
   description?: T;
   link?: T;
   richDescription?: T;
+  venues?:
+    | T
+    | {
+        venueName?: T;
+        StartDate?: T;
+        EndDate?: T;
+        ticketLink?: T;
+        id?: T;
+      };
   credits?:
     | T
     | {
@@ -385,6 +433,28 @@ export interface ProductionsSelect<T extends boolean = true> {
               otherRole?: T;
               id?: T;
             };
+      };
+  image?: T;
+  generateSlug?: T;
+  slug?: T;
+  updatedAt?: T;
+  createdAt?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "venues_select".
+ */
+export interface VenuesSelect<T extends boolean = true> {
+  venueName?: T;
+  description?: T;
+  venueWebsite?: T;
+  address?:
+    | T
+    | {
+        venueCity?: T;
+        postcode?: T;
+        venueLong?: T;
+        venueLat?: T;
       };
   image?: T;
   generateSlug?: T;

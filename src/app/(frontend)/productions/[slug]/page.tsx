@@ -1,6 +1,5 @@
-import PageTitleBlock from '@/blocks/PageTitleBlock'
 import { Button } from '@/components/ui/button'
-import type { Page } from '@/payload-types'
+import type { Page, Production, Venue } from '@/payload-types'
 import payloadConfig from '@/payload.config'
 import Image from 'next/image'
 import Link from 'next/link'
@@ -10,9 +9,8 @@ import { cache } from 'react'
 import formatDate from '@/lib/formatDate'
 import { RichText } from '@/components/RichText'
 import { SerializedEditorState } from '@payloadcms/richtext-lexical/lexical'
-import { Label } from '@/components/ui/label'
 import { Input } from '@/components/ui/input'
-import { ArrowBigRight, ArrowRight, Search } from 'lucide-react'
+import { ArrowRight, Search } from 'lucide-react'
 
 type Args = {
   params: Promise<{
@@ -43,7 +41,10 @@ export default async function ProductionPage({ params: paramsPromise }: Args) {
     credits,
     productionCompany,
     richDescription,
+    venues,
   } = productionPage
+
+  // console.log()
 
   const languages = !language
     ? null
@@ -128,25 +129,8 @@ export default async function ProductionPage({ params: paramsPromise }: Args) {
               <Search className="absolute right-2 top-1/2 size-4 -translate-y-[60%] text-muted-foreground" />
             </div>
           </div>
-          <div className="venues">
-            <div className="venue-item flex space-between">
-              <div className="">
-                <div className="flex gap-3 uppercase text-xs">
-                  <span className="text-muted-foreground font-medium">Mold</span>
-                  <span className="text-primary font-medium before:content-['•'] before:mr-1 before:inline-block">
-                    12 Miles Away
-                  </span>
-                </div>
-                <h4 className="text-2xl font-bold">Theatr Clwyd</h4>
-                <p className="mt-2 text-sm text-muted-foreground">May 5 - May 16, 2026</p>
-              </div>
-              <div className="flex items-center ml-auto">
-                <p className="text-sm text-primary">BOOK HERE</p>
-                <ArrowRight className="text-primary" size={16} />
-              </div>
-            </div>
-          </div>
         </div>
+        <Venues />
 
         {/* Another section */}
         <div className="pt-100"> - Access / Assisted Performances tickboxes</div>
@@ -200,3 +184,28 @@ const queryProductionBySlug = cache(async ({ slug }: { slug: string }) => {
 
   return result.docs?.[0] || null
 })
+
+export function Venues() {
+  return (
+    <div className="venues gap-2">
+      <Link href="#" className="venue-item">
+        <div className="group flex py-5 border-b border-b-[#AFAFAF]">
+          <div className="transition-transform duration-300 group-hover:translate-x-1">
+            <div className="flex gap-3 uppercase text-xs">
+              <span className="text-muted-foreground font-medium">City</span>
+              <span className="text-primary font-medium before:content-['•'] before:mr-1 before:inline-block">
+                _ Miles Away
+              </span>
+            </div>
+            <h4 className="text-2xl font-bold">Venue Name</h4>
+            <p className="mt-2 text-sm text-muted-foreground">DATE RANGE</p>
+          </div>
+          <div className="flex items-center ml-auto transition-transform duration-300 group-hover:translate-x-1">
+            <p className="text-sm text-primary">BOOK HERE</p>
+            <ArrowRight className="text-primary transition-transform" size={16} />
+          </div>
+        </div>
+      </Link>
+    </div>
+  )
+}
