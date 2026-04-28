@@ -1,7 +1,7 @@
 'use client'
 
 import { Button } from '@/components/ui/button'
-import { Funnel, Key, MapPin, Search } from 'lucide-react'
+import { Funnel, MapPin, Search } from 'lucide-react'
 import Image from 'next/image'
 import { Production } from '@/payload-types'
 import formatDate from '@/lib/formatDate'
@@ -25,15 +25,40 @@ import {
   SheetTitle,
   SheetTrigger,
 } from '@/components/ui/sheet'
-import { useEffect, useState } from 'react'
-import { DateRange } from 'react-day-picker'
-import { useQueryState } from 'nuqs'
+import { useEffect, useMemo, useState } from 'react'
 import { useRouter, useSearchParams } from 'next/navigation'
 import { format } from 'date-fns'
 
 export function WhatsOnClient({ productions }: { productions: Production[] }) {
   const [filtersOpen, setFiltersOpen] = useState(false)
   const now = new Date()
+
+  const searchParams = useSearchParams()
+  const filters = useMemo(() => parseFilters(searchParams), [searchParams])
+
+  const filteredProductions = productions.filter((prod) => {
+    const { q, lang } = filters
+
+    const terms = q.toLowerCase().split(/\s+/).filter(Boolean)
+
+    const searchableText = [
+      prod.title ?? '',
+      prod.description ?? '',
+      ...(prod.credits?.cast?.map((c) => `${c.name} ${c.role}`) ?? []),
+      ...(prod.credits?.creatives?.map((c) => `${c.name} ${c.role}`) ?? []),
+    ]
+      .join(' ')
+      .toLowerCase()
+
+    const queryMatch = !q || terms.every((term) => searchableText.includes(term))
+
+    // const locMatch = !loc || prod.location?.toLowerCase().includes(loc.toLowerCase())
+
+    const langMatch =
+      !lang || lang === 'all' || prod.language?.some((l) => l.toLowerCase() === lang.toLowerCase())
+
+    return queryMatch && langMatch
+  })
 
   return (
     <div className="p-5 pt-8 pb-100 max-w-7xl mx-auto">
@@ -71,7 +96,7 @@ export function WhatsOnClient({ productions }: { productions: Production[] }) {
       </h2>
 
       <div className="results py-4 md:py-8 grid md:grid-cols-2 lg:grid-cols-3 gap-7">
-        {productions.map((production, index) => {
+        {filteredProductions.map((production, index) => {
           const { title, genre, language, description, image, link, id, slug, dates } = production
           if (!dates || !dates.start || !dates.end) return null
 
@@ -213,16 +238,18 @@ export function Filters({ onClose }: { onClose?: () => void }) {
         <div className="md:w-[30%]">
           <Label className="text-sm md:text-xs mb-1">DATES</Label>
           <DatePickerWithRange
+            value={{
+              from: localFilters.dateFrom ? new Date(localFilters.dateFrom) : undefined,
+              to: localFilters.dateTo ? new Date(localFilters.dateTo) : undefined,
+            }}
             onChange={(range) =>
               setLocalFilters((f) => ({
                 ...f,
-                dateFrom: range?.from ? format(range.from, 'dd-MM-yyyy') : '',
-                dateTo: range?.to ? format(range.to, 'dd-MM-yyyy') : '',
+                dateFrom: range?.from ? format(range.from, 'yyyy-MM-dd') : '',
+                dateTo: range?.to ? format(range.to, 'yyyy-MM-dd') : '',
               }))
             }
           />
-          {/* value={localFilters.lang}
-        onValueChange={(e) => setLocalFilters((f) => ({ ...f, lang: e === 'all' ? '' : e }))} */}
         </div>
         <div className="md:w-[20%]">
           <Label className="text-sm md:text-xs mb-1">LANGUAGE</Label>
@@ -253,13 +280,7 @@ export function Filters({ onClose }: { onClose?: () => void }) {
           </div>
         </div>
         <div className="flex flex-col justify-end">
-          <Button
-            type="submit"
-            variant="default"
-            size="lg"
-            className="hover:cursor-pointer"
-            // onClick={handleSearch}
-          >
+          <Button type="submit" variant="default" size="lg" className="hover:cursor-pointer">
             <span className="text-xs p-1 text-white font-bold">Search</span>
           </Button>
         </div>

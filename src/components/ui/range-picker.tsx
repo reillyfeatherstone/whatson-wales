@@ -1,21 +1,27 @@
 'use client'
 
-import * as React from 'react'
-import { addDays, format } from 'date-fns'
+import { useEffect, useState } from 'react'
+import { format } from 'date-fns'
 import { CalendarIcon } from 'lucide-react'
 import { type DateRange } from 'react-day-picker'
 
 import { Button } from '@/components/ui/button'
 import { Calendar } from '@/components/ui/calendar'
-import { Field, FieldLabel } from '@/components/ui/field'
+import { Field } from '@/components/ui/field'
 import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover'
 
 export function DatePickerWithRange({
+  value,
   onChange,
 }: {
+  value?: DateRange
   onChange?: (range: DateRange | undefined) => void
 }) {
-  const [date, setDate] = React.useState<DateRange | undefined>(undefined)
+  useEffect(() => {
+    setDate(value)
+  }, [value])
+
+  const [date, setDate] = useState<DateRange | undefined>(value)
 
   return (
     <Field className="">
@@ -59,8 +65,8 @@ export function DatePickerWithRange({
                 next = { from: date.from, to: selectedDay }
               }
 
-              setDate(next) // ✅ keeps UI working
-              onChange?.(next) // ✅ informs parent
+              setDate(next)
+              onChange?.(next)
             }}
           />
         </PopoverContent>
