@@ -10,7 +10,11 @@ import { Calendar } from '@/components/ui/calendar'
 import { Field, FieldLabel } from '@/components/ui/field'
 import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover'
 
-export function DatePickerWithRange() {
+export function DatePickerWithRange({
+  onChange,
+}: {
+  onChange?: (range: DateRange | undefined) => void
+}) {
   const [date, setDate] = React.useState<DateRange | undefined>(undefined)
 
   return (
@@ -45,23 +49,18 @@ export function DatePickerWithRange() {
               const hasStart = !!date?.from
               const hasEnd = !!date?.to
 
-              // 1. If we already have a full range → restart
+              let next: DateRange | undefined
+
               if (hasStart && hasEnd) {
-                setDate({ from: selectedDay, to: undefined })
-                return
+                next = { from: selectedDay, to: undefined }
+              } else if (!hasStart) {
+                next = { from: selectedDay, to: undefined }
+              } else {
+                next = { from: date.from, to: selectedDay }
               }
 
-              // 2. First click → ALWAYS only set "from"
-              if (!hasStart) {
-                setDate({ from: selectedDay, to: undefined })
-                return
-              }
-
-              // 3. Second click → now accept full range
-              setDate({
-                from: date.from,
-                to: selectedDay,
-              })
+              setDate(next) // ✅ keeps UI working
+              onChange?.(next) // ✅ informs parent
             }}
           />
         </PopoverContent>

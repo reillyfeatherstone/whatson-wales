@@ -3,6 +3,7 @@ import './globals.css'
 import Header from '@/components/Header'
 import { Inter } from 'next/font/google'
 import Footer from '@/components/Footer'
+import { NuqsAdapter } from 'nuqs/adapters/next/app'
 
 const inter = Inter({
   subsets: ['latin'],
@@ -23,7 +24,9 @@ export default async function RootLayout({ children }: RootLayoutProps) {
     <html lang="en" className={inter.variable}>
       <body className="">
         <Header />
-        <main>{children}</main>
+        <NuqsAdapter>
+          <main>{children}</main>
+        </NuqsAdapter>
         <Footer />
       </body>
     </html>

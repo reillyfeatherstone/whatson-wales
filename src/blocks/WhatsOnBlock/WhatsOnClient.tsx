@@ -1,7 +1,7 @@
 'use client'
 
 import { Button } from '@/components/ui/button'
-import { Funnel, MapPin, Search } from 'lucide-react'
+import { Funnel, Key, MapPin, Search } from 'lucide-react'
 import Image from 'next/image'
 import { Production } from '@/payload-types'
 import formatDate from '@/lib/formatDate'
@@ -25,7 +25,11 @@ import {
   SheetTitle,
   SheetTrigger,
 } from '@/components/ui/sheet'
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
+import { DateRange } from 'react-day-picker'
+import { useQueryState } from 'nuqs'
+import { useRouter, useSearchParams } from 'next/navigation'
+import { format } from 'date-fns'
 
 export function WhatsOnClient({ productions }: { productions: Production[] }) {
   const [filtersOpen, setFiltersOpen] = useState(false)
@@ -133,64 +137,133 @@ export function WhatsOnClient({ productions }: { productions: Production[] }) {
   )
 }
 
+type Filters = {
+  q: string
+  loc: string
+  dateFrom: string
+  dateTo: string
+  lang: string
+}
+
+function parseFilters(params: URLSearchParams): Filters {
+  return {
+    q: params.get('q') ?? '',
+    loc: params.get('loc') ?? '',
+    dateFrom: params.get('dateFrom') ?? '',
+    dateTo: params.get('dateTo') ?? '',
+    lang: params.get('lang') ?? '',
+  }
+}
+
 export function Filters({ onClose }: { onClose?: () => void }) {
+  const router = useRouter()
+  const searchParams = useSearchParams()
+
+  const [localFilters, setLocalFilters] = useState<Filters>(() => parseFilters(searchParams))
+
+  useEffect(() => {
+    setLocalFilters(parseFilters(searchParams))
+  }, [searchParams])
+
+  const handleSearch = () => {
+    const params = new URLSearchParams()
+    Object.entries(localFilters).forEach(([Key, value]) => {
+      if (value) params.set(Key, value)
+    })
+    router.push(`?${params.toString()}`, { scroll: false })
+    onClose?.()
+  }
+
   return (
-    <div className="filter p-5 gap-8 text-sm font-medium text-muted-foreground flex flex-col md:gap-3 md:mt-8 md:mb-12 md:mx-auto md:flex-row md:border">
-      <div className="md:w-[25%]">
-        <Label className="text-sm md:text-xs mb-1">SEARCH</Label>
-        <div className="relative w-full">
-          <Search className="absolute left-2 top-1/2 size-4 -translate-y-1/2 text-muted-foreground" />
-          <Input
-            type="text"
-            placeholder="Search productions"
-            className="h-8 border-0 border-b border-b-[#AFAFAF] bg-transparent rounded-none pl-8"
+    <form
+      onSubmit={(e) => {
+        e.preventDefault()
+        handleSearch()
+      }}
+    >
+      <div className="filter p-5 gap-8 text-sm font-medium text-muted-foreground flex flex-col md:gap-3 md:mt-8 md:mb-12 md:mx-auto md:flex-row md:border">
+        <div className="md:w-[25%]">
+          <Label className="text-sm md:text-xs mb-1">SEARCH</Label>
+          <div className="relative w-full">
+            <Search className="absolute left-2 top-1/2 size-4 -translate-y-1/2 text-muted-foreground" />
+            <Input
+              name="q"
+              type="text"
+              placeholder="Search productions"
+              className="h-8 border-0 border-b border-b-[#AFAFAF] bg-transparent rounded-none pl-8"
+              value={localFilters.q}
+              onChange={(e) => setLocalFilters((f) => ({ ...f, q: e.target.value }))}
+            />
+          </div>
+        </div>
+        <div className="md:w-[25%]">
+          <Label className="text-sm md:text-xs mb-1">LOCATION</Label>
+          <div className="relative w-full">
+            <MapPin className="absolute left-2 top-1/2 size-4 -translate-y-1/2 text-muted-foreground" />
+            <Input
+              name="location"
+              type="text"
+              placeholder="Postcode"
+              className="h-8 border-0 border-b border-b-[#AFAFAF] bg-transparent rounded-none pl-8"
+              value={localFilters.loc}
+              onChange={(e) => setLocalFilters((f) => ({ ...f, loc: e.target.value }))}
+            />
+          </div>
+        </div>
+        <div className="md:w-[30%]">
+          <Label className="text-sm md:text-xs mb-1">DATES</Label>
+          <DatePickerWithRange
+            onChange={(range) =>
+              setLocalFilters((f) => ({
+                ...f,
+                dateFrom: range?.from ? format(range.from, 'dd-MM-yyyy') : '',
+                dateTo: range?.to ? format(range.to, 'dd-MM-yyyy') : '',
+              }))
+            }
           />
+          {/* value={localFilters.lang}
+        onValueChange={(e) => setLocalFilters((f) => ({ ...f, lang: e === 'all' ? '' : e }))} */}
+        </div>
+        <div className="md:w-[20%]">
+          <Label className="text-sm md:text-xs mb-1">LANGUAGE</Label>
+          <div className="w-full h-8 border-b border-b-[#AFAFAF]">
+            <Select
+              defaultValue="all"
+              name="lang"
+              value={localFilters.lang}
+              onValueChange={(e) => setLocalFilters((f) => ({ ...f, lang: e === 'all' ? '' : e }))}
+            >
+              <SelectTrigger className="w-full rounded-none h-10 border-0 bg-transparent">
+                <SelectValue placeholder="Select language" />
+              </SelectTrigger>
+              <SelectContent className="w-full rounded-none border-0 border-b border-b-[#AFAFAF] p-0">
+                <SelectGroup className="p-0 rounded-none">
+                  <SelectItem value="all" className="rounded-none">
+                    All Languages
+                  </SelectItem>
+                  <SelectItem value="english" className="rounded-none">
+                    English
+                  </SelectItem>
+                  <SelectItem value="welsh" className="rounded-none">
+                    Welsh
+                  </SelectItem>
+                </SelectGroup>
+              </SelectContent>
+            </Select>
+          </div>
+        </div>
+        <div className="flex flex-col justify-end">
+          <Button
+            type="submit"
+            variant="default"
+            size="lg"
+            className="hover:cursor-pointer"
+            // onClick={handleSearch}
+          >
+            <span className="text-xs p-1 text-white font-bold">Search</span>
+          </Button>
         </div>
       </div>
-      <div className="md:w-[25%]">
-        <Label className="text-sm md:text-xs mb-1">LOCATION</Label>
-        <div className="relative w-full">
-          <MapPin className="absolute left-2 top-1/2 size-4 -translate-y-1/2 text-muted-foreground" />
-          <Input
-            type="text"
-            placeholder="Postcode"
-            className="h-8 border-0 border-b border-b-[#AFAFAF] bg-transparent rounded-none pl-8"
-          />
-        </div>
-      </div>
-      <div className="md:w-[30%]">
-        <Label className="text-sm md:text-xs mb-1">DATES</Label>
-        <DatePickerWithRange />
-      </div>
-      <div className="md:w-[20%]">
-        <Label className="text-sm md:text-xs mb-1">LANGUAGE</Label>
-        <div className="w-full h-8 border-b border-b-[#AFAFAF]">
-          <Select defaultValue="all">
-            <SelectTrigger className="w-full rounded-none h-10 border-0 bg-transparent">
-              <SelectValue placeholder="Select language" />
-            </SelectTrigger>
-            <SelectContent className="w-full rounded-none border-0 border-b border-b-[#AFAFAF] p-0">
-              <SelectGroup className="p-0 rounded-none">
-                <SelectItem value="all">All Languages</SelectItem>
-                <SelectItem value="english">English</SelectItem>
-                <SelectItem value="welsh">Welsh</SelectItem>
-              </SelectGroup>
-            </SelectContent>
-          </Select>
-        </div>
-      </div>
-      <div className="flex flex-col justify-end">
-        <Button
-          variant="default"
-          size="lg"
-          className="hover:cursor-pointer"
-          onClick={() => {
-            onClose?.()
-          }}
-        >
-          <span className="text-xs p-1 text-white font-bold">Search</span>
-        </Button>
-      </div>
-    </div>
+    </form>
   )
 }
