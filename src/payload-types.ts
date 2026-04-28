@@ -208,8 +208,8 @@ export interface Venue {
   address?: {
     venueCity?: string | null;
     postcode?: string | null;
-    venueLong?: string | null;
-    venueLat?: string | null;
+    venueLong?: number | null;
+    venueLat?: number | null;
   };
   image?: (string | null) | Media;
   /**

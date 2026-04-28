@@ -111,6 +111,7 @@ export const Productions: CollectionConfig = {
           admin: {
             date: {
               displayFormat: 'dd/MM/yyyy',
+              pickerAppearance: 'dayOnly',
             },
           },
         },
@@ -121,6 +122,7 @@ export const Productions: CollectionConfig = {
           admin: {
             date: {
               displayFormat: 'dd/MM/yyyy',
+              pickerAppearance: 'dayOnly',
             },
           },
         },

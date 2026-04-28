@@ -1,9 +1,9 @@
 'use client'
 
 import { Button } from '@/components/ui/button'
-import { Funnel, MapPin, Search } from 'lucide-react'
+import { Funnel, MapPin, Navigation, Search } from 'lucide-react'
 import Image from 'next/image'
-import { Production } from '@/payload-types'
+import { Production, Venue } from '@/payload-types'
 import formatDate from '@/lib/formatDate'
 import { Input } from '@/components/ui/input'
 import { DatePickerWithRange } from '@/components/ui/range-picker'
@@ -28,6 +28,7 @@ import {
 import { useEffect, useMemo, useState } from 'react'
 import { useRouter, useSearchParams } from 'next/navigation'
 import { format } from 'date-fns'
+import haversineDistance from '@/lib/haversineDistance'
 
 export function WhatsOnClient({ productions }: { productions: Production[] }) {
   const [filtersOpen, setFiltersOpen] = useState(false)
@@ -37,27 +38,34 @@ export function WhatsOnClient({ productions }: { productions: Production[] }) {
   const filters = useMemo(() => parseFilters(searchParams), [searchParams])
 
   const filteredProductions = productions.filter((prod) => {
-    const { q, lang } = filters
+    const { q, lang, dateFrom, dateTo } = filters
 
     const terms = q.toLowerCase().split(/\s+/).filter(Boolean)
-
-    const searchableText = [
-      prod.title ?? '',
-      prod.description ?? '',
-      ...(prod.credits?.cast?.map((c) => `${c.name} ${c.role}`) ?? []),
-      ...(prod.credits?.creatives?.map((c) => `${c.name} ${c.role}`) ?? []),
-    ]
-      .join(' ')
-      .toLowerCase()
-
+    const searchableText = JSON.stringify(prod).toLowerCase()
     const queryMatch = !q || terms.every((term) => searchableText.includes(term))
 
-    // const locMatch = !loc || prod.location?.toLowerCase().includes(loc.toLowerCase())
+    const dateMatch = (() => {
+      if (!dateFrom && !dateTo) return true
+      const prodStart = prod.dates?.start ? new Date(prod.dates.start) : null
+      const prodEnd = prod.dates?.end ? new Date(prod.dates.end) : null
+      const rangeFrom = dateFrom ? new Date(dateFrom + 'T13:00:00') : null
+      const rangeTo = dateTo ? new Date(dateTo + 'T13:00:00') : null
+
+      if (!prodStart || !prodEnd) return false
+
+      if (rangeFrom && !rangeTo && rangeFrom >= prodStart && rangeFrom <= prodEnd) {
+        return true
+      }
+
+      if (rangeFrom && rangeTo && rangeFrom >= prodStart && rangeTo <= prodEnd) return true
+
+      return false
+    })()
 
     const langMatch =
       !lang || lang === 'all' || prod.language?.some((l) => l.toLowerCase() === lang.toLowerCase())
 
-    return queryMatch && langMatch
+    return queryMatch && langMatch && dateMatch
   })
 
   return (
@@ -97,7 +105,8 @@ export function WhatsOnClient({ productions }: { productions: Production[] }) {
 
       <div className="results py-4 md:py-8 grid md:grid-cols-2 lg:grid-cols-3 gap-7">
         {filteredProductions.map((production, index) => {
-          const { title, genre, language, description, image, link, id, slug, dates } = production
+          const { title, genre, language, venues, description, image, link, id, slug, dates } =
+            production
           if (!dates || !dates.start || !dates.end) return null
 
           const startDate = new Date(dates.start)
@@ -148,8 +157,47 @@ export function WhatsOnClient({ productions }: { productions: Production[] }) {
                     </Button>
 
                     <div className="font-medium flex space-x-2">
-                      <MapPin size={16} />
-                      <span className="text-xs">Sherman Theatre</span>
+                      {(() => {
+                        const distances = venues
+                          ?.map((v) => {
+                            if (typeof v === 'string') return null
+
+                            const venueDetails =
+                              typeof v.venueName === 'object' ? (v.venueName as Venue) : null
+
+                            if (
+                              !filters.lat ||
+                              !filters.long ||
+                              !venueDetails?.address?.venueLat ||
+                              !venueDetails?.address?.venueLong
+                            )
+                              return null
+                            return haversineDistance(
+                              filters.lat,
+                              filters.long,
+                              venueDetails.address.venueLat,
+                              venueDetails.address.venueLong,
+                            )
+                          })
+                          .filter((d): d is number => d !== null)
+
+                        const min =
+                          distances && distances.length > 0 ? Math.min(...distances) : null
+                        return min ? (
+                          <>
+                            <Navigation size={16} className="text-muted-foreground" />
+                            <span className="text-xs text-muted-foreground">
+                              {(() => {
+                                if (min < 1) {
+                                  return 'Nearest less than 1 mile away'
+                                } else {
+                                  return `Nearest ${Math.round(min)} miles away`
+                                }
+                              })()}
+                            </span>
+                          </>
+                        ) : null
+                      })()}
                     </div>
                   </div>
                 </div>
@@ -168,6 +216,8 @@ type Filters = {
   dateFrom: string
   dateTo: string
   lang: string
+  lat: number
+  long: number
 }
 
 function parseFilters(params: URLSearchParams): Filters {
@@ -177,6 +227,8 @@ function parseFilters(params: URLSearchParams): Filters {
     dateFrom: params.get('dateFrom') ?? '',
     dateTo: params.get('dateTo') ?? '',
     lang: params.get('lang') ?? '',
+    lat: parseFloat(params.get('lat') ?? '0') || 0,
+    long: parseFloat(params.get('long') ?? '0') || 0,
   }
 }
 
@@ -190,11 +242,29 @@ export function Filters({ onClose }: { onClose?: () => void }) {
     setLocalFilters(parseFilters(searchParams))
   }, [searchParams])
 
-  const handleSearch = () => {
+  const handleSearch = async () => {
     const params = new URLSearchParams()
     Object.entries(localFilters).forEach(([Key, value]) => {
-      if (value) params.set(Key, value)
+      if (value) params.set(Key, value.toString())
     })
+
+    if (localFilters.loc) {
+      try {
+        const res = await fetch(
+          `https://api.postcodes.io/postcodes/${localFilters.loc.replace(/\s/g, '')}`,
+        )
+        const data = await res.json()
+        if (data.status === 200) {
+          params.set('lat', data.result.latitude.toString())
+          params.set('long', data.result.longitude.toString())
+          console.log('database called')
+        }
+      } catch {}
+    } else {
+      params.delete('lat')
+      params.delete('long')
+    }
+
     router.push(`?${params.toString()}`, { scroll: false })
     onClose?.()
   }
@@ -214,7 +284,7 @@ export function Filters({ onClose }: { onClose?: () => void }) {
             <Input
               name="q"
               type="text"
-              placeholder="Search productions"
+              placeholder="Search Productions"
               className="h-8 border-0 border-b border-b-[#AFAFAF] bg-transparent rounded-none pl-8"
               value={localFilters.q}
               onChange={(e) => setLocalFilters((f) => ({ ...f, q: e.target.value }))}
@@ -261,7 +331,7 @@ export function Filters({ onClose }: { onClose?: () => void }) {
               onValueChange={(e) => setLocalFilters((f) => ({ ...f, lang: e === 'all' ? '' : e }))}
             >
               <SelectTrigger className="w-full rounded-none h-10 border-0 bg-transparent">
-                <SelectValue placeholder="Select language" />
+                <SelectValue placeholder="All Languages" />
               </SelectTrigger>
               <SelectContent className="w-full rounded-none border-0 border-b border-b-[#AFAFAF] p-0">
                 <SelectGroup className="p-0 rounded-none">

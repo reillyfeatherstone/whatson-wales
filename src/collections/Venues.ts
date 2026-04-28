@@ -2,6 +2,7 @@ import { anyone } from '@/access/anyone'
 import { authenticated } from '@/access/authenticated'
 import { revalidatePage } from '@/collections/hooks/revalidatePage'
 import { slugField, type CollectionConfig } from 'payload'
+import { setLongLat } from '@/collections/hooks/setLongLat'
 
 export const Venues: CollectionConfig = {
   slug: 'venues',
@@ -42,11 +43,11 @@ export const Venues: CollectionConfig = {
         },
         {
           name: 'venueLong',
-          type: 'text',
+          type: 'number',
         },
         {
           name: 'venueLat',
-          type: 'text',
+          type: 'number',
         },
       ],
     },
@@ -60,4 +61,7 @@ export const Venues: CollectionConfig = {
       disableUnique: false,
     }),
   ],
+  hooks: {
+    beforeChange: [setLongLat],
+  },
 }
