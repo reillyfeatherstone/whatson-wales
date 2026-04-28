@@ -21,7 +21,7 @@ interface RootLayoutProps {
 export default async function RootLayout({ children }: RootLayoutProps) {
   return (
     <html lang="en" className={inter.variable}>
-      <body>
+      <body className="">
         <Header />
         <main>{children}</main>
         <Footer />
