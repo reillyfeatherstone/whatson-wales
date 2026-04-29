@@ -29,6 +29,9 @@ import { useEffect, useMemo, useState } from 'react'
 import { useRouter, useSearchParams } from 'next/navigation'
 import { format } from 'date-fns'
 import haversineDistance from '@/lib/haversineDistance'
+import * as z from 'zod'
+import { toast } from 'sonner'
+import getCoordinates from '@/lib/getCoordinates'
 
 export function WhatsOnClient({ productions }: { productions: Production[] }) {
   const [filtersOpen, setFiltersOpen] = useState(false)
@@ -242,6 +245,14 @@ export function Filters({ onClose }: { onClose?: () => void }) {
     setLocalFilters(parseFilters(searchParams))
   }, [searchParams])
 
+  const postcodeAPISchema = z.object({
+    status: z.literal(200),
+    result: z.object({
+      longitude: z.number(),
+      latitude: z.number(),
+    }),
+  })
+
   const handleSearch = async () => {
     const params = new URLSearchParams()
     Object.entries(localFilters).forEach(([Key, value]) => {
@@ -249,22 +260,25 @@ export function Filters({ onClose }: { onClose?: () => void }) {
     })
 
     if (localFilters.loc) {
-      try {
-        const res = await fetch(
-          `https://api.postcodes.io/postcodes/${localFilters.loc.replace(/\s/g, '')}`,
-        )
-        const data = await res.json()
-        if (data.status === 200) {
-          params.set('lat', data.result.latitude.toString())
-          params.set('long', data.result.longitude.toString())
-          console.log('database called')
-        }
-      } catch {}
+      const coordinates = await getCoordinates(localFilters.loc)
+      if (!coordinates) {
+        toast.error('Invalid postcode or something went wrong.', {
+          style: {
+            background: '#ef4444',
+            color: 'white',
+            border: 'none',
+          },
+        })
+        params.delete('lat')
+        params.delete('long')
+      } else {
+        params.set('lat', coordinates.lat)
+        params.set('long', coordinates.long)
+      }
     } else {
       params.delete('lat')
       params.delete('long')
     }
-
     router.push(`?${params.toString()}`, { scroll: false })
     onClose?.()
   }

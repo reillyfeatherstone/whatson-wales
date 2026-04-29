@@ -4,6 +4,7 @@ import Header from '@/components/Header'
 import { Inter } from 'next/font/google'
 import Footer from '@/components/Footer'
 import { NuqsAdapter } from 'nuqs/adapters/next/app'
+import { Toaster } from '@/components/ui/sonner'
 
 const inter = Inter({
   subsets: ['latin'],
@@ -26,6 +27,7 @@ export default async function RootLayout({ children }: RootLayoutProps) {
         <Header />
         <NuqsAdapter>
           <main>{children}</main>
+          <Toaster />
         </NuqsAdapter>
         <Footer />
       </body>
