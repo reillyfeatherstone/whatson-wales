@@ -2,6 +2,7 @@ import { Page, Production } from '@/payload-types'
 import { getPayload } from 'payload'
 import payloadConfig from '@payload-config'
 import { WhatsOnClient } from '@/blocks/WhatsOnBlock/WhatsOnClient'
+import { Suspense } from 'react'
 
 type WhatsOnBlock = Extract<Page['layout'][0], { blockType: 'whatsOn' }>
 
@@ -42,5 +43,9 @@ export default async function WhatsOnBlock({ block }: { block: WhatsOnBlock }) {
     },
   })
 
-  return <WhatsOnClient productions={productions.docs} />
+  return (
+    <Suspense>
+      <WhatsOnClient productions={productions.docs} />
+    </Suspense>
+  )
 }
