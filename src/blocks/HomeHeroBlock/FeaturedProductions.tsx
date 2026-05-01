@@ -32,6 +32,7 @@ export function FeaturedProductions({ prods }: { prods: Production[] }) {
                     src={imageUrl || ''}
                     fill
                     className="object-cover transition duration-400 group-hover:scale-105"
+                    loading="eager"
                   />
 
                   <div className="absolute inset-0 bg-linear-to-t from-black/70 to-transparent" />

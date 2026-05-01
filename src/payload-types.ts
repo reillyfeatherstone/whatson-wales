@@ -7,6 +7,16 @@
  */
 
 /**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "groupProps".
+ */
+export type GroupProps = ('Basic' | 'Producer') | null;
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "roleProps".
+ */
+export type RoleProps = ('owner' | 'admin' | 'editor') | null;
+/**
  * Supported timezones in IANA format.
  *
  * This interface was referenced by `Config`'s JSON-Schema
@@ -63,10 +73,13 @@ export type SupportedTimezones =
 
 export interface Config {
   auth: {
+    accounts: AccountAuthOperations;
     users: UserAuthOperations;
   };
   blocks: {};
   collections: {
+    accounts: Account;
+    productionCompanies: ProductionCompany;
     productions: Production;
     venues: Venue;
     pages: Page;
@@ -79,6 +92,8 @@ export interface Config {
   };
   collectionsJoins: {};
   collectionsSelect: {
+    accounts: AccountsSelect<false> | AccountsSelect<true>;
+    productionCompanies: ProductionCompaniesSelect<false> | ProductionCompaniesSelect<true>;
     productions: ProductionsSelect<false> | ProductionsSelect<true>;
     venues: VenuesSelect<false> | VenuesSelect<true>;
     pages: PagesSelect<false> | PagesSelect<true>;
@@ -105,10 +120,28 @@ export interface Config {
   widgets: {
     collections: CollectionsWidget;
   };
-  user: User;
+  user: Account | User;
   jobs: {
     tasks: unknown;
     workflows: unknown;
+  };
+}
+export interface AccountAuthOperations {
+  forgotPassword: {
+    email: string;
+    password: string;
+  };
+  login: {
+    email: string;
+    password: string;
+  };
+  registerFirstUser: {
+    email: string;
+    password: string;
+  };
+  unlock: {
+    email: string;
+    password: string;
   };
 }
 export interface UserAuthOperations {
@@ -128,6 +161,50 @@ export interface UserAuthOperations {
     email: string;
     password: string;
   };
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "accounts".
+ */
+export interface Account {
+  id: string;
+  firstName?: string | null;
+  lastName?: string | null;
+  memberGroup?: GroupProps;
+  updatedAt: string;
+  createdAt: string;
+  email: string;
+  resetPasswordToken?: string | null;
+  resetPasswordExpiration?: string | null;
+  salt?: string | null;
+  hash?: string | null;
+  _verified?: boolean | null;
+  _verificationToken?: string | null;
+  loginAttempts?: number | null;
+  lockUntil?: string | null;
+  sessions?:
+    | {
+        id: string;
+        createdAt?: string | null;
+        expiresAt: string;
+      }[]
+    | null;
+  password?: string | null;
+  collection: 'accounts';
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "productionCompanies".
+ */
+export interface ProductionCompany {
+  id: string;
+  productionCompany?: string | null;
+  members?: {
+    account?: (string | null) | Account;
+    role?: RoleProps;
+  };
+  updatedAt: string;
+  createdAt: string;
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
@@ -326,6 +403,14 @@ export interface PayloadLockedDocument {
   id: string;
   document?:
     | ({
+        relationTo: 'accounts';
+        value: string | Account;
+      } | null)
+    | ({
+        relationTo: 'productionCompanies';
+        value: string | ProductionCompany;
+      } | null)
+    | ({
         relationTo: 'productions';
         value: string | Production;
       } | null)
@@ -346,10 +431,15 @@ export interface PayloadLockedDocument {
         value: string | Media;
       } | null);
   globalSlug?: string | null;
-  user: {
-    relationTo: 'users';
-    value: string | User;
-  };
+  user:
+    | {
+        relationTo: 'accounts';
+        value: string | Account;
+      }
+    | {
+        relationTo: 'users';
+        value: string | User;
+      };
   updatedAt: string;
   createdAt: string;
 }
@@ -359,10 +449,15 @@ export interface PayloadLockedDocument {
  */
 export interface PayloadPreference {
   id: string;
-  user: {
-    relationTo: 'users';
-    value: string | User;
-  };
+  user:
+    | {
+        relationTo: 'accounts';
+        value: string | Account;
+      }
+    | {
+        relationTo: 'users';
+        value: string | User;
+      };
   key?: string | null;
   value?:
     | {
@@ -386,6 +481,48 @@ export interface PayloadMigration {
   batch?: number | null;
   updatedAt: string;
   createdAt: string;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "accounts_select".
+ */
+export interface AccountsSelect<T extends boolean = true> {
+  firstName?: T;
+  lastName?: T;
+  memberGroup?: T;
+  updatedAt?: T;
+  createdAt?: T;
+  email?: T;
+  resetPasswordToken?: T;
+  resetPasswordExpiration?: T;
+  salt?: T;
+  hash?: T;
+  _verified?: T;
+  _verificationToken?: T;
+  loginAttempts?: T;
+  lockUntil?: T;
+  sessions?:
+    | T
+    | {
+        id?: T;
+        createdAt?: T;
+        expiresAt?: T;
+      };
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "productionCompanies_select".
+ */
+export interface ProductionCompaniesSelect<T extends boolean = true> {
+  productionCompany?: T;
+  members?:
+    | T
+    | {
+        account?: T;
+        role?: T;
+      };
+  updatedAt?: T;
+  createdAt?: T;
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema

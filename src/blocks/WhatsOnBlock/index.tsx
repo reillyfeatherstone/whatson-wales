@@ -1,51 +1,47 @@
-import { Page, Production } from '@/payload-types'
-import { getPayload } from 'payload'
-import payloadConfig from '@payload-config'
-import { WhatsOnClient } from '@/blocks/WhatsOnBlock/WhatsOnClient'
+import { Page } from '@/payload-types'
+import { Filters, MobileFilters } from '@/blocks/WhatsOnBlock/WhatsOnClient'
 import { Suspense } from 'react'
+import { ProductionsFetcher } from '@/blocks/WhatsOnBlock/ProductionsFetcher'
 
 type WhatsOnBlock = Extract<Page['layout'][0], { blockType: 'whatsOn' }>
 
-/*const formatDate = (date: string, includeYear = true): string => {
-  const d = new Date(date)
-
-  const options: Intl.DateTimeFormatOptions = includeYear
-  ? { day: 'numeric', month: 'long', year: 'numeric' }
-  : { day: 'numeric', month: 'long' }
-
-  return new Intl.DateTimeFormat('en-GB', options).format(d)
-}*/
-
 export default async function WhatsOnBlock({ block }: { block: WhatsOnBlock }) {
-  const payload = await getPayload({ config: payloadConfig })
-  const now = new Date()
-
-  const productions = await payload.find({
-    collection: 'productions',
-    depth: 1,
-    limit: 12,
-    sort: 'dates.start',
-    overrideAccess: false,
-    // select: {
-    //   title: true,
-    //   slug: true,
-    //   genre: true,
-    //   language: true,
-    //   description: true,
-    //   image: true,
-    //   link: true,
-    //   dates: true,
-    // },
-    where: {
-      'dates.end': {
-        greater_than: now,
-      },
-    },
-  })
-
   return (
-    <Suspense>
-      <WhatsOnClient productions={productions.docs} />
-    </Suspense>
+    <div className="p-5 pt-8 pb-100 max-w-7xl mx-auto">
+      {/* Mobile Title & Filter — renders instantly */}
+      <div className="md:hidden flex items-center justify-between border-b border-b-[#AFAFAF] py-2">
+        <h2 className="text-2xl font-medium text-black">What's On</h2>
+        <MobileFilters />
+      </div>
+
+      {/* Desktop Filter — renders instantly */}
+      <div className="hidden md:block">
+        <Filters />
+      </div>
+
+      {/* Desktop Title — renders instantly */}
+      <h2 className="hidden md:block text-4xl font-medium text-black max-w-450 border-b border-b-[#AFAFAF] py-2">
+        What's On
+      </h2>
+
+      {/* Only the grid is deferred */}
+      <Suspense fallback={<ProductionGridSkeleton />}>
+        <ProductionsFetcher />
+      </Suspense>
+    </div>
+  )
+}
+
+function ProductionGridSkeleton() {
+  return (
+    <div className="results py-4 md:py-8 grid md:grid-cols-2 lg:grid-cols-3 gap-7">
+      {Array.from({ length: 6 }).map((_, i) => (
+        <div key={i} className="border-gray-300 border-b pb-4 animate-pulse">
+          <div className="w-full h-70 bg-gray-200" />
+          <div className="h-6 bg-gray-200 mt-4 w-3/4" />
+          <div className="h-4 bg-gray-100 mt-2 w-full" />
+        </div>
+      ))}
+    </div>
   )
 }

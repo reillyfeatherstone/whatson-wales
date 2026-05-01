@@ -29,12 +29,10 @@ import { useEffect, useMemo, useState } from 'react'
 import { useRouter, useSearchParams } from 'next/navigation'
 import { format } from 'date-fns'
 import haversineDistance from '@/lib/haversineDistance'
-import * as z from 'zod'
 import { toast } from 'sonner'
 import getCoordinates from '@/lib/getCoordinates'
 
-export function WhatsOnClient({ productions }: { productions: Production[] }) {
-  const [filtersOpen, setFiltersOpen] = useState(false)
+export function ProductionGrid({ productions }: { productions: Production[] }) {
   const now = new Date()
 
   const searchParams = useSearchParams()
@@ -72,143 +70,107 @@ export function WhatsOnClient({ productions }: { productions: Production[] }) {
   })
 
   return (
-    <div className="p-5 pt-8 pb-100 max-w-7xl mx-auto">
-      {/* Mobile Title & Filter */}
-      <div className="md:hidden flex items-center justify-between border-b border-b-[#AFAFAF] py-2">
-        <h2 className="text-2xl font-medium text-black">What's On</h2>
+    <div className="results py-4 md:py-8 grid md:grid-cols-2 lg:grid-cols-3 gap-7">
+      {filteredProductions.map((production, index) => {
+        const { title, genre, language, venues, description, image, link, id, slug, dates } =
+          production
+        if (!dates || !dates.start || !dates.end) return null
 
-        <Sheet open={filtersOpen} onOpenChange={setFiltersOpen}>
-          <SheetTrigger asChild>
-            <Button size="lg" className="text-sm font-medium">
-              Filters
-              <Funnel size={16} className="ml-2" />
-            </Button>
-          </SheetTrigger>
+        const startDate = new Date(dates.start)
+        const endDate = new Date(dates.end)
+        const startYear = startDate.getFullYear()
+        const endYear = endDate.getFullYear()
+        const isSameYear = startYear === endYear
+        const hasStarted = startDate < now
 
-          <SheetContent>
-            <SheetHeader>
-              <SheetTitle>Filter Productions</SheetTitle>
-              <SheetDescription>Use the options below to filter the productions.</SheetDescription>
-            </SheetHeader>
+        const validImage = image && typeof image !== 'string' && image.url
+        const imageUrl = validImage ? image.url : null
+        const imageAlt = validImage ? image.alt : null
 
-            <Filters onClose={() => setFiltersOpen(false)} />
-          </SheetContent>
-        </Sheet>
-      </div>
+        return (
+          <div key={id} className="border-gray-300 border-b pb-4">
+            <Link href={`productions/${slug}`} className="flex flex-col h-full group">
+              <figure className="w-full h-70 bg-gray-300 flex justify-center items-center relative overflow-hidden">
+                {imageUrl ? (
+                  <Image
+                    src={imageUrl}
+                    alt={imageAlt || ''}
+                    fill
+                    className="object-cover transition duration-400 group-hover:scale-105"
+                    sizes="(max-width: 767px) 100vw, (max-width: 1023px) 50vw, 33vw"
+                    priority={index < 3}
+                  />
+                ) : (
+                  <span className="font-medium text-gray-500 text-xl">Image</span>
+                )}
+              </figure>
 
-      {/* Desktop Filter */}
-      <div className="hidden md:block">
-        <Filters />
-      </div>
+              <div className="px-0.5 flex flex-col flex-1">
+                <h3 className="text-2xl font-bold pt-4">{title}</h3>
 
-      {/* Desktop What's On Title */}
-      <h2 className="hidden md:block text-4xl font-medium text-black max-w-450 border-b border-b-[#AFAFAF] py-2">
-        What's On
-      </h2>
+                <div className="font-medium text-sm text-gray-900 flex-1 py-1">{description}</div>
 
-      <div className="results py-4 md:py-8 grid md:grid-cols-2 lg:grid-cols-3 gap-7">
-        {filteredProductions.map((production, index) => {
-          const { title, genre, language, venues, description, image, link, id, slug, dates } =
-            production
-          if (!dates || !dates.start || !dates.end) return null
+                <div className="font-bold text-base text-gray-900 pt-4 pb-2">
+                  {hasStarted
+                    ? 'Until '
+                    : isSameYear
+                      ? formatDate(dates.start, false) + ' - '
+                      : formatDate(dates.start, true) + ' - '}
+                  {formatDate(dates.end, true)}
+                </div>
+                <div className="mt-auto flex justify-between items-center py-1">
+                  <Button variant="default" size="lg" className="hover:cursor-pointer">
+                    <span className="text-xs p-1 text-white font-bold">Find Out More</span>
+                  </Button>
 
-          const startDate = new Date(dates.start)
-          const endDate = new Date(dates.end)
-          const startYear = new Date(dates.start).getFullYear()
-          const endYear = new Date(dates.end).getFullYear()
-          const isSameYear = startYear === endYear
-          const hasStarted = startDate < now
+                  <div className="font-medium flex space-x-2">
+                    {(() => {
+                      const distances = venues
+                        ?.map((v) => {
+                          if (typeof v === 'string') return null
 
-          const validImage = image && typeof image !== 'string' && image.url
-          const imageUrl = validImage ? image.url : null
-          const imageAlt = validImage ? image.alt : null
+                          const venueDetails =
+                            typeof v.venueName === 'object' ? (v.venueName as Venue) : null
 
-          return (
-            <div key={id} className="border-gray-300 border-b pb-4">
-              <Link href={`productions/${slug}`} className="flex flex-col h-full group">
-                <figure className="w-full h-70 bg-gray-300 flex justify-center items-center relative overflow-hidden">
-                  {imageUrl ? (
-                    <Image
-                      src={imageUrl}
-                      alt={imageAlt || ''}
-                      fill
-                      className="object-cover transition duration-400 group-hover:scale-105"
-                      sizes="(max-width: 767px) 100vw, (max-width: 1023px) 50vw, 33vw"
-                      priority={index < 3}
-                    />
-                  ) : (
-                    <span className="font-medium text-gray-500 text-xl">Image</span>
-                  )}
-                </figure>
+                          if (
+                            !filters.lat ||
+                            !filters.long ||
+                            !venueDetails?.address?.venueLat ||
+                            !venueDetails?.address?.venueLong
+                          )
+                            return null
+                          return haversineDistance(
+                            filters.lat,
+                            filters.long,
+                            venueDetails.address.venueLat,
+                            venueDetails.address.venueLong,
+                          )
+                        })
+                        .filter((d): d is number => d !== null)
 
-                <div className="px-0.5 flex flex-col flex-1">
-                  <h3 className="text-2xl font-bold pt-4">{title}</h3>
-
-                  <div className="font-medium text-sm text-gray-900 flex-1 py-1">{description}</div>
-
-                  <div className="font-bold text-base text-gray-900 pt-4 pb-2">
-                    {hasStarted
-                      ? 'Until '
-                      : isSameYear
-                        ? formatDate(dates.start, false) + ' - '
-                        : formatDate(dates.start, true) + ' - '}
-                    {formatDate(dates.end, true)}
-                  </div>
-                  <div className="mt-auto flex justify-between items-center py-1">
-                    <Button variant="default" size="lg" className="hover:cursor-pointer">
-                      <span className="text-xs p-1 text-white font-bold">Find Out More</span>
-                    </Button>
-
-                    <div className="font-medium flex space-x-2">
-                      {(() => {
-                        const distances = venues
-                          ?.map((v) => {
-                            if (typeof v === 'string') return null
-
-                            const venueDetails =
-                              typeof v.venueName === 'object' ? (v.venueName as Venue) : null
-
-                            if (
-                              !filters.lat ||
-                              !filters.long ||
-                              !venueDetails?.address?.venueLat ||
-                              !venueDetails?.address?.venueLong
-                            )
-                              return null
-                            return haversineDistance(
-                              filters.lat,
-                              filters.long,
-                              venueDetails.address.venueLat,
-                              venueDetails.address.venueLong,
-                            )
-                          })
-                          .filter((d): d is number => d !== null)
-
-                        const min =
-                          distances && distances.length > 0 ? Math.min(...distances) : null
-                        return min ? (
-                          <>
-                            <Navigation size={16} className="text-muted-foreground" />
-                            <span className="text-xs text-muted-foreground">
-                              {(() => {
-                                if (min < 1) {
-                                  return 'Nearest less than 1 mile away'
-                                } else {
-                                  return `Nearest ${Math.round(min)} miles away`
-                                }
-                              })()}
-                            </span>
-                          </>
-                        ) : null
-                      })()}
-                    </div>
+                      const min = distances && distances.length > 0 ? Math.min(...distances) : null
+                      return min ? (
+                        <>
+                          <Navigation size={16} className="text-muted-foreground" />
+                          <span className="text-xs text-muted-foreground">
+                            {(() => {
+                              if (min < 1) {
+                                return 'Nearest less than 1 mile away'
+                              } else {
+                                return `Nearest ${Math.round(min)} miles away`
+                              }
+                            })()}
+                          </span>
+                        </>
+                      ) : null
+                    })()}
                   </div>
                 </div>
-              </Link>
-            </div>
-          )
-        })}
-      </div>
+              </div>
+            </Link>
+          </div>
+        )
+      })}
     </div>
   )
 }
@@ -244,14 +206,6 @@ export function Filters({ onClose }: { onClose?: () => void }) {
   useEffect(() => {
     setLocalFilters(parseFilters(searchParams))
   }, [searchParams])
-
-  const postcodeAPISchema = z.object({
-    status: z.literal(200),
-    result: z.object({
-      longitude: z.number(),
-      latitude: z.number(),
-    }),
-  })
 
   const handleSearch = async () => {
     const params = new URLSearchParams()
@@ -370,5 +324,27 @@ export function Filters({ onClose }: { onClose?: () => void }) {
         </div>
       </div>
     </form>
+  )
+}
+
+export function MobileFilters() {
+  const [filtersOpen, setFiltersOpen] = useState(false)
+
+  return (
+    <Sheet open={filtersOpen} onOpenChange={setFiltersOpen}>
+      <SheetTrigger asChild>
+        <Button size="lg" className="text-sm font-medium">
+          Filters
+          <Funnel size={16} className="ml-2" />
+        </Button>
+      </SheetTrigger>
+      <SheetContent>
+        <SheetHeader>
+          <SheetTitle>Filter Productions</SheetTitle>
+          <SheetDescription>Use the options below to filter the productions.</SheetDescription>
+        </SheetHeader>
+        <Filters onClose={() => setFiltersOpen(false)} />
+      </SheetContent>
+    </Sheet>
   )
 }

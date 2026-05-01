@@ -36,6 +36,7 @@ export default async function Logo({ className = 'w-46.25 h-20' }) {
           alt="WhatsOnWales Logo"
           fill
           className="object-contain"
+          // loading="eager"
           priority
         />
       </Link>

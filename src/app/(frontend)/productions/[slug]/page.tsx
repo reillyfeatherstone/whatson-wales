@@ -60,7 +60,7 @@ export default async function ProductionPage({ params: paramsPromise }: Args) {
     <div className="px-5 max-w-7xl mx-auto mb-50">
       <div className="feat-prod relative w-full aspect-video max-h-120 overflow-hidden">
         {(typeof image !== 'string' && image.url && (
-          <Image alt="" src={image.url} fill objectFit="cover" />
+          <Image alt="" src={image.url} fill className="object-cover" loading="eager" />
         )) ||
           null}
       </div>

@@ -1,22 +1,19 @@
 import type { CollectionBeforeChangeHook } from 'payload'
+import getCoordinates from '@/lib/getCoordinates'
 
 export const setLongLat: CollectionBeforeChangeHook = async ({ data, originalDoc }) => {
   const postcode = data?.address?.postcode
   const previousPostcode = originalDoc?.address?.postcode
 
-  // Only fetch if postcode exists and has changed
   if (!postcode || postcode === previousPostcode) return data
 
-  try {
-    const res = await fetch(`https://api.postcodes.io/postcodes/${postcode.replace(/\s/g, '')}`)
-    const json = await res.json()
+  const coordinates = await getCoordinates(postcode)
 
-    if (json.status === 200) {
-      data.address.venueLat = json.result.latitude
-      data.address.venueLong = json.result.longitude
-    }
-  } catch (err) {
-    console.error('Postcode geocoding failed:', err)
+  if (coordinates) {
+    data.address.venueLat = parseFloat(coordinates.lat)
+    data.address.venueLong = parseFloat(coordinates.long)
+  } else {
+    console.error('Postcode geocoding failed:', postcode)
   }
 
   return data

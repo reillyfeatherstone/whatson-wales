@@ -1,4 +1,3 @@
-import { toast } from 'sonner'
 import * as z from 'zod'
 
 const postcodeAPISchema = z.object({
@@ -9,16 +8,20 @@ const postcodeAPISchema = z.object({
   }),
 })
 
-export default async function getCoordinates(postcode: String) {
-  const res = await fetch(`https://api.postcodes.io/postcodes/${postcode.replace(/\s/g, '')}`)
-  const data: unknown = await res.json()
-  const parsedData = postcodeAPISchema.safeParse(data)
-  if (!parsedData.success) {
-    return null
-  } else {
-    return {
-      lat: parsedData.data.result.latitude.toString(),
-      long: parsedData.data.result.longitude.toString(),
+export default async function getCoordinates(postcode: string) {
+  try {
+    const res = await fetch(`https://api.postcodes.io/postcodes/${postcode.replace(/\s/g, '')}`)
+    const data: unknown = await res.json()
+    const parsedData = postcodeAPISchema.safeParse(data)
+    if (!parsedData.success) {
+      return null
+    } else {
+      return {
+        lat: parsedData.data.result.latitude.toString(),
+        long: parsedData.data.result.longitude.toString(),
+      }
     }
+  } catch {
+    return null
   }
 }

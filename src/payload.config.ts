@@ -14,6 +14,8 @@ import { Productions } from '@/collections/Productions'
 import { s3Storage } from '@payloadcms/storage-s3'
 import { Footer } from '@/app/(frontend)/globals/footer/config'
 import { Venues } from '@/collections/Venues'
+import { Accounts } from '@/collections/Accounts'
+import { ProductionCompanies } from '@/collections/ProductionCompanies'
 
 const filename = fileURLToPath(import.meta.url)
 const dirname = path.dirname(filename)
@@ -25,7 +27,7 @@ export default buildConfig({
     },
   },
   globals: [Header, Footer],
-  collections: [Productions, Venues, Pages, Users, Media],
+  collections: [Accounts, ProductionCompanies, Productions, Venues, Pages, Users, Media],
   editor: lexicalEditor(),
   secret: process.env.PAYLOAD_SECRET || '',
   typescript: {
