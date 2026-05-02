@@ -5,16 +5,29 @@ import Image from 'next/image'
 import Link from 'next/link'
 import { notFound } from 'next/navigation'
 import { getPayload, RequiredDataFromCollectionSlug } from 'payload'
-import { cache } from 'react'
 import formatDate from '@/lib/formatDate'
 import { RichText } from '@/components/RichText'
 import { Input } from '@/components/ui/input'
 import { ArrowRight, Search } from 'lucide-react'
+import { unstable_cache } from 'next/cache'
 
 type Args = {
   params: Promise<{
     slug?: string
   }>
+}
+
+export async function generateStaticParams() {
+  const payload = await getPayload({ config: payloadConfig })
+
+  const { docs } = await payload.find({
+    collection: 'productions',
+    limit: 0,
+  })
+
+  return docs.map((doc) => ({
+    slug: doc.slug,
+  }))
 }
 
 export default async function ProductionPage({ params: paramsPromise }: Args) {
@@ -238,7 +251,8 @@ export function Creatives({ credits }: { credits: Production['credits'] }) {
   )
 }
 
-const queryProductionBySlug = cache(async ({ slug }: { slug: string }) => {
+const queryProductionBySlug = async ({ slug }: { slug: string }) => {
+  'use cache'
   const payload = await getPayload({ config: payloadConfig })
   // const parsedSlug = decodeURIComponent(slug)
 
@@ -253,4 +267,4 @@ const queryProductionBySlug = cache(async ({ slug }: { slug: string }) => {
   })
 
   return result.docs?.[0] || null
-})
+}

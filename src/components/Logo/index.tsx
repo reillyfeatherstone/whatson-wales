@@ -1,12 +1,10 @@
-'use server'
-
 import payloadConfig from '@/payload.config'
 import Image from 'next/image'
 import Link from 'next/link'
 import { getPayload } from 'payload'
-import { Media } from '@/collections/Media'
 
 export default async function Logo({ className = 'w-46.25 h-20' }) {
+  'use cache'
   const payload = await getPayload({ config: payloadConfig })
 
   const image = await payload.find({
@@ -42,4 +40,8 @@ export default async function Logo({ className = 'w-46.25 h-20' }) {
       </Link>
     )
   }
+}
+
+export function LogoSkeleton() {
+  return <div className={'relative w-46.25 h-20 animate-pulse bg-gray-200 rounded'} />
 }

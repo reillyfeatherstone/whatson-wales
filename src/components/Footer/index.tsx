@@ -2,9 +2,11 @@ import Logo from '@/components/Logo'
 import { Button } from '@/components/ui/button'
 import payloadConfig from '@/payload.config'
 import Image from 'next/image'
+import { connection } from 'next/server'
 import { getPayload } from 'payload'
 
 export default async function Footer() {
+  'use cache'
   const payload = await getPayload({ config: payloadConfig })
   const result = await payload.findGlobal({
     slug: 'footer',

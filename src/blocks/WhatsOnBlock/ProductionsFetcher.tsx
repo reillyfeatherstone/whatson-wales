@@ -4,6 +4,7 @@ import { getPayload } from 'payload'
 // import WhatsOnClient, { ProductionGrid } from './WhatsOnClient
 
 export async function ProductionsFetcher() {
+  'use cache'
   const payload = await getPayload({ config: payloadConfig })
   const now = new Date()
 
@@ -19,6 +20,8 @@ export async function ProductionsFetcher() {
       },
     },
   })
+
+  await new Promise((resolve) => setTimeout(resolve, 5000))
 
   return <ProductionGrid productions={productions.docs} />
 }

@@ -1,4 +1,5 @@
-import Logo from '@/components/Logo'
+import Logo, { LogoSkeleton } from '@/components/Logo'
+import { Suspense } from 'react'
 // import { Button } from '@/components/ui/button'
 // import Image from 'next/image'
 // import Link from 'next/link'
@@ -7,7 +8,9 @@ export default function Header() {
   return (
     <div className="w-full">
       <header className="min-h-20 px-20 py-8 max-w-450 mx-auto flex items-center justify-center">
-        <Logo />
+        <Suspense fallback={<LogoSkeleton />}>
+          <Logo />
+        </Suspense>
         {/* <Link href="/" className="relative w-46.25 h-20">
           <Image
             src={`${process.env.S3_DOMAIN}/whatsonwales/whatsonwales-logo-light.svg`}

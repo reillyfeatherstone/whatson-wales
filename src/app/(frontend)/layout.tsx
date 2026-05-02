@@ -1,4 +1,4 @@
-import React, { ReactNode } from 'react'
+import React, { ReactNode, Suspense } from 'react'
 import './globals.css'
 import Header from '@/components/Header'
 import { Inter } from 'next/font/google'
@@ -26,7 +26,9 @@ export default async function RootLayout({ children }: RootLayoutProps) {
         <Header />
         <main>{children}</main>
         <Toaster />
-        <Footer />
+        <Suspense>
+          <Footer />
+        </Suspense>
       </body>
     </html>
   )
