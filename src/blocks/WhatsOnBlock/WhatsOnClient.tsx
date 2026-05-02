@@ -25,7 +25,7 @@ import {
   SheetTitle,
   SheetTrigger,
 } from '@/components/ui/sheet'
-import { useEffect, useMemo, useState } from 'react'
+import { Suspense, use, useEffect, useMemo, useState } from 'react'
 import { useRouter, useSearchParams } from 'next/navigation'
 import { format } from 'date-fns'
 import haversineDistance from '@/lib/haversineDistance'
@@ -198,50 +198,49 @@ function parseFilters(params: URLSearchParams): Filters {
 }
 
 export function Filters({ onClose }: { onClose?: () => void }) {
-  const router = useRouter()
-  const searchParams = useSearchParams()
+  return (
+    <Suspense fallback={<FilterUI />}>
+      <FilterLogic onClose={onClose} />
+    </Suspense>
+  )
+}
 
-  const [localFilters, setLocalFilters] = useState<Filters>(() => parseFilters(searchParams))
+export function MobileFilters() {
+  const [filtersOpen, setFiltersOpen] = useState(false)
 
-  useEffect(() => {
-    setLocalFilters(parseFilters(searchParams))
-  }, [searchParams])
+  return (
+    <Sheet open={filtersOpen} onOpenChange={setFiltersOpen}>
+      <SheetTrigger asChild>
+        <Button size="lg" className="text-sm font-medium">
+          Filters
+          <Funnel size={16} className="ml-2" />
+        </Button>
+      </SheetTrigger>
+      <SheetContent>
+        <SheetHeader>
+          <SheetTitle>Filter Productions</SheetTitle>
+          <SheetDescription>Use the options below to filter the productions.</SheetDescription>
+        </SheetHeader>
+        <Filters onClose={() => setFiltersOpen(false)} />
+      </SheetContent>
+    </Sheet>
+  )
+}
 
-  const handleSearch = async () => {
-    const params = new URLSearchParams()
-    Object.entries(localFilters).forEach(([Key, value]) => {
-      if (value) params.set(Key, value.toString())
-    })
-
-    if (localFilters.loc) {
-      const coordinates = await getCoordinates(localFilters.loc)
-      if (!coordinates) {
-        toast.error('Invalid postcode or something went wrong.', {
-          style: {
-            background: '#ef4444',
-            color: 'white',
-            border: 'none',
-          },
-        })
-        params.delete('lat')
-        params.delete('long')
-      } else {
-        params.set('lat', coordinates.lat)
-        params.set('long', coordinates.long)
-      }
-    } else {
-      params.delete('lat')
-      params.delete('long')
-    }
-    router.push(`?${params.toString()}`, { scroll: false })
-    onClose?.()
-  }
-
+function FilterUI({
+  values,
+  onChange,
+  onSubmit,
+}: {
+  values?: Filters
+  onChange?: (updater: (f: Filters) => Filters) => void
+  onSubmit?: () => void
+}) {
   return (
     <form
       onSubmit={(e) => {
         e.preventDefault()
-        handleSearch()
+        onSubmit?.()
       }}
     >
       <div className="filter p-5 gap-8 text-sm font-medium text-muted-foreground flex flex-col md:gap-3 md:mt-8 md:mb-12 md:mx-auto md:flex-row md:border">
@@ -251,11 +250,10 @@ export function Filters({ onClose }: { onClose?: () => void }) {
             <Search className="absolute left-2 top-1/2 size-4 -translate-y-1/2 text-muted-foreground" />
             <Input
               name="q"
-              type="text"
               placeholder="Search Productions"
               className="h-8 border-0 border-b border-b-[#AFAFAF] bg-transparent rounded-none pl-8"
-              value={localFilters.q}
-              onChange={(e) => setLocalFilters((f) => ({ ...f, q: e.target.value }))}
+              value={values?.q ?? ''}
+              onChange={(e) => onChange?.((f) => ({ ...f, q: e.target.value }))}
             />
           </div>
         </div>
@@ -265,11 +263,10 @@ export function Filters({ onClose }: { onClose?: () => void }) {
             <MapPin className="absolute left-2 top-1/2 size-4 -translate-y-1/2 text-muted-foreground" />
             <Input
               name="location"
-              type="text"
               placeholder="Postcode"
               className="h-8 border-0 border-b border-b-[#AFAFAF] bg-transparent rounded-none pl-8"
-              value={localFilters.loc}
-              onChange={(e) => setLocalFilters((f) => ({ ...f, loc: e.target.value }))}
+              value={values?.loc ?? ''}
+              onChange={(e) => onChange?.((f) => ({ ...f, loc: e.target.value }))}
             />
           </div>
         </div>
@@ -277,11 +274,11 @@ export function Filters({ onClose }: { onClose?: () => void }) {
           <Label className="text-sm md:text-xs mb-1">DATES</Label>
           <DatePickerWithRange
             value={{
-              from: localFilters.dateFrom ? new Date(localFilters.dateFrom) : undefined,
-              to: localFilters.dateTo ? new Date(localFilters.dateTo) : undefined,
+              from: values?.dateFrom ? new Date(values.dateFrom) : undefined,
+              to: values?.dateTo ? new Date(values.dateTo) : undefined,
             }}
             onChange={(range) =>
-              setLocalFilters((f) => ({
+              onChange?.((f) => ({
                 ...f,
                 dateFrom: range?.from ? format(range.from, 'yyyy-MM-dd') : '',
                 dateTo: range?.to ? format(range.to, 'yyyy-MM-dd') : '',
@@ -295,8 +292,8 @@ export function Filters({ onClose }: { onClose?: () => void }) {
             <Select
               defaultValue="all"
               name="lang"
-              value={localFilters.lang}
-              onValueChange={(e) => setLocalFilters((f) => ({ ...f, lang: e === 'all' ? '' : e }))}
+              value={values?.lang ?? ''}
+              onValueChange={(e) => onChange?.((f) => ({ ...f, lang: e === 'all' ? '' : e }))}
             >
               <SelectTrigger className="w-full rounded-none h-10 border-0 bg-transparent">
                 <SelectValue placeholder="All Languages" />
@@ -327,24 +324,40 @@ export function Filters({ onClose }: { onClose?: () => void }) {
   )
 }
 
-export function MobileFilters() {
-  const [filtersOpen, setFiltersOpen] = useState(false)
+function FilterLogic({ onClose }: { onClose?: () => void }) {
+  const router = useRouter()
+  const searchParams = useSearchParams()
 
-  return (
-    <Sheet open={filtersOpen} onOpenChange={setFiltersOpen}>
-      <SheetTrigger asChild>
-        <Button size="lg" className="text-sm font-medium">
-          Filters
-          <Funnel size={16} className="ml-2" />
-        </Button>
-      </SheetTrigger>
-      <SheetContent>
-        <SheetHeader>
-          <SheetTitle>Filter Productions</SheetTitle>
-          <SheetDescription>Use the options below to filter the productions.</SheetDescription>
-        </SheetHeader>
-        <Filters onClose={() => setFiltersOpen(false)} />
-      </SheetContent>
-    </Sheet>
-  )
+  const [localFilters, setLocalFilters] = useState<Filters>(() => parseFilters(searchParams))
+
+  useEffect(() => {
+    setLocalFilters(parseFilters(searchParams))
+  }, [searchParams])
+
+  const handleSearch = async () => {
+    const params = new URLSearchParams()
+    Object.entries(localFilters).forEach(([key, value]) => {
+      if (value) params.set(key, value.toString())
+    })
+    if (localFilters.loc) {
+      const coordinates = await getCoordinates(localFilters.loc)
+      if (!coordinates) {
+        toast.error('Invalid postcode or something went wrong.', {
+          style: { background: '#ef4444', color: 'white', border: 'none' },
+        })
+        params.delete('lat')
+        params.delete('long')
+      } else {
+        params.set('lat', coordinates.lat)
+        params.set('long', coordinates.long)
+      }
+    } else {
+      params.delete('lat')
+      params.delete('long')
+    }
+    router.push(`?${params.toString()}`, { scroll: false })
+    onClose?.()
+  }
+
+  return <FilterUI values={localFilters} onChange={setLocalFilters} onSubmit={handleSearch} />
 }

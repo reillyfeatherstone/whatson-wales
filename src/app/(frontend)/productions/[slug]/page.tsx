@@ -8,7 +8,6 @@ import { getPayload, RequiredDataFromCollectionSlug } from 'payload'
 import { cache } from 'react'
 import formatDate from '@/lib/formatDate'
 import { RichText } from '@/components/RichText'
-import { SerializedEditorState } from '@payloadcms/richtext-lexical/lexical'
 import { Input } from '@/components/ui/input'
 import { ArrowRight, Search } from 'lucide-react'
 
@@ -21,9 +20,6 @@ type Args = {
 export default async function ProductionPage({ params: paramsPromise }: Args) {
   const { slug = 'home' } = await paramsPromise
   const productionPage = await queryProductionBySlug({ slug })
-
-  // const decodedSlug = decodeURIComponent(slug)
-  // let page: RequiredDataFromCollectionSlug<'productions'> | null
 
   if (!productionPage) {
     notFound()
