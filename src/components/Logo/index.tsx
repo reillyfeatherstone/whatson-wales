@@ -29,12 +29,11 @@ export default async function Logo({ className = 'w-46.25 h-20' }) {
     return (
       <Link href="/" className={`relative ${className}`}>
         <Image
-          // src="https://pub-c2f9d27478004aa2a01e68db6030715d.r2.dev/whatsonwales/whatsonwales-logo-light.svg"
           src={image.docs[0].url}
           alt="WhatsOnWales Logo"
           fill
           className="object-contain"
-          // loading="eager"
+          loading="eager"
           priority
         />
       </Link>
