@@ -21,7 +21,5 @@ export async function ProductionsFetcher() {
     },
   })
 
-  await new Promise((resolve) => setTimeout(resolve, 5000))
-
   return <ProductionGrid productions={productions.docs} />
 }

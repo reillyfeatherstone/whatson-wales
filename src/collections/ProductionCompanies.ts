@@ -1,9 +1,17 @@
+import { anyone } from '@/access/anyone'
+import { authenticated } from '@/access/authenticated'
 import type { CollectionConfig } from 'payload'
 
 export const ProductionCompanies: CollectionConfig = {
   slug: 'productionCompanies',
   admin: {
     useAsTitle: 'productionCompany',
+  },
+  access: {
+    create: authenticated,
+    read: anyone,
+    update: authenticated,
+    delete: () => false,
   },
   fields: [
     {
@@ -12,7 +20,7 @@ export const ProductionCompanies: CollectionConfig = {
     },
     {
       name: 'members',
-      type: 'group',
+      type: 'array',
       fields: [
         {
           name: 'account',

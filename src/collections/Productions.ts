@@ -80,6 +80,15 @@ export const Productions: CollectionConfig = {
     {
       name: 'link',
       type: 'text',
+      validate: (val: string | null | undefined) => {
+        if (!val) return true // Field is optional
+        try {
+          new URL(val)
+          return true
+        } catch {
+          return 'Please enter a valid URL (e.g. tickets.example.com/production)'
+        }
+      },
     },
     {
       type: 'group',
@@ -140,7 +149,7 @@ export const Productions: CollectionConfig = {
         {
           name: 'cast',
           label: {
-            singlular: 'Cast',
+            singular: 'Cast',
             plural: 'Cast',
           },
           type: 'array',

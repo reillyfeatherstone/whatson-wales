@@ -1,5 +1,4 @@
 import type { CollectionConfig } from 'payload'
-import { ProductionCompanies } from '@/collections/ProductionCompanies'
 
 export const Accounts: CollectionConfig = {
   slug: 'accounts',
@@ -8,6 +7,9 @@ export const Accounts: CollectionConfig = {
   },
   access: {
     create: () => true,
+    read: () => false,
+    update: () => false,
+    delete: () => false,
     admin: () => false,
   },
   auth: {

@@ -1,6 +1,5 @@
 import { anyone } from '@/access/anyone'
 import { authenticated } from '@/access/authenticated'
-import { revalidatePage } from '@/collections/hooks/revalidatePage'
 import { slugField, type CollectionConfig } from 'payload'
 import { setLongLat } from '@/collections/hooks/setLongLat'
 

@@ -1,7 +1,13 @@
+import { anyone } from '@/access/anyone'
+import { authenticated } from '@/access/authenticated'
 import { GlobalConfig } from 'payload'
 
 export const Header: GlobalConfig = {
   slug: 'header',
+  access: {
+    read: anyone,
+    update: authenticated,
+  },
   fields: [
     {
       name: 'logo',
