@@ -6,7 +6,7 @@ import { Suspense } from 'react'
 
 export default function Header() {
   return (
-    <div className="w-full">
+    <div className="w-full ">
       <header className="min-h-20 px-20 py-8 max-w-450 mx-auto flex items-center justify-center">
         <Suspense fallback={<LogoSkeleton />}>
           <Logo />

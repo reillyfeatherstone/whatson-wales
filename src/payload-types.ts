@@ -199,10 +199,13 @@ export interface Account {
 export interface ProductionCompany {
   id: string;
   productionCompany?: string | null;
-  members?: {
-    account?: (string | null) | Account;
-    role?: RoleProps;
-  };
+  members?:
+    | {
+        account?: (string | null) | Account;
+        role?: RoleProps;
+        id?: string | null;
+      }[]
+    | null;
   updatedAt: string;
   createdAt: string;
 }
@@ -520,6 +523,7 @@ export interface ProductionCompaniesSelect<T extends boolean = true> {
     | {
         account?: T;
         role?: T;
+        id?: T;
       };
   updatedAt?: T;
   createdAt?: T;
