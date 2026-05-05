@@ -1,86 +1,121 @@
-import { Button } from '@/components/ui/button'
-import { Input } from '@/components/ui/input'
+'use client'
+
+import React, { useState } from 'react'
 import {
-  Select,
-  SelectContent,
-  SelectGroup,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from '@/components/ui/select'
+  type FieldErrors,
+  FormField,
+} from '@/app/(frontend)/account/(auth)/components/FormField'
+import { registerFormSchema } from '@/app/(frontend)/account/(auth)/create/actions/schema'
+import { Button } from '@/components/ui/button'
 import Link from 'next/link'
+import { useRouter } from 'next/navigation'
+import { create, Response } from './actions/create'
 
 export default function RegisterForm() {
+  const [isLoading, setIsLoading] = useState(false)
+  const [error, setError] = useState<string | null>(null)
+  const [fieldErrors, setFieldErrors] = useState<FieldErrors>({})
+  const router = useRouter()
+
+  async function handleSubmit(
+    event: React.SubmitEvent<HTMLFormElement>,
+  ): Promise<void> {
+    event.preventDefault()
+    setIsLoading(true)
+    setError(null)
+    setFieldErrors({})
+
+    const formData = new FormData(event.currentTarget)
+
+    const data = {
+      firstName: formData.get('firstName'),
+      lastName: formData.get('lastName'),
+      email: formData.get('email'),
+      password: formData.get('password'),
+      confirmPassword: formData.get('confirmPassword'),
+    }
+
+    const validated = registerFormSchema.safeParse(data)
+    if (!validated.success) {
+      const errors: FieldErrors = {}
+      for (const issue of validated.error.issues) {
+        const field = issue.path[0].toString()
+        if (!errors[field]) errors[field] = []
+        errors[field].push(issue.message)
+      }
+      setFieldErrors(errors)
+      setIsLoading(false)
+      return
+    }
+
+    const { confirmPassword: _, ...createParams } = validated.data
+    const result: Response = await create(createParams)
+    setIsLoading(false)
+
+    if (result.success) {
+      router.push(
+        `/account/login?message=${encodeURIComponent('Check your email to verify your account')}`,
+      )
+    } else {
+      setError(result.error || 'An error occurred')
+    }
+  }
+
   return (
-    <form className="flex flex-col space-y-4 pt-10 max-w-2xl mx-auto">
+    <form
+      onSubmit={handleSubmit}
+      className="flex flex-col space-y-4 pt-10 max-w-2xl mx-auto"
+    >
       <h1 className="text-5xl font-medium mb-10">Register for an account</h1>
-      <div className="flex flex-col sm:flex-row space-x-4 space-y-4">
-        <div className="w-full sm:w-[50%]">
-          <p className="text-lg font-bold mb-1">First Name</p>
-          <Input
-            type="text"
-            name="firstname"
-            placeholder="Richard"
-            className="h-10 border-[#AFAFAF] bg-transparent rounded-none"
-            style={{ fontSize: '14px' }}
-          />
-        </div>
-        <div className="w-full sm:w-[50%]">
-          <p className="text-lg font-bold mb-1">Last Name</p>
-          <Input
-            type="text"
-            name="lastname"
-            placeholder="Burton"
-            className="h-10 border-[#AFAFAF] bg-transparent rounded-none"
-            style={{ fontSize: '14px' }}
-          />
-        </div>
+      <div className="flex flex-col sm:flex-row gap-4">
+        <FormField
+          id="firstName"
+          label="First Name"
+          placeholder="Richard"
+          error={fieldErrors.firstName}
+        />
+        <FormField
+          id="lastName"
+          label="Last Name"
+          placeholder="Burton"
+          error={fieldErrors.lastName}
+        />
       </div>
-      <div className="flex flex-col sm:flex-row space-x-4 space-y-4">
-        <div className="w-full sm:w-[50%]">
-          <p className="text-lg font-bold mb-1">Email Address</p>
-          <Input
-            type="email"
-            name="email"
-            placeholder="e.g. richard.burton@example.com"
-            className="h-10 border-[#AFAFAF] bg-transparent rounded-none"
-            style={{ fontSize: '14px' }}
-          />
-        </div>
-        <div className="w-full sm:w-[50%]">
-          <p className="text-lg font-bold mb-1">Phone Number</p>
-          <Input
-            type="text"
-            name="phone"
-            placeholder="Enter Phone Number"
-            className="h-10 border-[#AFAFAF] bg-transparent rounded-none"
-            style={{ fontSize: '14px' }}
-          />
-        </div>
+      <FormField
+        id="email"
+        label="Email Address"
+        type="email"
+        placeholder="e.g. richard.burton@example.com"
+        error={fieldErrors.email}
+      />
+      <div className="flex flex-col sm:flex-row gap-4">
+        <FormField
+          id="password"
+          label="Password"
+          type="password"
+          placeholder="Enter password"
+          error={fieldErrors.password}
+        />
+        <FormField
+          id="confirmPassword"
+          label="Confirm Password"
+          type="password"
+          placeholder="Re-enter password"
+          error={fieldErrors.confirmPassword}
+        />
       </div>
-      <div className="flex flex-col sm:flex-row space-x-4 space-y-4">
-        <div className="w-full sm:w-[50%]">
-          <p className="text-lg font-bold mb-1">Password</p>
-          <Input
-            type="password"
-            name="password"
-            placeholder="Enter password"
-            className="h-10 border-[#AFAFAF] bg-transparent rounded-none"
-            style={{ fontSize: '14px' }}
-          />
+      {error && (
+        <div className="bg-red-200 border-l-5 border-l-red-400 py-4">
+          <p className="text-red-500 text-base pl-8">{error}</p>
         </div>
-        <div className="w-full sm:w-[50%]">
-          <p className="text-lg font-bold mb-1">Confirm Password</p>
-          <Input
-            type="password"
-            name="password"
-            placeholder="Re-enter password"
-            className="h-10 border-[#AFAFAF] bg-transparent rounded-none"
-            style={{ fontSize: '14px' }}
-          />
-        </div>
-      </div>
-      <Button variant="default" size="xl" className="mt-3 hover:cursor-pointer">
+      )}
+      <Button
+        type="submit"
+        disabled={isLoading}
+        variant="default"
+        size="xl"
+        className="mt-3 hover:cursor-pointer"
+      >
         Create Account
       </Button>
       <div className="mt-5 text-center text-muted-foreground">

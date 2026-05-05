@@ -2,6 +2,7 @@ import { Page } from '@/payload-types'
 import { getPayload } from 'payload'
 import payloadConfig from '@/payload.config'
 import { FeaturedProductions } from '@/blocks/Featured/FeaturedProductions'
+import { useQuery } from '@tanstack/react-query'
 
 type HomeHeroBlock = Extract<Page['layout'][0], { blockType: 'featured' }>
 
@@ -18,6 +19,7 @@ export default async function Featured({ block }: { block: HomeHeroBlock }) {
 const getFeaturedProductions = async () => {
   'use cache'
   const payload = await getPayload({ config: payloadConfig })
+
   const now = new Date()
 
   const result = await payload.find({
