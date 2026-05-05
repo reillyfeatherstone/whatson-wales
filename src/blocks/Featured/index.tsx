@@ -2,7 +2,6 @@ import { Page } from '@/payload-types'
 import { getPayload } from 'payload'
 import payloadConfig from '@/payload.config'
 import { FeaturedProductions } from '@/blocks/Featured/FeaturedProductions'
-import { useQuery } from '@tanstack/react-query'
 
 type HomeHeroBlock = Extract<Page['layout'][0], { blockType: 'featured' }>
 
