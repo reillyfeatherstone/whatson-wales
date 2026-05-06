@@ -82,7 +82,6 @@ export interface Config {
     productionCompanies: ProductionCompany;
     productions: Production;
     venues: Venue;
-    pages: Page;
     users: User;
     media: Media;
     'payload-kv': PayloadKv;
@@ -96,7 +95,6 @@ export interface Config {
     productionCompanies: ProductionCompaniesSelect<false> | ProductionCompaniesSelect<true>;
     productions: ProductionsSelect<false> | ProductionsSelect<true>;
     venues: VenuesSelect<false> | VenuesSelect<true>;
-    pages: PagesSelect<false> | PagesSelect<true>;
     users: UsersSelect<false> | UsersSelect<true>;
     media: MediaSelect<false> | MediaSelect<true>;
     'payload-kv': PayloadKvSelect<false> | PayloadKvSelect<true>;
@@ -321,43 +319,6 @@ export interface Media {
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "pages".
- */
-export interface Page {
-  id: string;
-  title: string;
-  active?: boolean | null;
-  layout: (
-    | {
-        id?: string | null;
-        blockName?: string | null;
-        blockType: 'pageTitle';
-      }
-    | {
-        height?: number | null;
-        backgroundColour?: string | null;
-        heading?: string | null;
-        id?: string | null;
-        blockName?: string | null;
-        blockType: 'featured';
-      }
-    | {
-        title?: string | null;
-        id?: string | null;
-        blockName?: string | null;
-        blockType: 'whatsOn';
-      }
-  )[];
-  /**
-   * When enabled, the slug will auto-generate from the title field on save and autosave.
-   */
-  generateSlug?: boolean | null;
-  slug: string;
-  updatedAt: string;
-  createdAt: string;
-}
-/**
- * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "users".
  */
 export interface User {
@@ -420,10 +381,6 @@ export interface PayloadLockedDocument {
     | ({
         relationTo: 'venues';
         value: string | Venue;
-      } | null)
-    | ({
-        relationTo: 'pages';
-        value: string | Page;
       } | null)
     | ({
         relationTo: 'users';
@@ -598,44 +555,6 @@ export interface VenuesSelect<T extends boolean = true> {
         venueLat?: T;
       };
   image?: T;
-  generateSlug?: T;
-  slug?: T;
-  updatedAt?: T;
-  createdAt?: T;
-}
-/**
- * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "pages_select".
- */
-export interface PagesSelect<T extends boolean = true> {
-  title?: T;
-  active?: T;
-  layout?:
-    | T
-    | {
-        pageTitle?:
-          | T
-          | {
-              id?: T;
-              blockName?: T;
-            };
-        featured?:
-          | T
-          | {
-              height?: T;
-              backgroundColour?: T;
-              heading?: T;
-              id?: T;
-              blockName?: T;
-            };
-        whatsOn?:
-          | T
-          | {
-              title?: T;
-              id?: T;
-              blockName?: T;
-            };
-      };
   generateSlug?: T;
   slug?: T;
   updatedAt?: T;

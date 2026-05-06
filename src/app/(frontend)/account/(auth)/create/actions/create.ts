@@ -41,13 +41,17 @@ export async function create({
             password,
             firstName,
             lastName,
+            memberGroup: 'Producer',
           },
         })
 
         return { success: true }
       } catch (e) {
         console.log(e)
-        return { success: false, error: 'There was a problem creating the account' }
+        return {
+          success: false,
+          error: 'There was a problem creating the account',
+        }
       }
     } else {
       return { success: false, error: 'Account already exists' }

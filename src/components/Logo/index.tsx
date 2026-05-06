@@ -1,7 +1,4 @@
-import payloadConfig from '@/payload.config'
-import Image from 'next/image'
 import Link from 'next/link'
-import { getPayload } from 'payload'
 
 export default function Logo({
   theme,

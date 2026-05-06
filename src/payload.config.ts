@@ -4,15 +4,13 @@ import path from 'path'
 import { buildConfig } from 'payload'
 import { fileURLToPath } from 'url'
 import sharp from 'sharp'
-// import { s3Storage } from '@payloadcms/storage-s3'
 
 import { Users } from './collections/Users'
 import { Media } from './collections/Media'
-import { Pages } from './collections/Pages'
-import { Header } from '@/app/(frontend)/globals/header/config'
+import { Header } from '@/globals/header/config'
 import { Productions } from '@/collections/Productions'
 import { s3Storage } from '@payloadcms/storage-s3'
-import { Footer } from '@/app/(frontend)/globals/footer/config'
+import { Footer } from '@/globals/footer/config'
 import { Venues } from '@/collections/Venues'
 import { Accounts } from '@/collections/Accounts'
 import { ProductionCompanies } from '@/collections/ProductionCompanies'
@@ -27,7 +25,14 @@ export default buildConfig({
     },
   },
   globals: [Header, Footer],
-  collections: [Accounts, ProductionCompanies, Productions, Venues, Pages, Users, Media],
+  collections: [
+    Accounts,
+    ProductionCompanies,
+    Productions,
+    Venues,
+    Users,
+    Media,
+  ],
   editor: lexicalEditor(),
   secret: process.env.PAYLOAD_SECRET || '',
   typescript: {

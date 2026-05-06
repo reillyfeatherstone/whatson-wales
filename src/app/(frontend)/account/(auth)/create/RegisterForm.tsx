@@ -1,10 +1,7 @@
 'use client'
 
 import React, { useState } from 'react'
-import {
-  type FieldErrors,
-  FormField,
-} from '@/app/(frontend)/account/(auth)/components/FormField'
+import { type FieldErrors, FormField } from '@/components/FormField'
 import { registerFormSchema } from '@/app/(frontend)/account/(auth)/create/actions/schema'
 import { Button } from '@/components/ui/button'
 import Link from 'next/link'

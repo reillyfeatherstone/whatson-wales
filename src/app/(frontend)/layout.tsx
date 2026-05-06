@@ -1,9 +1,6 @@
-import React, { ReactNode, Suspense } from 'react'
+import { ReactNode } from 'react'
 import './globals.css'
-import Header from '@/components/Header'
 import { Inter } from 'next/font/google'
-import Footer from '@/components/Footer'
-import { Toaster } from '@/components/ui/sonner'
 
 const inter = Inter({
   subsets: ['latin'],
@@ -22,14 +19,7 @@ interface RootLayoutProps {
 export default async function RootLayout({ children }: RootLayoutProps) {
   return (
     <html lang="en" className={inter.variable}>
-      <body className="">
-        <Header />
-        <main>{children}</main>
-        <Toaster />
-        <Suspense>
-          <Footer />
-        </Suspense>
-      </body>
+      <body className="">{children}</body>
     </html>
   )
 }
