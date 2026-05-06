@@ -89,3 +89,6 @@
 
 //   return result.docs?.[0] || null
 // }
+export default function Page() {
+  return null
+}
