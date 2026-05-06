@@ -20,11 +20,14 @@ export default async function Footer() {
       <div className="producer-cta bg-primary">
         <div className="max-w-7xl mx-auto min-h-70 flex flex-col md:flex-row items-center md:items-center justify-between px-8 py-8 gap-6 md:gap-0">
           <div className="flex flex-col gap-4 max-w-2xl text-center md:text-left">
-            <h3 className="text-white text-4xl md:text-5xl">Are you a Producer?</h3>
+            <h3 className="text-white text-4xl md:text-5xl">
+              Are you a Producer?
+            </h3>
 
             <p className="text-white font-light text-lg md:pr-10">
-              Promote your show on WhatsOnWales and reach a dedicated audience of theatre lovers.
-              Showcase your production to our growing community.
+              Promote your show on WhatsOnWales and reach a dedicated audience
+              of theatre lovers. Showcase your production to our growing
+              community.
             </p>
           </div>
 
@@ -47,7 +50,8 @@ export default async function Footer() {
         </div>
 
         <div className="flex gap-4 text-center uppercase md:gap-6 text-sm text-gray-500 font-medium md:order-3">
-          <a href="/terms">Terms</a>/<a href="/privacy">Privacy</a>/<a href="/contact">Contact</a>
+          <a href="/terms">Terms</a>/<a href="/privacy">Privacy</a>/
+          <a href="/contact">Contact</a>
         </div>
       </div>
     </footer>

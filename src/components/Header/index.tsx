@@ -1,4 +1,4 @@
-import Logo, { LogoSkeleton } from '@/components/Logo'
+import Logo from '@/components/Logo'
 import { Button } from '@/components/ui/button'
 import { DropdownMenuIcons } from '@/components/ui/dropdown-menu-icons'
 import Link from 'next/link'
@@ -29,9 +29,7 @@ export default function Header() {
             Venues
           </Link>
         </div>
-        <Suspense fallback={<LogoSkeleton />}>
-          <Logo />
-        </Suspense>
+        <Logo theme="light" />
         <div className="flex-1 flex justify-end self-center">
           <div className="flex space-x-5 items-center">
             {/* <div className="ml-5 hover:cursor-pointer">
