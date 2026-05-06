@@ -1,11 +1,8 @@
-import { Page } from '@/payload-types'
 import { Filters, MobileFilters } from '@/blocks/WhatsOnBlock/WhatsOnClient'
 import { Suspense } from 'react'
 import { ProductionsFetcher } from '@/blocks/WhatsOnBlock/ProductionsFetcher'
 
-type WhatsOnBlock = Extract<Page['layout'][0], { blockType: 'whatsOn' }>
-
-export default async function WhatsOnBlock({ block }: { block: WhatsOnBlock }) {
+export default async function WhatsOnBlock() {
   return (
     <div className="p-5 pt-8 pb-100 max-w-7xl mx-auto">
       <div className="md:hidden flex items-center justify-between border-b border-b-[#AFAFAF] py-2">

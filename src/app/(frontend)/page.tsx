@@ -1,3 +1,18 @@
-import PageTemplate from './[slug]/page'
+// import PageTemplate from './[slug]/page'
 
-export default PageTemplate
+import Featured, { FeaturedSkeleton } from '@/blocks/Featured'
+import WhatsOnBlock from '@/blocks/WhatsOnBlock'
+import { Suspense } from 'react'
+
+// export default PageTemplate
+
+export default function Page() {
+  return (
+    <>
+      <Suspense fallback={<FeaturedSkeleton />}>
+        <Featured />
+      </Suspense>
+      <WhatsOnBlock />
+    </>
+  )
+}

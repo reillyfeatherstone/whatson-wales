@@ -1,11 +1,8 @@
-import { Page } from '@/payload-types'
 import { getPayload } from 'payload'
 import payloadConfig from '@/payload.config'
 import { FeaturedProductions } from '@/blocks/Featured/FeaturedProductions'
 
-type HomeHeroBlock = Extract<Page['layout'][0], { blockType: 'featured' }>
-
-export default async function Featured({ block }: { block: HomeHeroBlock }) {
+export default async function Featured() {
   const featProds = await getFeaturedProductions()
 
   return (
