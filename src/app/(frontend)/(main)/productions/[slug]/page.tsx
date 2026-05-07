@@ -1,5 +1,5 @@
 import { Button } from '@/components/ui/button'
-import type { Page, Production, Venue } from '@/payload-types'
+import type { Production, Venue } from '@/payload-types'
 import payloadConfig from '@/payload.config'
 import Image from 'next/image'
 import Link from 'next/link'
@@ -69,7 +69,13 @@ export default async function ProductionPage({ params: paramsPromise }: Args) {
     <div className="px-5 max-w-7xl mx-auto mb-50">
       <div className="feat-prod relative w-full aspect-video max-h-120 overflow-hidden">
         {(typeof image !== 'string' && image.url && (
-          <Image alt="" src={image.url} fill className="object-cover" loading="eager" />
+          <Image
+            alt=""
+            src={image.url}
+            fill
+            className="object-cover"
+            loading="eager"
+          />
         )) ||
           null}
       </div>
@@ -79,29 +85,44 @@ export default async function ProductionPage({ params: paramsPromise }: Args) {
             <div className="text-xl font-medium">{productionCompany}</div>
             <h1 className="text-5xl md:text-6xl font-bold mt-1">{title}</h1>
             {(() => {
-              const writers = credits?.creatives?.filter((person) => person.role === 'Writer')
+              const writers = credits?.creatives?.filter(
+                (person) => person.role === 'Writer',
+              )
               if (!writers?.length) return null
 
               const names = writers.map((person) => person.name)
               const formattedWriters =
-                names.length === 1 ? names[0] : names.slice(0, -1).join(', ') + ' & ' + names.at(-1)
+                names.length === 1
+                  ? names[0]
+                  : names.slice(0, -1).join(', ') + ' & ' + names.at(-1)
 
-              return <h2 className="font-normal text-lg pt-2">by {formattedWriters}</h2>
+              return (
+                <h2 className="font-normal text-lg pt-2">
+                  by {formattedWriters}
+                </h2>
+              )
             })()}
             <div className="pt-12">
               {richDescription && (
-                <RichText data={richDescription} className="text-lg text-muted-foreground" />
+                <RichText
+                  data={richDescription}
+                  className="text-lg text-muted-foreground"
+                />
               )}
             </div>
           </div>
           <div className="w-full md:w-auto md:ml-auto">
             <div className="section-1-right flex flex-col border p-6 gap-6 w-full md:w-82.5">
               <div className="border-b py-2 flex flex-col gap-1">
-                <p className="text-sm font-medium text-muted-foreground">RUNTIME</p>
+                <p className="text-sm font-medium text-muted-foreground">
+                  RUNTIME
+                </p>
                 {runTime}
               </div>
               <div className="border-b py-2 flex flex-col gap-1">
-                <p className="text-sm font-medium text-muted-foreground">DATES</p>
+                <p className="text-sm font-medium text-muted-foreground">
+                  DATES
+                </p>
                 {dates?.start && dates?.end && (
                   <span>
                     {isSameYear
@@ -112,12 +133,17 @@ export default async function ProductionPage({ params: paramsPromise }: Args) {
                 )}
               </div>
               <div className="border-b py-2 flex flex-col gap-1">
-                <p className="text-sm font-medium text-muted-foreground">LANGUAGES</p>
+                <p className="text-sm font-medium text-muted-foreground">
+                  LANGUAGES
+                </p>
                 <span>{languages}</span>
               </div>
               <div className="">
                 <Link href={link || ''}>
-                  <Button size="lg" className="w-full h-12 hover:cursor-pointer">
+                  <Button
+                    size="lg"
+                    className="w-full h-12 hover:cursor-pointer"
+                  >
                     <span className="text-[14px]">Get Tickets</span>
                   </Button>
                 </Link>
@@ -160,14 +186,21 @@ export function Venues({
       <div className="gap-2">
         {venues.map((venue, index) => {
           const venueDetails =
-            typeof venue.venueName === 'object' ? (venue.venueName as Venue) : null
+            typeof venue.venueName === 'object'
+              ? (venue.venueName as Venue)
+              : null
           const isSameYear =
             venue.StartDate && venue.EndDate
-              ? new Date(venue.StartDate).getFullYear() === new Date(venue.EndDate).getFullYear()
+              ? new Date(venue.StartDate).getFullYear() ===
+                new Date(venue.EndDate).getFullYear()
               : false
 
           return (
-            <Link href={venue.ticketLink || link || ''} key={index} className="venue-item">
+            <Link
+              href={venue.ticketLink || link || ''}
+              key={index}
+              className="venue-item"
+            >
               <div className="group flex py-5 border-b border-b-[#AFAFAF]">
                 <div className="transition-transform duration-300 group-hover:translate-x-1">
                   <div className="flex gap-3 uppercase text-xs">
@@ -178,7 +211,9 @@ export function Venues({
                       _ Miles Away
                     </span>
                   </div>
-                  <h4 className="text-2xl font-bold">{venueDetails?.venueName}</h4>
+                  <h4 className="text-2xl font-bold">
+                    {venueDetails?.venueName}
+                  </h4>
                   {venue.StartDate && venue.EndDate && (
                     <p className="mt-2 text-sm text-muted-foreground">
                       {isSameYear
@@ -190,7 +225,10 @@ export function Venues({
                 </div>
                 <div className="flex items-center ml-auto transition-transform duration-300 group-hover:translate-x-1">
                   <p className="text-sm text-primary uppercase">Book Here</p>
-                  <ArrowRight className="text-primary transition-transform" size={16} />
+                  <ArrowRight
+                    className="text-primary transition-transform"
+                    size={16}
+                  />
                 </div>
               </div>
             </Link>

@@ -1,6 +1,5 @@
 import { anyone } from '@/access/anyone'
 import { authenticated } from '@/access/authenticated'
-import { revalidatePage } from '@/collections/hooks/revalidatePage'
 import {
   revalidateWhatsOnPagesOnChange,
   revalidateWhatsOnPagesOnDelete,
@@ -182,7 +181,8 @@ export const Productions: CollectionConfig = {
               type: 'text',
               required: true,
               admin: {
-                condition: (_, siblingData) => siblingData.role === 'Other (Specify)',
+                condition: (_, siblingData) =>
+                  siblingData.role === 'Other (Specify)',
               },
             },
           ],

@@ -1,6 +1,7 @@
 import { getPayload } from 'payload'
 import config from '@payload-config'
 import { redirect } from 'next/navigation'
+import { Suspense } from 'react'
 
 type SearchParams = {
   [key: string]: string
@@ -11,11 +12,25 @@ export default async function Page({
 }: {
   searchParams: SearchParams
 }) {
+  return (
+    <Suspense>
+      <VerifyComponent searchParams={searchParams} />
+    </Suspense>
+  )
+}
+
+export async function VerifyComponent({
+  searchParams,
+}: {
+  searchParams: SearchParams
+}) {
   const { token } = await searchParams
   const payload = await getPayload({ config })
 
   if (!token) {
-    redirect(`/login?${encodeURIComponent('No verification token found')}`)
+    redirect(
+      `/account/login?${encodeURIComponent('No verification token found')}`,
+    )
   } else {
     try {
       const result = await payload.verifyEmail({
