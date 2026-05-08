@@ -11,6 +11,9 @@ export function generateEmailSubject(_args: VerificationEmailArgs) {
 }
 
 export function generateEmailHTML(args: VerificationEmailArgs) {
+  console.log('Req: ' + args.req)
+  console.log('token: ' + args.token)
+  console.log('user: ' + args.user)
   return `<div>
     <h2>Hi ${args.user.firstName ? args.user.firstName : ''},</h2>
     <h3>Welcome to What's On Wales | Cymru</h3>

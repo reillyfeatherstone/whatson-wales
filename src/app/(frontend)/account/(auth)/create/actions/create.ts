@@ -44,7 +44,6 @@ export async function create({
             memberGroup: 'Producer',
           },
         })
-
         return { success: true }
       } catch (e) {
         console.log(e)

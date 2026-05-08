@@ -7,7 +7,11 @@ type SearchParams = {
   [key: string]: string
 }
 
-export default function Page({ searchParams }: { searchParams: SearchParams }) {
+export default async function Page({
+  searchParams,
+}: {
+  searchParams: SearchParams
+}) {
   return (
     <Suspense fallback="loading...">
       <Verify searchParams={searchParams} />
@@ -16,7 +20,7 @@ export default function Page({ searchParams }: { searchParams: SearchParams }) {
 }
 
 export async function Verify({ searchParams }: { searchParams: SearchParams }) {
-  const { token } = searchParams
+  const { token } = await searchParams
   const payload = await getPayload({ config })
 
   if (!token) {
