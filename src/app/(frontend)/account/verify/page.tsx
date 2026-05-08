@@ -1,17 +1,22 @@
 import { getPayload } from 'payload'
 import config from '@payload-config'
 import { redirect } from 'next/navigation'
+import { Suspense } from 'react'
 
 type SearchParams = {
   [key: string]: string
 }
 
-export default async function Page({
-  searchParams,
-}: {
-  searchParams: SearchParams
-}) {
-  const { token } = await searchParams
+export default function Page({ searchParams }: { searchParams: SearchParams }) {
+  return (
+    <Suspense fallback="loading...">
+      <Verify searchParams={searchParams} />
+    </Suspense>
+  )
+}
+
+export async function Verify({ searchParams }: { searchParams: SearchParams }) {
+  const { token } = searchParams
   const payload = await getPayload({ config })
 
   if (!token) {
