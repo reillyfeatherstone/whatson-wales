@@ -64,7 +64,7 @@ export async function login({
     if (e instanceof UnverifiedEmail) {
       console.log('Unverified: ' + e)
       console.log('resending verification email...')
-      resendVerificationEmail(email)
+      await resendVerificationEmail(email)
       return {
         success: false,
         error:
