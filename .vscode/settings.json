@@ -15,6 +15,11 @@
       "source.fixAll.eslint": "explicit"
     }
   },
+  "claudeCode.environmentVariables": [
+    { "name": "ANTHROPIC_BASE_URL", "value": "http://localhost:8082" },
+    { "name": "ANTHROPIC_AUTH_TOKEN", "value": "freecc" },
+    { "name": "CLAUDE_CODE_ENABLE_GATEWAY_MODEL_DISCOVERY", "value": "1" }
+  ],
   "[javascript]": {
     "editor.defaultFormatter": "esbenp.prettier-vscode",
     "editor.formatOnSave": true,

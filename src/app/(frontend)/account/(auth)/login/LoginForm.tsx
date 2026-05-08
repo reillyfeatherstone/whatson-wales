@@ -89,7 +89,7 @@ export default function LoginForm() {
           </Button>
           {error && (
             <div className="bg-red-200 border-l-5 border-l-red-400 py-4">
-              <p className="text-red-500 text-base pl-8">{error}</p>
+              <p className="text-red-500 text-base px-8">{error}</p>
             </div>
           )}
           <Link

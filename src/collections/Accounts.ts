@@ -1,6 +1,7 @@
 import type { CollectionConfig } from 'payload'
 import { anyone } from '@/access/anyone'
 import { authenticated } from '@/access/authenticated'
+import { generateEmailSubject, generateEmailHTML } from '@/utilities/verificationEmail'
 
 export const Accounts: CollectionConfig = {
   slug: 'accounts',
@@ -16,18 +17,15 @@ export const Accounts: CollectionConfig = {
   auth: {
     tokenExpiration: 24 * 60 * 60, // 24 Hours
     verify: {
-      generateEmailSubject: (args) => {
-        return `Hey${args.user.firstName ? ' ' + args.user.firstName : ''}, verify your email!`
-      },
-      generateEmailHTML: (args) => {
-        return `<div><h1>Hey ${args.user.firstName ? args.user.firstName : ''}</h1><br /><p>Verify your email address by going to ${process.env.DOMAIN_URL}/verify?token=${args.token}</p></div>`
-      },
+      generateEmailSubject,
+      generateEmailHTML,
     },
     cookies: {
       secure: true, //Allow only secure connections
       sameSite: 'None',
       domain: process.env.COOKIE_DOMAIN,
     },
+    // maxLoginAttempts: 5,
   },
   fields: [
     {

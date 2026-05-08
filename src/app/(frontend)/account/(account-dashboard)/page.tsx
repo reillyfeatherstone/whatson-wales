@@ -15,6 +15,11 @@ export async function AccountContent() {
 
   if (!user) {
     redirect('/account/create')
+  } else if (user._verified) {
+    return <div>You are verified</div>
+  } else if (!user._verified) {
+    return <div>You are not verified</div>
+  } else {
+    return <div>Something went wrong</div>
   }
-  return <div>Account</div>
 }
