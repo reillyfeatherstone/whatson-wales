@@ -1,3 +1,4 @@
+import { Button } from '@/components/ui/button'
 import { getCurrentUser } from '@/data/getUser'
 import { redirect } from 'next/navigation'
 import { Suspense } from 'react'
@@ -14,12 +15,13 @@ export async function AccountContent() {
   const user = await getCurrentUser()
 
   if (!user) {
-    redirect('/account/create')
-  } else if (user._verified) {
-    return <div>You are verified</div>
-  } else if (!user._verified) {
-    return <div>You are not verified</div>
-  } else {
-    return <div>Something went wrong</div>
+    redirect('/account/login')
   }
+
+  return (
+    <div>
+      <p>You are verified</p>
+      <Button>Log Out</Button>
+    </div>
+  )
 }
