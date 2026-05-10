@@ -5,11 +5,17 @@ import { Button } from '@/components/ui/button'
 import Link from 'next/link'
 import { loginFormSchema } from '@/app/(frontend)/account/(auth)/create/actions/schema'
 import { useRouter } from 'next/navigation'
-import React, { useState } from 'react'
+import React, { useEffect, useRef, useState } from 'react'
 import { login } from '@/app/(frontend)/account/(auth)/login/actions/login'
 import { Response } from '@/app/(frontend)/account/(auth)/create/actions/create'
 
 export default function LoginForm() {
+  const formRef = useRef<HTMLFormElement>(null)
+
+  useEffect(() => {
+    formRef.current?.reset()
+  }, [])
+
   const [isLoading, setIsLoading] = useState(false)
   const [error, setError] = useState<string | null>(null)
   const [fieldErrors, setFieldErrors] = useState<FieldErrors>({})
@@ -59,6 +65,7 @@ export default function LoginForm() {
       <div className="login w-full md:w-[50%]">
         <form
           onSubmit={handleSubmit}
+          ref={formRef}
           id="login"
           className="flex flex-col space-y-4"
         >

@@ -1,6 +1,6 @@
 'use client'
 
-import React, { useState } from 'react'
+import React, { useEffect, useRef, useState } from 'react'
 import { type FieldErrors, FormField } from '@/components/FormField'
 import { registerFormSchema } from '@/app/(frontend)/account/(auth)/create/actions/schema'
 import { Button } from '@/components/ui/button'
@@ -11,6 +11,12 @@ import { Check, LinkIcon, UserIcon } from 'lucide-react'
 import { resendVerificationEmail } from '@/app/(frontend)/account/(auth)/create/actions/resendVerificationEmail'
 
 export default function RegisterForm() {
+  const formRef = useRef<HTMLFormElement>(null)
+
+  useEffect(() => {
+    formRef.current?.reset()
+  }, [])
+
   const [isLoading, setIsLoading] = useState(false)
   const [error, setError] = useState<string | null>(null)
   const [fieldErrors, setFieldErrors] = useState<FieldErrors>({})
@@ -68,6 +74,7 @@ export default function RegisterForm() {
         <VerificationMessage email={verificationEmail} />
       ) : (
         <form
+          ref={formRef}
           onSubmit={handleSubmit}
           className="flex flex-col space-y-4 pt-10 max-w-2xl mx-auto"
         >
