@@ -28,16 +28,21 @@ export async function Verify({ searchParams }: { searchParams: SearchParams }) {
       `/account/login?message=${encodeURIComponent('No verification token found')}`,
     )
   } else {
-    const result = await payload.verifyEmail({
-      collection: 'accounts',
-      token,
-    })
+    try {
+      const result = await payload.verifyEmail({
+        collection: 'accounts',
+        token,
+      })
 
-    if (result) {
-      redirect(
-        `/account/login?message=${encodeURIComponent('Successfully verified. Please Login.')}`,
-      )
-    } else {
+      if (result) {
+        redirect(
+          `/account/login?message=${encodeURIComponent('Successfully verified. Please Login.')}`,
+        )
+      } else {
+        throw new Error('Verification failed')
+      }
+    } catch (error) {
+      console.log(error)
       return (
         <div>
           <h1>There was a problem</h1>
