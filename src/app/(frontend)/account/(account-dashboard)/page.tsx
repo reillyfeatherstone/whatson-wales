@@ -1,6 +1,6 @@
-import LogOutButton from '@/components/Buttons/logout'
+import LogOutButton from '@/components/auth/logoutButton'
 import { Button } from '@/components/ui/button'
-import { getCurrentUser } from '@/data/getUser'
+import { getCurrentUser } from '@/actions/auth/getCurrentUser'
 import { redirect } from 'next/navigation'
 import { Suspense } from 'react'
 

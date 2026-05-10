@@ -1,5 +1,5 @@
 import LoginForm from '@/app/(frontend)/account/(auth)/login/LoginForm'
-import { getCurrentUser } from '@/data/getUser'
+import { getCurrentUser } from '@/actions/auth/getCurrentUser'
 import { redirect } from 'next/navigation'
 
 export default async function Page() {

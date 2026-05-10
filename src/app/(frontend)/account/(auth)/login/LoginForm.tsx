@@ -1,13 +1,13 @@
 'use client'
 
-import { type FieldErrors, FormField } from '@/components/FormField'
+import { type FieldErrors, FormField } from '@/components/form-field'
 import { Button } from '@/components/ui/button'
 import Link from 'next/link'
-import { loginFormSchema } from '@/app/(frontend)/account/(auth)/create/actions/schema'
+import { loginFormSchema } from '@/schemas/auth.schema'
 import { useRouter } from 'next/navigation'
 import React, { useEffect, useRef, useState } from 'react'
-import { login } from '@/app/(frontend)/account/(auth)/login/actions/login'
-import { Response } from '@/app/(frontend)/account/(auth)/create/actions/create'
+import { login } from '@/actions/auth/login'
+import { Response } from '@/actions/auth/create'
 
 export default function LoginForm() {
   const formRef = useRef<HTMLFormElement>(null)

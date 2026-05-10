@@ -1,14 +1,14 @@
 'use client'
 
 import React, { useEffect, useRef, useState } from 'react'
-import { type FieldErrors, FormField } from '@/components/FormField'
-import { registerFormSchema } from '@/app/(frontend)/account/(auth)/create/actions/schema'
+import { type FieldErrors, FormField } from '@/components/form-field'
+import { registerFormSchema } from '@/schemas/auth.schema'
 import { Button } from '@/components/ui/button'
 import Link from 'next/link'
 import { redirect, useRouter } from 'next/navigation'
-import { create, Response } from './actions/create'
+import { create, Response } from '../../../../../actions/auth/create'
 import { Check, LinkIcon, UserIcon } from 'lucide-react'
-import { resendVerificationEmail } from '@/app/(frontend)/account/(auth)/create/actions/resendVerificationEmail'
+import { resendVerificationEmail } from '@/actions/auth/resendVerificationEmail'
 
 export default function RegisterForm() {
   const formRef = useRef<HTMLFormElement>(null)

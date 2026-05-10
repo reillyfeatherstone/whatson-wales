@@ -1,7 +1,10 @@
 import type { CollectionBeforeChangeHook } from 'payload'
-import getCoordinates from '@/lib/getCoordinates'
+import getCoordinates from '@/actions/geo/getCoordinates'
 
-export const setLongLat: CollectionBeforeChangeHook = async ({ data, originalDoc }) => {
+export const setLongLat: CollectionBeforeChangeHook = async ({
+  data,
+  originalDoc,
+}) => {
   const postcode = data?.address?.postcode
   const previousPostcode = originalDoc?.address?.postcode
 

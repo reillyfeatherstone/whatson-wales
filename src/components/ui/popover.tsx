@@ -3,13 +3,17 @@
 import * as React from 'react'
 import { Popover as PopoverPrimitive } from 'radix-ui'
 
-import { cn } from '@/lib/utils'
+import { cn } from '@/utils/cn'
 
-function Popover({ ...props }: React.ComponentProps<typeof PopoverPrimitive.Root>) {
+function Popover({
+  ...props
+}: React.ComponentProps<typeof PopoverPrimitive.Root>) {
   return <PopoverPrimitive.Root data-slot="popover" {...props} />
 }
 
-function PopoverTrigger({ ...props }: React.ComponentProps<typeof PopoverPrimitive.Trigger>) {
+function PopoverTrigger({
+  ...props
+}: React.ComponentProps<typeof PopoverPrimitive.Trigger>) {
   return <PopoverPrimitive.Trigger data-slot="popover-trigger" {...props} />
 }
 
@@ -35,7 +39,9 @@ function PopoverContent({
   )
 }
 
-function PopoverAnchor({ ...props }: React.ComponentProps<typeof PopoverPrimitive.Anchor>) {
+function PopoverAnchor({
+  ...props
+}: React.ComponentProps<typeof PopoverPrimitive.Anchor>) {
   return <PopoverPrimitive.Anchor data-slot="popover-anchor" {...props} />
 }
 
@@ -59,7 +65,10 @@ function PopoverTitle({ className, ...props }: React.ComponentProps<'h2'>) {
   )
 }
 
-function PopoverDescription({ className, ...props }: React.ComponentProps<'p'>) {
+function PopoverDescription({
+  className,
+  ...props
+}: React.ComponentProps<'p'>) {
   return (
     <p
       data-slot="popover-description"

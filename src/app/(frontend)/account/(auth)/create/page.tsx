@@ -1,4 +1,4 @@
-import { getCurrentUser } from '@/data/getUser'
+import { getCurrentUser } from '@/actions/auth/getCurrentUser'
 import RegisterForm from './RegisterForm'
 import { redirect } from 'next/navigation'
 

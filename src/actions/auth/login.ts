@@ -11,9 +11,9 @@ import {
 import config from '@payload-config'
 import { cookies } from 'next/headers'
 import type { Account } from '@/payload-types'
-import { Response } from '@/app/(frontend)/account/(auth)/create/actions/create'
+import { Response } from '@/actions/auth/create'
 import { redirect } from 'next/navigation'
-import { resendVerificationEmail } from '@/app/(frontend)/account/(auth)/create/actions/resendVerificationEmail'
+import { resendVerificationEmail } from '@/actions/auth/resendVerificationEmail'
 
 type LoginParams = {
   email: string

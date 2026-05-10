@@ -1,4 +1,4 @@
-import Logo from '@/components/Logo'
+import Logo from '@/components/logo'
 import { Button } from '@/components/ui/button'
 import payloadConfig from '@/payload.config'
 import Image from 'next/image'

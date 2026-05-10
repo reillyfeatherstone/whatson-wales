@@ -4,9 +4,9 @@ import { Button } from '@/components/ui/button'
 import { Funnel, MapPin, Navigation, Search } from 'lucide-react'
 import Image from 'next/image'
 import { Production, Venue } from '@/payload-types'
-import formatDate from '@/lib/formatDate'
+import formatDate from '@/utils/formatDate'
 import { Input } from '@/components/ui/input'
-import { DatePickerWithRange } from '@/components/ui/range-picker'
+import { DatePickerWithRange } from '@/components/range-picker'
 import {
   Select,
   SelectContent,
@@ -28,9 +28,9 @@ import {
 import { Suspense, use, useEffect, useMemo, useState } from 'react'
 import { useRouter, useSearchParams } from 'next/navigation'
 import { format } from 'date-fns'
-import haversineDistance from '@/lib/haversineDistance'
+import haversineDistance from '@/utils/haversineDistance'
 import { toast } from 'sonner'
-import getCoordinates from '@/lib/getCoordinates'
+import getCoordinates from '@/actions/geo/getCoordinates'
 
 export function ProductionGrid({ productions }: { productions: Production[] }) {
   const now = new Date()
@@ -43,7 +43,8 @@ export function ProductionGrid({ productions }: { productions: Production[] }) {
 
     const terms = q.toLowerCase().split(/\s+/).filter(Boolean)
     const searchableText = JSON.stringify(prod).toLowerCase()
-    const queryMatch = !q || terms.every((term) => searchableText.includes(term))
+    const queryMatch =
+      !q || terms.every((term) => searchableText.includes(term))
 
     const dateMatch = (() => {
       if (!dateFrom && !dateTo) return true
@@ -54,17 +55,25 @@ export function ProductionGrid({ productions }: { productions: Production[] }) {
 
       if (!prodStart || !prodEnd) return false
 
-      if (rangeFrom && !rangeTo && rangeFrom >= prodStart && rangeFrom <= prodEnd) {
+      if (
+        rangeFrom &&
+        !rangeTo &&
+        rangeFrom >= prodStart &&
+        rangeFrom <= prodEnd
+      ) {
         return true
       }
 
-      if (rangeFrom && rangeTo && rangeFrom >= prodStart && rangeTo <= prodEnd) return true
+      if (rangeFrom && rangeTo && rangeFrom >= prodStart && rangeTo <= prodEnd)
+        return true
 
       return false
     })()
 
     const langMatch =
-      !lang || lang === 'all' || prod.language?.some((l) => l.toLowerCase() === lang.toLowerCase())
+      !lang ||
+      lang === 'all' ||
+      prod.language?.some((l) => l.toLowerCase() === lang.toLowerCase())
 
     return queryMatch && langMatch && dateMatch
   })
@@ -72,8 +81,18 @@ export function ProductionGrid({ productions }: { productions: Production[] }) {
   return (
     <div className="results py-4 md:py-8 grid md:grid-cols-2 lg:grid-cols-3 gap-7">
       {filteredProductions.map((production, index) => {
-        const { title, genre, language, venues, description, image, link, id, slug, dates } =
-          production
+        const {
+          title,
+          genre,
+          language,
+          venues,
+          description,
+          image,
+          link,
+          id,
+          slug,
+          dates,
+        } = production
         if (!dates || !dates.start || !dates.end) return null
 
         const startDate = new Date(dates.start)
@@ -89,7 +108,10 @@ export function ProductionGrid({ productions }: { productions: Production[] }) {
 
         return (
           <div key={id} className="border-gray-300 border-b pb-4">
-            <Link href={`productions/${slug}`} className="flex flex-col h-full group">
+            <Link
+              href={`productions/${slug}`}
+              className="flex flex-col h-full group"
+            >
               <figure className="w-full h-70 bg-gray-300 flex justify-center items-center relative overflow-hidden">
                 {imageUrl ? (
                   <Image
@@ -101,14 +123,18 @@ export function ProductionGrid({ productions }: { productions: Production[] }) {
                     priority={index < 3}
                   />
                 ) : (
-                  <span className="font-medium text-gray-500 text-xl">Image</span>
+                  <span className="font-medium text-gray-500 text-xl">
+                    Image
+                  </span>
                 )}
               </figure>
 
               <div className="px-0.5 flex flex-col flex-1">
                 <h3 className="text-2xl font-bold pt-4">{title}</h3>
 
-                <div className="font-medium text-sm text-gray-900 flex-1 py-1">{description}</div>
+                <div className="font-medium text-sm text-gray-900 flex-1 py-1">
+                  {description}
+                </div>
 
                 <div className="font-bold text-base text-gray-900 pt-4 pb-2">
                   {hasStarted
@@ -119,8 +145,14 @@ export function ProductionGrid({ productions }: { productions: Production[] }) {
                   {formatDate(dates.end, true)}
                 </div>
                 <div className="mt-auto flex justify-between items-center py-1">
-                  <Button variant="default" size="lg" className="hover:cursor-pointer">
-                    <span className="text-xs p-1 text-white font-bold">Find Out More</span>
+                  <Button
+                    variant="default"
+                    size="lg"
+                    className="hover:cursor-pointer"
+                  >
+                    <span className="text-xs p-1 text-white font-bold">
+                      Find Out More
+                    </span>
                   </Button>
 
                   <div className="font-medium flex space-x-2">
@@ -130,7 +162,9 @@ export function ProductionGrid({ productions }: { productions: Production[] }) {
                           if (typeof v === 'string') return null
 
                           const venueDetails =
-                            typeof v.venueName === 'object' ? (v.venueName as Venue) : null
+                            typeof v.venueName === 'object'
+                              ? (v.venueName as Venue)
+                              : null
 
                           if (
                             !filters.lat ||
@@ -148,10 +182,16 @@ export function ProductionGrid({ productions }: { productions: Production[] }) {
                         })
                         .filter((d): d is number => d !== null)
 
-                      const min = distances && distances.length > 0 ? Math.min(...distances) : null
+                      const min =
+                        distances && distances.length > 0
+                          ? Math.min(...distances)
+                          : null
                       return min ? (
                         <>
-                          <Navigation size={16} className="text-muted-foreground" />
+                          <Navigation
+                            size={16}
+                            className="text-muted-foreground"
+                          />
                           <span className="text-xs text-muted-foreground">
                             {(() => {
                               if (min < 1) {
@@ -219,7 +259,9 @@ export function MobileFilters() {
       <SheetContent>
         <SheetHeader>
           <SheetTitle>Filter Productions</SheetTitle>
-          <SheetDescription>Use the options below to filter the productions.</SheetDescription>
+          <SheetDescription>
+            Use the options below to filter the productions.
+          </SheetDescription>
         </SheetHeader>
         <Filters onClose={() => setFiltersOpen(false)} />
       </SheetContent>
@@ -266,7 +308,9 @@ function FilterUI({
               placeholder="Postcode"
               className="h-8 border-0 border-b border-b-[#AFAFAF] bg-transparent rounded-none pl-8"
               value={values?.loc ?? ''}
-              onChange={(e) => onChange?.((f) => ({ ...f, loc: e.target.value }))}
+              onChange={(e) =>
+                onChange?.((f) => ({ ...f, loc: e.target.value }))
+              }
             />
           </div>
         </div>
@@ -293,7 +337,9 @@ function FilterUI({
               defaultValue="all"
               name="lang"
               value={values?.lang ?? ''}
-              onValueChange={(e) => onChange?.((f) => ({ ...f, lang: e === 'all' ? '' : e }))}
+              onValueChange={(e) =>
+                onChange?.((f) => ({ ...f, lang: e === 'all' ? '' : e }))
+              }
             >
               <SelectTrigger className="w-full rounded-none h-10 border-0 bg-transparent">
                 <SelectValue placeholder="All Languages" />
@@ -315,7 +361,12 @@ function FilterUI({
           </div>
         </div>
         <div className="flex flex-col justify-end">
-          <Button type="submit" variant="default" size="lg" className="hover:cursor-pointer">
+          <Button
+            type="submit"
+            variant="default"
+            size="lg"
+            className="hover:cursor-pointer"
+          >
             <span className="text-xs p-1 text-white font-bold">Search</span>
           </Button>
         </div>
@@ -328,7 +379,9 @@ function FilterLogic({ onClose }: { onClose?: () => void }) {
   const router = useRouter()
   const searchParams = useSearchParams()
 
-  const [localFilters, setLocalFilters] = useState<Filters>(() => parseFilters(searchParams))
+  const [localFilters, setLocalFilters] = useState<Filters>(() =>
+    parseFilters(searchParams),
+  )
 
   useEffect(() => {
     setLocalFilters(parseFilters(searchParams))
@@ -359,5 +412,11 @@ function FilterLogic({ onClose }: { onClose?: () => void }) {
     onClose?.()
   }
 
-  return <FilterUI values={localFilters} onChange={setLocalFilters} onSubmit={handleSearch} />
+  return (
+    <FilterUI
+      values={localFilters}
+      onChange={setLocalFilters}
+      onSubmit={handleSearch}
+    />
+  )
 }

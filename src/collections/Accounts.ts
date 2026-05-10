@@ -4,7 +4,7 @@ import { authenticated } from '@/access/authenticated'
 import {
   generateEmailSubject,
   generateEmailHTML,
-} from '@/utilities/verificationEmail'
+} from '@/email/verificationEmail'
 
 export const Accounts: CollectionConfig = {
   slug: 'accounts',

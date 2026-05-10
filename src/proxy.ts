@@ -1,4 +1,4 @@
-import { verifyPayloadJWT } from '@/lib/verifyJWT'
+import { verifyPayloadJWT } from '@/utils/verifyJWT'
 import { cookies } from 'next/headers'
 import { NextRequest, NextResponse } from 'next/server'
 

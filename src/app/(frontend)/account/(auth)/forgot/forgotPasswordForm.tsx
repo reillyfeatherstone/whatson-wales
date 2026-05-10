@@ -1,12 +1,12 @@
 'use client'
 
-import { FormField } from '@/components/FormField'
+import { FormField } from '@/components/form-field'
 import { Button } from '@/components/ui/button'
 import React, { useState } from 'react'
-import { ArrowRight, Loader, LoaderCircle } from 'lucide-react'
+import { ArrowRight, Loader } from 'lucide-react'
 import z from 'zod'
-import { ForgotPassword } from '@/app/(frontend)/account/(auth)/forgot/forgotPassword'
-import { Response } from '@/app/(frontend)/account/(auth)/create/actions/create'
+import { ForgotPassword } from '@/actions/auth/forgotPassword'
+import { Response } from '@/actions/auth/create'
 
 export default function ForgotPasswordForm() {
   const [isLoading, setIsLoading] = useState(false)
