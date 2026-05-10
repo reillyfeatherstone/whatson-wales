@@ -9,7 +9,7 @@ export default async function WhatsOnBlock() {
   return (
     <div className="p-5 pt-8 pb-100 max-w-7xl mx-auto">
       <div className="md:hidden flex items-center justify-between border-b border-b-[#AFAFAF] py-2">
-        <h2 className="text-2xl font-medium text-black">What's On</h2>
+        <h2 className="text-2xl font-medium text-black">What&apos;s On</h2>
         <MobileFilters />
       </div>
 
@@ -18,7 +18,7 @@ export default async function WhatsOnBlock() {
       </div>
 
       <h2 className="hidden md:block text-4xl font-medium text-black max-w-450 border-b border-b-[#AFAFAF] py-2">
-        What's On
+        What&apos;s On
       </h2>
 
       <Suspense fallback={<ProductionGridSkeleton />}>

@@ -4,12 +4,11 @@ import payloadConfig from '@/payload.config'
 import Image from 'next/image'
 import Link from 'next/link'
 import { notFound } from 'next/navigation'
-import { getPayload, RequiredDataFromCollectionSlug } from 'payload'
+import { getPayload } from 'payload'
 import formatDate from '@/features/productions/utils/formatDate'
 import { RichText } from '@/components/rich-text'
 import { Input } from '@/components/ui/input'
 import { ArrowRight, Search } from 'lucide-react'
-import { unstable_cache } from 'next/cache'
 
 type Args = {
   params: Promise<{
@@ -40,9 +39,7 @@ export default async function ProductionPage({ params: paramsPromise }: Args) {
 
   const {
     title,
-    genre,
     language,
-    description,
     image,
     link,
     dates,

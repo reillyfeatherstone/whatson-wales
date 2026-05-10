@@ -1,7 +1,5 @@
-import { ReactNode, Suspense } from 'react'
+import { ReactNode } from 'react'
 import '../../globals.css'
-import Header from '@/components/layout/header'
-import Footer from '@/components/layout/footer'
 import { Toaster } from '@/components/ui/sonner'
 
 interface LayoutProps {

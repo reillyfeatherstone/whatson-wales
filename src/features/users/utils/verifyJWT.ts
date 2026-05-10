@@ -17,7 +17,7 @@ export async function verifyPayloadJWT(cookie: string | undefined = '') {
   try {
     const { payload } = await jwtVerify(cookie, getPayloadJWTSecret())
     return payload
-  } catch (error) {
+  } catch {
     return null
   }
 }

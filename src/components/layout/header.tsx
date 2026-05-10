@@ -1,9 +1,6 @@
 import Logo from '@/components/logo'
 import { Button } from '@/components/ui/button'
-import { DropdownMenuIcons } from '@/components/ui/dropdown-menu-icons'
 import Link from 'next/link'
-import { Suspense } from 'react'
-import { MdAccountCircle } from 'react-icons/md'
 
 export default function Header() {
   return (

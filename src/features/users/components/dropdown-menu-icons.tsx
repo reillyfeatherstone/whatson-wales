@@ -1,15 +1,5 @@
-import {
-  ArrowDownNarrowWide,
-  ChevronDown,
-  CircleUserRound,
-  Drama,
-  LogOutIcon,
-  SettingsIcon,
-  User,
-  UserIcon,
-} from 'lucide-react'
+import { Drama, LogOutIcon, SettingsIcon } from 'lucide-react'
 
-import { Button } from '@/components/ui/button'
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -17,7 +7,6 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu'
-import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar'
 import { MdAccountCircle } from 'react-icons/md'
 
 export function DropdownMenuIcons() {

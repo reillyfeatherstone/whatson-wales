@@ -5,7 +5,7 @@ import { type FieldErrors, FormField } from '@/components/form-field'
 import { registerFormSchema } from '@/features/users/schemas/auth.schema'
 import { Button } from '@/components/ui/button'
 import Link from 'next/link'
-import { redirect, useRouter } from 'next/navigation'
+import { redirect } from 'next/navigation'
 import {
   create,
   Response,
@@ -26,7 +26,6 @@ export default function RegisterForm() {
   const [verificationEmail, setVerificationEmail] = useState<string | null>(
     null,
   )
-  const router = useRouter()
 
   async function handleSubmit(
     event: React.SubmitEvent<HTMLFormElement>,
@@ -180,7 +179,7 @@ function VerificationMessage({ email }: { email: string }) {
       </div>
       <div className="flex flex-col w-75 mx-auto space-y-2">
         <p className="font-medium text-muted-foreground">
-          Can't find the email?
+          Can&apos;t find the email?
         </p>
         {resendState === 'error' && (
           <p className="text-sm text-destructive">{errorMessage}</p>

@@ -12,7 +12,6 @@ import config from '@payload-config'
 import { cookies } from 'next/headers'
 import type { Account } from '@/payload-types'
 import { Response } from '@/features/users/server/actions/create'
-import { redirect } from 'next/navigation'
 import { resendVerificationEmail } from '@/features/users/server/actions/resendVerificationEmail'
 
 type LoginParams = {

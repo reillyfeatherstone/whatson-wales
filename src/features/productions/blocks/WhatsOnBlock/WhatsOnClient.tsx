@@ -25,7 +25,7 @@ import {
   SheetTitle,
   SheetTrigger,
 } from '@/components/ui/sheet'
-import { Suspense, use, useEffect, useMemo, useState } from 'react'
+import { Suspense, useEffect, useMemo, useState } from 'react'
 import { useRouter, useSearchParams } from 'next/navigation'
 import { format } from 'date-fns'
 import haversineDistance from '@/utils/haversineDistance'
@@ -81,18 +81,8 @@ export function ProductionGrid({ productions }: { productions: Production[] }) {
   return (
     <div className="results py-4 md:py-8 grid md:grid-cols-2 lg:grid-cols-3 gap-7">
       {filteredProductions.map((production, index) => {
-        const {
-          title,
-          genre,
-          language,
-          venues,
-          description,
-          image,
-          link,
-          id,
-          slug,
-          dates,
-        } = production
+        const { title, venues, description, image, id, slug, dates } =
+          production
         if (!dates || !dates.start || !dates.end) return null
 
         const startDate = new Date(dates.start)

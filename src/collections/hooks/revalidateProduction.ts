@@ -1,5 +1,8 @@
-import type { CollectionAfterChangeHook, CollectionAfterDeleteHook } from 'payload'
-import { revalidatePath, revalidateTag } from 'next/cache'
+import type {
+  CollectionAfterChangeHook,
+  CollectionAfterDeleteHook,
+} from 'payload'
+import { revalidatePath } from 'next/cache'
 import type { Production } from '@/payload-types'
 
 const revalidateWhatsOnPages = async (payload: any) => {
@@ -19,10 +22,9 @@ const revalidateWhatsOnPages = async (payload: any) => {
   }
 }
 
-export const revalidateWhatsOnPagesOnChange: CollectionAfterChangeHook<Production> = async ({
-  doc,
-  req: { payload },
-}) => {
+export const revalidateWhatsOnPagesOnChange: CollectionAfterChangeHook<
+  Production
+> = async ({ doc, req: { payload } }) => {
   await revalidateWhatsOnPages(payload)
 
   const productionPath = `/productions/${doc.slug}`
@@ -32,10 +34,9 @@ export const revalidateWhatsOnPagesOnChange: CollectionAfterChangeHook<Productio
   return doc
 }
 
-export const revalidateWhatsOnPagesOnDelete: CollectionAfterDeleteHook<Production> = async ({
-  doc,
-  req: { payload },
-}) => {
+export const revalidateWhatsOnPagesOnDelete: CollectionAfterDeleteHook<
+  Production
+> = async ({ doc, req: { payload } }) => {
   await revalidateWhatsOnPages(payload)
 
   const productionPath = `/productions/${doc.slug}`

@@ -52,8 +52,8 @@ export default function ForgotPasswordForm() {
             Forgot Your Password?
           </h1>
           <p className="text-center text-muted-foreground text-lg">
-            Enter the e-mail you used to join and we'll send you instructions to
-            reset your password
+            Enter the e-mail you used to join and we&apos;ll send you
+            instructions to reset your password
           </p>
           <div className="login w-full md:max-w-100 mx-auto">
             <form
@@ -96,7 +96,7 @@ export default function ForgotPasswordForm() {
             We sent an email to {emailState}
           </p>
           <p className="text-center text-muted-foreground text-base">
-            If the email hasn't arrived yet, please check your spam folder.
+            If the email hasn&apos;t arrived yet, please check your spam folder.
             Alternatively, try again.
           </p>
           <Button
