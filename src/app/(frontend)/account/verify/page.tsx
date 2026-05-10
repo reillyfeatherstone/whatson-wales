@@ -29,18 +29,10 @@ export async function Verify({ searchParams }: { searchParams: SearchParams }) {
     )
   } else {
     try {
-      const result = await payload.verifyEmail({
+      await payload.verifyEmail({
         collection: 'accounts',
         token,
       })
-
-      if (result) {
-        redirect(
-          `/account/login?message=${encodeURIComponent('Successfully verified. Please Login.')}`,
-        )
-      } else {
-        throw new Error('Verification failed')
-      }
     } catch (error) {
       console.log(error)
       return (
@@ -50,5 +42,8 @@ export async function Verify({ searchParams }: { searchParams: SearchParams }) {
         </div>
       )
     }
+    redirect(
+      `/account/login?message=${encodeURIComponent('Successfully verified. Please Login.')}`,
+    )
   }
 }
