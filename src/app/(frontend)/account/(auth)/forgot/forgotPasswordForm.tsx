@@ -5,8 +5,8 @@ import { Button } from '@/components/ui/button'
 import React, { useState } from 'react'
 import { ArrowRight, Loader } from 'lucide-react'
 import z from 'zod'
-import { ForgotPassword } from '@/actions/auth/forgotPassword'
-import { Response } from '@/actions/auth/create'
+import { ForgotPassword } from '@/features/users/server/actions/forgotPassword'
+import { Response } from '@/features/users/server/actions/create'
 
 export default function ForgotPasswordForm() {
   const [isLoading, setIsLoading] = useState(false)

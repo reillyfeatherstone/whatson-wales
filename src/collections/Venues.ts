@@ -1,5 +1,5 @@
-import { anyone } from '@/access/anyone'
-import { authenticated } from '@/access/authenticated'
+import { anyone } from '@/collections/access/anyone'
+import { authenticated } from '@/collections/access/authenticated'
 import { slugField, type CollectionConfig } from 'payload'
 import { setLongLat } from '@/collections/hooks/setLongLat'
 

@@ -1,5 +1,5 @@
-import { anyone } from '@/access/anyone'
-import { authenticated } from '@/access/authenticated'
+import { anyone } from '@/collections/access/anyone'
+import { authenticated } from '@/collections/access/authenticated'
 import { GlobalConfig } from 'payload'
 
 export const Header: GlobalConfig = {

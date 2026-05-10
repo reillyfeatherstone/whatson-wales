@@ -1,5 +1,5 @@
-import { anyone } from '@/access/anyone'
-import { authenticated } from '@/access/authenticated'
+import { anyone } from '@/collections/access/anyone'
+import { authenticated } from '@/collections/access/authenticated'
 import type { CollectionConfig } from 'payload'
 
 export const Media: CollectionConfig = {

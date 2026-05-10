@@ -1,5 +1,5 @@
-import { anyone } from '@/access/anyone'
-import { authenticated } from '@/access/authenticated'
+import { anyone } from '@/collections/access/anyone'
+import { authenticated } from '@/collections/access/authenticated'
 import {
   revalidateWhatsOnPagesOnChange,
   revalidateWhatsOnPagesOnDelete,

@@ -1,6 +1,6 @@
 import { GlobalConfig } from 'payload'
-import { anyone } from '@/access/anyone'
-import { authenticated } from '@/access/authenticated'
+import { anyone } from '@/collections/access/anyone'
+import { authenticated } from '@/collections/access/authenticated'
 
 export const Footer: GlobalConfig = {
   slug: 'footer',

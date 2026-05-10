@@ -1,6 +1,9 @@
-import { Filters, MobileFilters } from '@/blocks/WhatsOnBlock/WhatsOnClient'
+import {
+  Filters,
+  MobileFilters,
+} from '@/features/productions/blocks/WhatsOnBlock/WhatsOnClient'
 import { Suspense } from 'react'
-import { ProductionsFetcher } from '@/blocks/WhatsOnBlock/ProductionsFetcher'
+import { ProductionsFetcher } from '@/features/productions/blocks/WhatsOnBlock/ProductionsFetcher'
 
 export default async function WhatsOnBlock() {
   return (

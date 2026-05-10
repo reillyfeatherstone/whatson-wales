@@ -1,4 +1,4 @@
-import { ProductionGrid } from '@/blocks/WhatsOnBlock/WhatsOnClient'
+import { ProductionGrid } from '@/features/productions/blocks/WhatsOnBlock/WhatsOnClient'
 import payloadConfig from '@/payload.config'
 import { getPayload } from 'payload'
 // import WhatsOnClient, { ProductionGrid } from './WhatsOnClient

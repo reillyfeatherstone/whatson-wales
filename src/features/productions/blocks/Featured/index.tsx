@@ -1,6 +1,6 @@
 import { getPayload } from 'payload'
 import payloadConfig from '@/payload.config'
-import { FeaturedProductions } from '@/blocks/Featured/FeaturedProductions'
+import { FeaturedProductions } from '@/features/productions/blocks/Featured/FeaturedProductions'
 
 export default async function Featured() {
   const featProds = await getFeaturedProductions()

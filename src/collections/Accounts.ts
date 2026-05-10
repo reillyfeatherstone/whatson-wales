@@ -1,10 +1,10 @@
 import type { CollectionConfig } from 'payload'
-import { anyone } from '@/access/anyone'
-import { authenticated } from '@/access/authenticated'
+import { anyone } from '@/collections/access/anyone'
+import { authenticated } from '@/collections/access/authenticated'
 import {
   generateEmailSubject,
   generateEmailHTML,
-} from '@/email/verificationEmail'
+} from '@/features/users/email/verificationEmail'
 
 export const Accounts: CollectionConfig = {
   slug: 'accounts',

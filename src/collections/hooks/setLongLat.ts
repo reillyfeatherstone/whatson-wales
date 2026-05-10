@@ -1,5 +1,5 @@
 import type { CollectionBeforeChangeHook } from 'payload'
-import getCoordinates from '@/actions/geo/getCoordinates'
+import getCoordinates from '@/features/productions/server/getCoordinates'
 
 export const setLongLat: CollectionBeforeChangeHook = async ({
   data,

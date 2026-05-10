@@ -2,13 +2,16 @@
 
 import React, { useEffect, useRef, useState } from 'react'
 import { type FieldErrors, FormField } from '@/components/form-field'
-import { registerFormSchema } from '@/schemas/auth.schema'
+import { registerFormSchema } from '@/features/users/schemas/auth.schema'
 import { Button } from '@/components/ui/button'
 import Link from 'next/link'
 import { redirect, useRouter } from 'next/navigation'
-import { create, Response } from '../../../../../actions/auth/create'
+import {
+  create,
+  Response,
+} from '../../../../../features/users/server/actions/create'
 import { Check, LinkIcon, UserIcon } from 'lucide-react'
-import { resendVerificationEmail } from '@/actions/auth/resendVerificationEmail'
+import { resendVerificationEmail } from '@/features/users/server/actions/resendVerificationEmail'
 
 export default function RegisterForm() {
   const formRef = useRef<HTMLFormElement>(null)

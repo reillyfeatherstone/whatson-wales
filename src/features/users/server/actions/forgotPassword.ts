@@ -2,7 +2,7 @@
 
 import { getPayload } from 'payload'
 import config from '@payload-config'
-import { Response } from '@/actions/auth/create'
+import { Response } from '@/features/users/server/actions/create'
 
 export async function ForgotPassword(email: string): Promise<Response> {
   const payload = await getPayload({ config })

@@ -1,4 +1,4 @@
-import { getCurrentUser } from '@/actions/auth/getCurrentUser'
+import { getCurrentUser } from '@/features/users/server/actions/getCurrentUser'
 import { redirect } from 'next/navigation'
 import ForgotPasswordForm from './forgotPasswordForm'
 

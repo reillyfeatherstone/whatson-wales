@@ -4,9 +4,9 @@ import { Button } from '@/components/ui/button'
 import { Funnel, MapPin, Navigation, Search } from 'lucide-react'
 import Image from 'next/image'
 import { Production, Venue } from '@/payload-types'
-import formatDate from '@/utils/formatDate'
+import formatDate from '@/features/productions/utils/formatDate'
 import { Input } from '@/components/ui/input'
-import { DatePickerWithRange } from '@/components/range-picker'
+import { DatePickerWithRange } from '@/features/productions/components/range-picker'
 import {
   Select,
   SelectContent,
@@ -30,7 +30,7 @@ import { useRouter, useSearchParams } from 'next/navigation'
 import { format } from 'date-fns'
 import haversineDistance from '@/utils/haversineDistance'
 import { toast } from 'sonner'
-import getCoordinates from '@/actions/geo/getCoordinates'
+import getCoordinates from '@/features/productions/server/getCoordinates'
 
 export function ProductionGrid({ productions }: { productions: Production[] }) {
   const now = new Date()

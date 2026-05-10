@@ -3,11 +3,11 @@
 import { type FieldErrors, FormField } from '@/components/form-field'
 import { Button } from '@/components/ui/button'
 import Link from 'next/link'
-import { loginFormSchema } from '@/schemas/auth.schema'
+import { loginFormSchema } from '@/features/users/schemas/auth.schema'
 import { useRouter } from 'next/navigation'
 import React, { useEffect, useRef, useState } from 'react'
-import { login } from '@/actions/auth/login'
-import { Response } from '@/actions/auth/create'
+import { login } from '@/features/users/server/actions/login'
+import { Response } from '@/features/users/server/actions/create'
 
 export default function LoginForm() {
   const formRef = useRef<HTMLFormElement>(null)

@@ -6,7 +6,7 @@ import config from '@payload-config'
 import {
   generateEmailSubject,
   generateEmailHTML,
-} from '@/email/verificationEmail'
+} from '@/features/users/email/verificationEmail'
 
 export async function resendVerificationEmail(email: string) {
   if (!email) {
