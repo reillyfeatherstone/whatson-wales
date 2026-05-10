@@ -1,3 +1,4 @@
+import LogOutButton from '@/components/Buttons/logout'
 import { Button } from '@/components/ui/button'
 import { getCurrentUser } from '@/data/getUser'
 import { redirect } from 'next/navigation'
@@ -20,8 +21,8 @@ export async function AccountContent() {
 
   return (
     <div>
-      <p>You are verified</p>
-      <Button>Log Out</Button>
+      <p>Hello {user.firstName}!</p>
+      <LogOutButton />
     </div>
   )
 }

@@ -5,7 +5,7 @@ import { ComponentProps } from 'react'
 type InputProps = ComponentProps<typeof Input>
 
 type FormFieldProps = InputProps & {
-  label: string
+  label?: string
   error?: string[]
 }
 
@@ -22,9 +22,13 @@ export function FormField({
   return (
     <div className="w-full">
       <div className="flex items-center justify-between">
-        <Label htmlFor={id} className="text-lg font-bold">
-          {label}
-        </Label>
+        {label ? (
+          <Label htmlFor={id} className="text-lg font-bold">
+            {label}
+          </Label>
+        ) : (
+          ''
+        )}
         {error && <p className="text-red-500 text-xs">{error[0]}</p>}
       </div>
       <Input

@@ -7,6 +7,7 @@ const publicAuthRoutes = [
   '/account/create',
   '/account/login',
   '/account/verify',
+  '/account/forgot',
 ]
 
 export default async function proxy(request: NextRequest) {
