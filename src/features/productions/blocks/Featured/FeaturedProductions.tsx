@@ -1,7 +1,11 @@
 'use client'
 
 import { Button } from '@/components/ui/button'
-import { Carousel, CarouselContent, CarouselItem } from '@/components/ui/carousel'
+import {
+  Carousel,
+  CarouselContent,
+  CarouselItem,
+} from '@/components/ui/carousel'
 import Image from 'next/image'
 import Autoplay from 'embla-carousel-autoplay'
 import Fade from 'embla-carousel-fade'
@@ -20,8 +24,9 @@ export function FeaturedProductions({ prods }: { prods: Production[] }) {
       className="relative"
     >
       <CarouselContent>
-        {prods.map((prod) => {
-          const imageUrl = typeof prod.image === 'string' ? null : (prod.image?.url ?? null)
+        {prods.map((prod, index) => {
+          const imageUrl =
+            typeof prod.image === 'string' ? null : (prod.image?.url ?? null)
 
           return (
             <CarouselItem key={prod.id}>
@@ -33,6 +38,7 @@ export function FeaturedProductions({ prods }: { prods: Production[] }) {
                     fill
                     className="object-cover transition duration-400 group-hover:scale-105"
                     loading="eager"
+                    priority={index === 0}
                   />
 
                   <div className="absolute inset-0 bg-linear-to-t from-black/70 to-transparent" />
@@ -42,8 +48,12 @@ export function FeaturedProductions({ prods }: { prods: Production[] }) {
                       <span className="text-xs font-semibold">FEATURED</span>
                     </div>
 
-                    <h1 className="text-3xl md:text-4xl font-bold">{prod.title}</h1>
-                    <p className="max-w-md text-sm sm:text-base">{prod.description}</p>
+                    <h1 className="text-3xl md:text-4xl font-bold">
+                      {prod.title}
+                    </h1>
+                    <p className="max-w-md text-sm sm:text-base">
+                      {prod.description}
+                    </p>
                     <Button
                       variant="default"
                       size="lg"
