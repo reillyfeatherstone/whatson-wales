@@ -76,11 +76,11 @@ export default async function ProductionPage({ params: paramsPromise }: Args) {
         )) ||
           null}
       </div>
-      <div className="max-w-7xl mx-auto px-5 md:px-16 mt-12">
+      <div className="max-w-7xl mx-auto px-5 lg:px-16 mt-12">
         <div className="section-1 flex flex-col md:flex-row gap-10">
-          <div className="section-1-left md:w-160">
+          <div className="section-1-left md:w-[50%] lg:w-160">
             <div className="text-xl font-medium">{productionCompany}</div>
-            <h1 className="text-5xl md:text-6xl font-bold mt-1">{title}</h1>
+            <h1 className="text-5xl lg:text-6xl font-bold mt-1">{title}</h1>
             {(() => {
               const writers = credits?.creatives?.filter(
                 (person) => person.role === 'Writer',
@@ -108,8 +108,8 @@ export default async function ProductionPage({ params: paramsPromise }: Args) {
               )}
             </div>
           </div>
-          <div className="w-full md:w-auto md:ml-auto">
-            <div className="section-1-right flex flex-col border p-6 gap-6 w-full md:w-82.5">
+          <div className="section-1-right w-full md:w-[50%]">
+            <div className="flex flex-col border p-6 gap-6 w-full md:w-82.5 md:ml-auto">
               <div className="border-b py-2 flex flex-col gap-1">
                 <p className="text-sm font-medium text-muted-foreground">
                   RUNTIME
