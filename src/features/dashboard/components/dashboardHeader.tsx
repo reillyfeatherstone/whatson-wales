@@ -1,7 +1,5 @@
 import Logo from '@/components/logo'
 import { Avatar } from '@/components/ui/avatar'
-import { Button } from '@/components/ui/button'
-import Link from 'next/link'
 
 export default function DashboardHeader() {
   return (

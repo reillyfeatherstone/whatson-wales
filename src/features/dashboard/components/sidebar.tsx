@@ -11,9 +11,7 @@ import {
 import { usePathname } from 'next/navigation'
 import { cn } from '@/utils/cn'
 import { ReactElement } from 'react'
-import LogOutButton from '@/features/users/components/logoutButton'
 import { logoutAction } from '@/features/users/server/actions/logout'
-import { Button } from '@/components/ui/button'
 
 const NavItems = (): SideNavItem[] => {
   const pathname = usePathname()
