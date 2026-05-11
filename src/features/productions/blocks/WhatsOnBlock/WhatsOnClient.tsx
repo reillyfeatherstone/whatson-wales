@@ -246,7 +246,7 @@ export function MobileFilters() {
           <Funnel size={16} className="ml-2" />
         </Button>
       </SheetTrigger>
-      <SheetContent>
+      <SheetContent onOpenAutoFocus={(e) => e.preventDefault()}>
         <SheetHeader>
           <SheetTitle>Filter Productions</SheetTitle>
           <SheetDescription>
