@@ -42,6 +42,6 @@ export const resetPasswordSchema = z
   })
 
 export const loginFormSchema = z.object({
-  email: z.email('please ensure a valid email address.'),
-  password: passwordSchema,
+  email: z.email('please enter a valid email address.'),
+  password: z.string('please enter a valid password'),
 })

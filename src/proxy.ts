@@ -26,7 +26,7 @@ export default async function proxy(request: NextRequest) {
 
   // 5. Redirect to /account if the user is authenticated
   if (isPublicAuthRoute && session) {
-    return NextResponse.redirect(new URL('/account', request.nextUrl))
+    return NextResponse.redirect(new URL('/dashboard', request.nextUrl))
   }
 
   // Allow route
@@ -34,5 +34,5 @@ export default async function proxy(request: NextRequest) {
 }
 
 export const config = {
-  matcher: ['/account/:path*'],
+  matcher: ['/account/:path*', '/dashboard/:path*'],
 }

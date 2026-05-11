@@ -25,38 +25,38 @@ const NavItems = (): SideNavItem[] => {
   return [
     {
       name: 'Home',
-      href: '/account',
+      href: '/dashboard',
       icon: (
         <HouseIcon className="mr-3 items-center text-foreground" size={20} />
       ),
-      active: pathname === '/account',
+      active: pathname === '/dashboard',
       position: 'top',
     },
     {
       name: 'Productions',
-      href: '/account/productions',
+      href: '/dashboard/productions',
       icon: (
         <DramaIcon className="mr-3 items-center text-foreground" size={20} />
       ),
-      active: isNavItemActive(pathname, '/account/productions'),
+      active: isNavItemActive(pathname, '/dashboard/productions'),
       position: 'top',
     },
     {
       name: 'Companies',
-      href: '/account/companies',
+      href: '/dashboard/companies',
       icon: (
         <LandmarkIcon className="mr-3 items-center text-foreground" size={20} />
       ),
-      active: isNavItemActive(pathname, '/account/companies'),
+      active: isNavItemActive(pathname, '/dashboard/companies'),
       position: 'top',
     },
     {
       name: 'Settings',
-      href: '/account/settings',
+      href: '/dashboard/settings',
       icon: (
         <SettingsIcon className="mr-3 items-center text-foreground" size={20} />
       ),
-      active: isNavItemActive(pathname, '/account/settings'),
+      active: isNavItemActive(pathname, '/dashboard/settings'),
       position: 'bottom',
     },
     {

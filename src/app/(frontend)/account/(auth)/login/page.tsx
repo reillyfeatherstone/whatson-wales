@@ -6,7 +6,7 @@ export default async function Page() {
   const user = await getCurrentUser()
 
   if (user) {
-    redirect('/account')
+    redirect('/dashboard')
   }
 
   return (

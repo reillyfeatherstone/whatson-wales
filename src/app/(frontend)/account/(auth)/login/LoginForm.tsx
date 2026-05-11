@@ -54,7 +54,7 @@ export default function LoginForm() {
     setIsLoading(false)
 
     if (result.success) {
-      router.push(`/account`)
+      router.push(`/dashboard`)
     } else {
       setError(result.error || 'An error occurred')
     }
