@@ -1,6 +1,7 @@
 import { ReactNode } from 'react'
 import '../../globals.css'
 import { Toaster } from '@/components/ui/sonner'
+import Header from '@/components/layout/header'
 
 interface LayoutProps {
   children: ReactNode
@@ -9,7 +10,8 @@ interface LayoutProps {
 export default async function Layout({ children }: LayoutProps) {
   return (
     <div>
-      {children}
+      <Header />
+      <main>{children}</main>
       <Toaster />
     </div>
   )

@@ -2,13 +2,15 @@
 
 import { logout } from '@payloadcms/next/auth'
 import config from '@payload-config'
+import { redirect } from 'next/navigation'
 
 export async function logoutAction() {
   try {
-    return await logout({ allSessions: false, config })
+    await logout({ allSessions: false, config })
   } catch (error) {
     throw new Error(
       `Logout failed: ${error instanceof Error ? error.message : 'Unknown error'}`,
     )
   }
+  redirect('/')
 }

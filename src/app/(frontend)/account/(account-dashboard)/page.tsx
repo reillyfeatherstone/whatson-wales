@@ -1,4 +1,3 @@
-import LogOutButton from '@/features/users/components/logoutButton'
 import { getCurrentUser } from '@/features/users/server/actions/getCurrentUser'
 import { redirect } from 'next/navigation'
 import { Suspense } from 'react'
@@ -19,9 +18,9 @@ export async function AccountContent() {
   }
 
   return (
-    <div>
-      <p>Hello {user.firstName}!</p>
-      <LogOutButton />
+    <div className="">
+      {/* <p>Hello {user.firstName}!</p> */}
+      {/* <LogOutButton /> */}
     </div>
   )
 }
