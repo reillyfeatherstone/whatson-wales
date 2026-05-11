@@ -4,8 +4,8 @@ import crypto from 'crypto'
 import { getPayload } from 'payload'
 import config from '@payload-config'
 import {
-  generateEmailSubject,
-  generateEmailHTML,
+  VerificationEmailSubject,
+  VerificationEmailHTML,
 } from '@/features/users/email/verificationEmail'
 
 export async function resendVerificationEmail(email: string) {
@@ -41,8 +41,8 @@ export async function resendVerificationEmail(email: string) {
   await payload.sendEmail({
     from: `"What's On Wales | Cymru" <noreply@whatson.wales>`,
     to: email,
-    subject: generateEmailSubject({ token, user }),
-    html: generateEmailHTML({ token, user }),
+    subject: VerificationEmailSubject({ token, user }),
+    html: VerificationEmailHTML({ token, user }),
   })
 
   return { success: true }

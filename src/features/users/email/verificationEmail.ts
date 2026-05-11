@@ -6,16 +6,13 @@ type VerificationEmailArgs = {
   user: Partial<Account>
 }
 
-export function generateEmailSubject(_args: VerificationEmailArgs) {
+export function VerificationEmailSubject(_args: VerificationEmailArgs) {
   return `Please verify your email address!`
 }
 
-export function generateEmailHTML(args: VerificationEmailArgs) {
-  console.log('Req: ' + args.req)
-  console.log('token: ' + args.token)
-  console.log('user: ' + args.user)
+export function VerificationEmailHTML(args: VerificationEmailArgs) {
   return `<div>
-    <h2>Hi ${args.user.firstName ? args.user.firstName : ''},</h2>
+    <h2>Hi${args.user.firstName ? ` ${args.user.firstName}` : ''},</h2>
     <h3>Welcome to What's On Wales | Cymru</h3>
     <p>Thanks for registering for an account with us.</p>
     <p>Please verify your email address by click the below button</p>

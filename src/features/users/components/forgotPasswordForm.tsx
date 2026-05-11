@@ -2,13 +2,13 @@
 
 import { FormField } from '@/components/form-field'
 import { Button } from '@/components/ui/button'
-import React, { useState } from 'react'
+import React, { ReactNode, useState } from 'react'
 import { ArrowRight, Loader } from 'lucide-react'
 import z from 'zod'
 import { ForgotPassword } from '@/features/users/server/actions/forgotPassword'
 import { Response } from '@/features/users/server/actions/create'
 
-export default function ForgotPasswordForm() {
+export function ForgotPasswordForm(): ReactNode {
   const [isLoading, setIsLoading] = useState(false)
   const [emailState, setEmail] = useState<string | null>(null)
   const [error, setError] = useState<string | null>(null)
@@ -25,7 +25,6 @@ export default function ForgotPasswordForm() {
     const email = formData.get('email')
     const validated = z.email().safeParse(email)
     if (!validated.success) {
-      console.log('error')
       const error: string = ''
       setError(error)
       setIsLoading(false)
@@ -93,7 +92,7 @@ export default function ForgotPasswordForm() {
         <div className="login flex flex-col space-y-5 w-full md:max-w-120 mx-auto text-center">
           <h2 className="text-3xl font-medium">Check your email</h2>
           <p className="text-center text-muted-foreground text-base">
-            We sent an email to {emailState}
+            We sent an email to <span className="font-bold">{emailState}</span>
           </p>
           <p className="text-center text-muted-foreground text-base">
             If the email hasn&apos;t arrived yet, please check your spam folder.

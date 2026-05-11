@@ -10,7 +10,7 @@
  * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "groupProps".
  */
-export type GroupProps = ('Basic' | 'Producer') | null;
+export type GroupProps = 'Producer' | null;
 /**
  * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "roleProps".

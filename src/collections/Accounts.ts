@@ -2,9 +2,13 @@ import type { CollectionConfig } from 'payload'
 import { anyone } from '@/collections/access/anyone'
 import { authenticated } from '@/collections/access/authenticated'
 import {
-  generateEmailSubject,
-  generateEmailHTML,
+  VerificationEmailSubject,
+  VerificationEmailHTML,
 } from '@/features/users/email/verificationEmail'
+import {
+  ResetPasswordEmailHTML,
+  ResetPasswordEmailSubject,
+} from '@/features/users/email/resetPasswordEmail'
 
 export const Accounts: CollectionConfig = {
   slug: 'accounts',
@@ -20,15 +24,19 @@ export const Accounts: CollectionConfig = {
   auth: {
     tokenExpiration: 24 * 60 * 60, // 24 Hours
     verify: {
-      generateEmailSubject,
-      generateEmailHTML,
+      generateEmailSubject: VerificationEmailSubject,
+      generateEmailHTML: VerificationEmailHTML,
     },
     cookies: {
       secure: true, //Allow only secure connections
       sameSite: 'None',
       domain: process.env.COOKIE_DOMAIN,
     },
-    // maxLoginAttempts: 5,
+    forgotPassword: {
+      generateEmailSubject: ResetPasswordEmailSubject,
+      generateEmailHTML: ResetPasswordEmailHTML,
+    },
+    maxLoginAttempts: 5,
   },
   fields: [
     {
@@ -49,12 +57,9 @@ export const Accounts: CollectionConfig = {
       type: 'radio',
       interfaceName: 'groupProps',
       options: [
-        'Basic',
-        // Basic can:
-        // Purchase tickets
+        // 'Basic',
         'Producer',
         // Producer can:
-        // Same as basic
         // Create & manage production listings
         // Create & manage a user profile
         // Create & manage theatre company profiles
