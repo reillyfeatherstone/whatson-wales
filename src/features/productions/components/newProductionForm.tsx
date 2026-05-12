@@ -1,9 +1,6 @@
 import { Field, FieldLabel } from '@/components/ui/field'
 
 export default function NewProductionForm() {
-  const test = 'asd'
-  const ab = 'asd'
-
   return (
     <div>
       <h1 className="text-2xl font-bold">Add New Production</h1>

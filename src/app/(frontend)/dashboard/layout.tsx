@@ -15,7 +15,7 @@ export default async function Layout({ children }: LayoutProps) {
         <DashboardSidebar />
         <div className="w-full overflow-x-auto bg-accent">
           <div className="h-[calc(100vh-75px)] md:h-[calc(100vh-101px)] overflow-y-auto">
-            <div>{children}</div>
+            <div className="p-5">{children}</div>
           </div>
         </div>
       </main>
