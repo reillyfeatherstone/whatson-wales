@@ -4,7 +4,12 @@ import * as React from 'react'
 import { X } from 'lucide-react'
 
 import { Badge } from '@/components/ui/badge'
-import { Command, CommandGroup, CommandItem, CommandList } from '@/components/ui/command'
+import {
+  Command,
+  CommandGroup,
+  CommandItem,
+  CommandList,
+} from '@/components/ui/command'
 import { Command as CommandPrimitive } from 'cmdk'
 
 type Selection = {
@@ -17,7 +22,10 @@ type MultiSelectProps = {
   defaultSelected?: Selection[]
 }
 
-export function MultiSelect({ options, defaultSelected = [] }: MultiSelectProps) {
+export function MultiSelect({
+  options,
+  defaultSelected = [],
+}: MultiSelectProps) {
   const inputRef = React.useRef<HTMLInputElement>(null)
   const [open, setOpen] = React.useState(false)
   const [selected, setSelected] = React.useState<Selection[]>(defaultSelected)
@@ -27,29 +35,41 @@ export function MultiSelect({ options, defaultSelected = [] }: MultiSelectProps)
     setSelected((prev) => prev.filter((s) => s.value !== selection.value))
   }, [])
 
-  const handleKeyDown = React.useCallback((e: React.KeyboardEvent<HTMLDivElement>) => {
-    const input = inputRef.current
-    if (!input) return
+  const handleKeyDown = React.useCallback(
+    (e: React.KeyboardEvent<HTMLDivElement>) => {
+      const input = inputRef.current
+      if (!input) return
 
-    if (e.key === 'Delete' || e.key === 'Backspace') {
-      if (input.value === '') {
-        setSelected((prev) => prev.slice(0, -1))
+      if (e.key === 'Delete' || e.key === 'Backspace') {
+        if (input.value === '') {
+          setSelected((prev) => prev.slice(0, -1))
+        }
       }
-    }
 
-    if (e.key === 'Escape') {
-      input.blur()
-    }
-  }, [])
+      if (e.key === 'Escape') {
+        input.blur()
+      }
+    },
+    [],
+  )
 
-  const selectables = options.filter((option) => !selected.some((s) => s.value === option.value))
+  const selectables = options.filter(
+    (option) => !selected.some((s) => s.value === option.value),
+  )
 
   return (
-    <Command onKeyDown={handleKeyDown} className="overflow-visible bg-transparent">
+    <Command
+      onKeyDown={handleKeyDown}
+      className="overflow-visible bg-transparent"
+    >
       <div className="group rounded-md border border-input px-3 py-2 text-sm ring-offset-background focus-within:ring-2 focus-within:ring-ring focus-within:ring-offset-2">
         <div className="flex flex-wrap gap-1">
           {selected.map((selection) => (
-            <Badge key={selection.value} variant="secondary" className="w-fit text-xs">
+            <Badge
+              key={selection.value}
+              variant="secondary"
+              className="w-fit text-xs"
+            >
               {selection.label}
               <button
                 className="ml-1 rounded-full outline-none"

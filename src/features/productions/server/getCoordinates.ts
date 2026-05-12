@@ -10,7 +10,9 @@ const postcodeAPISchema = z.object({
 
 export default async function getCoordinates(postcode: string) {
   try {
-    const res = await fetch(`https://api.postcodes.io/postcodes/${postcode.replace(/\s/g, '')}`)
+    const res = await fetch(
+      `https://api.postcodes.io/postcodes/${postcode.replace(/\s/g, '')}`,
+    )
     const data: unknown = await res.json()
     const parsedData = postcodeAPISchema.safeParse(data)
     if (!parsedData.success) {
