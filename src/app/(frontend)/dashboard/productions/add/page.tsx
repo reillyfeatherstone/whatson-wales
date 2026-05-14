@@ -4,7 +4,6 @@ export default function Page() {
   return (
     <div className="px-20 pt-10">
       <NewProductionForm />
-      <NewProductionForm />
     </div>
   )
 }
