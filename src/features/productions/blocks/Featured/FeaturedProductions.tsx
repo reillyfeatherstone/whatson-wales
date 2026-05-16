@@ -48,16 +48,22 @@ export function FeaturedProductions({ prods }: { prods: Production[] }) {
                       <span className="text-xs font-semibold">FEATURED</span>
                     </div>
 
-                    <h1 className="text-3xl md:text-4xl font-bold">
+                    <h1 className="text-xl sm:text-3xl md:text-4xl font-bold">
                       {prod.title}
                     </h1>
-                    <p className="max-w-md text-sm sm:text-base">
-                      {prod.description}
+                    <p className="max-w-md text-xs sm:text-base">
+                      {prod.description
+                        ?.split(' ')
+                        .slice(0, 20)
+                        .join(' ')
+                        .replace(/[^a-zA-Z0-9]$/, '')
+                        .slice(0, 125)}
+                      ...
                     </p>
                     <Button
                       variant="default"
                       size="lg"
-                      className="text-xs sm:text-sm hover:cursor-pointer w-fit"
+                      className="hidden sm:block text-xs sm:text-sm hover:cursor-pointer w-fit"
                     >
                       Find Out More
                     </Button>
