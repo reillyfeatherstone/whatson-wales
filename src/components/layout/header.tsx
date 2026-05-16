@@ -82,9 +82,7 @@ export default function Header() {
           </DrawerTrigger>
           <DrawerContent className="rounded-none w-full">
             <DrawerHeader className="flex flex-row justify-between">
-              <DrawerTitle className="">
-                <h3 className="text-lg font-medium">Menu</h3>
-              </DrawerTitle>
+              <DrawerTitle className="text-lg font-medium">Menu</DrawerTitle>
               <DrawerClose className="hover:cursor-pointer" asChild>
                 <X />
               </DrawerClose>
@@ -95,7 +93,7 @@ export default function Header() {
                   key={i}
                   href={item.href}
                   className="font-semibold text-xl h-10 content-center text-center hover:cursor-pointer w-full"
-                  onClick={() => setDrawerOpen}
+                  onClick={() => setDrawerOpen(false)}
                 >
                   {item.name}
                 </Link>
@@ -108,6 +106,7 @@ export default function Header() {
                     variant="outline"
                     size="xl"
                     className="border-primary text-primary hover:cursor-pointer hover:text-primary w-full"
+                    onClick={() => setDrawerOpen(false)}
                   >
                     Log In
                   </Button>
@@ -116,6 +115,7 @@ export default function Header() {
                   <Button
                     size="xl"
                     className="border-primary hover:cursor-pointer w-full"
+                    onClick={() => setDrawerOpen(false)}
                   >
                     Register
                   </Button>
