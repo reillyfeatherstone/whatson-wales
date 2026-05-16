@@ -3,7 +3,7 @@ import { Avatar } from '@/components/ui/avatar'
 
 export default function DashboardHeader() {
   return (
-    <div className="w-full border-0 border-b border-muted-foreground/20">
+    <div className="sticky top-0 z-50 w-full border-0 border-b border-muted-foreground/20 bg-background">
       <header className="h-25 max px-10 py-5 max-w-8xl mx-auto flex items-center">
         <Logo theme="light" className="h-15" />
         <div className="flex-1 flex justify-end self-center">
