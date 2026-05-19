@@ -1,25 +1,25 @@
 import { Button } from '@/components/ui/button'
-import { Navigation } from 'lucide-react'
 import Image from 'next/image'
 
 export function PreviewCard({
   title,
   summary,
+  image,
 }: {
   title: string
   summary: string
+  image: string
 }) {
   return (
-    <div className="border-gray-300 border-b pb-4">
+    <div className="group border-gray-300 border-b pb-4 w-98 hover:cursor-pointer">
       <figure className="w-full h-70 bg-gray-300 flex justify-center items-center relative overflow-hidden">
-        {false ? (
+        {image !== '' ? (
           <Image
-            src={'#'}
+            src={image}
             alt={''}
             fill
             className="object-cover transition duration-400 group-hover:scale-105"
             sizes="(max-width: 767px) 100vw, (max-width: 1023px) 50vw, 33vw"
-            // priority={index < 3}
           />
         ) : (
           <span className="font-medium text-gray-500 text-xl">Image</span>

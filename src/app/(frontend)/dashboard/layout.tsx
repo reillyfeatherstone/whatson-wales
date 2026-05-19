@@ -3,6 +3,7 @@ import '@/app/(frontend)/globals.css'
 import { DashboardSidebar } from '@/features/dashboard/components/dashboardSidebar'
 import DashboardHeader from '@/features/dashboard/components/dashboardHeader'
 import { SidebarInset, SidebarProvider } from '@/components/ui/sidebar'
+import { Toaster } from '@/components/ui/sonner'
 
 interface LayoutProps {
   children: ReactNode
@@ -18,6 +19,7 @@ export default async function Layout({ children }: LayoutProps) {
           <SidebarInset>
             <div className="p-5">{children}</div>
           </SidebarInset>
+          <Toaster richColors />
         </main>
       </SidebarProvider>
     </div>
