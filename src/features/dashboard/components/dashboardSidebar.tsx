@@ -59,14 +59,14 @@ const NavItems = (): SideNavItem[] => {
       children: [
         {
           name: 'Add Production',
-          href: '/dashboard/productions/add',
+          href: '/dashboard/productions/new',
           icon: (
             <CirclePlusIcon
               className="mr-1 items-center text-foreground"
               size={20}
             />
           ),
-          active: isNavItemActive(pathname, '/dashboard/productions/add'),
+          active: isNavItemActive(pathname, '/dashboard/productions/new'),
           position: 'child',
         },
         {
