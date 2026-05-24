@@ -1,97 +1,310 @@
 'use client'
 
 import { Button } from '@/components/ui/button'
+import {
+  Combobox,
+  ComboboxChip,
+  ComboboxChips,
+  ComboboxChipsInput,
+  ComboboxContent,
+  ComboboxEmpty,
+  ComboboxInput,
+  ComboboxItem,
+  ComboboxList,
+  ComboboxValue,
+  useComboboxAnchor,
+} from '@/components/ui/combobox'
 import { Field, FieldDescription, FieldLabel } from '@/components/ui/field'
 import { Input } from '@/components/ui/input'
 import { Textarea } from '@/components/ui/textarea'
 import { PreviewCard } from '@/features/dashboard/components/preview-card'
+import GetCompanies from '@/features/dashboard/server/getCompanies'
 import ImageUploader, {
   ImageState,
 } from '@/features/productions/components/ImageUploader'
-import { ChevronRight } from 'lucide-react'
-import { useState } from 'react'
+import { ProductionCompany } from '@/payload-types'
+import { ChevronLeft, ChevronRight, Info } from 'lucide-react'
+import { PaginatedDocs } from 'payload'
+import React, { Suspense, useEffect, useState } from 'react'
+import { SubmitHandler, useForm } from 'react-hook-form'
 
-export default function NewProductionForm() {
+type FormFields = {
+  prodTitle: string
+  summary: string
+  mainCTA: string
+  image: ImageState
+}
+
+/*
+
+2. Details
+  Production Company
+  Writer
+  Runtime
+  Languages
+  Full Description
+3. Venues
+  Venue Name
+  Venue Date Range
+  Venue-specific ticket link
+4. Cast
+  Name
+  Role
+5. Creatives
+  Name
+  Job title
+6. Review & Publish
+
+*/
+
+const steps = [
+  { id: 1, name: 'Basic Info' },
+  { id: 2, name: 'Show Details' },
+  // { id: 'Step 3', name: 'NAME' },
+]
+
+export default function NewProductionForm({
+  companies,
+}: {
+  companies: ProductionCompany[]
+}) {
+  const [currentStep, setCurrentStep] = useState(1)
   const [prodTitle, setProdTitle] = useState('')
   const [summary, setSummary] = useState('')
   const [image, setImage] = useState<ImageState | null>(null)
   const [mainCTA, setMainCTA] = useState('')
+  const [prodCompanies, setProdCompanies] = useState<ProductionCompany[]>()
+  const [runTime, setRunTime] = useState('')
+  const anchor = useComboboxAnchor()
+
+  const next = () => {
+    if (currentStep < steps.length) {
+      setCurrentStep(currentStep + 1)
+    }
+  }
+
+  const previous = () => {
+    if (currentStep !== 1) {
+      setCurrentStep(currentStep - 1)
+    }
+  }
 
   return (
     <div>
-      <h1 className="text-2xl font-bold">Add New Production</h1>
-      <h2 className="text-base font-base text-muted-foreground">
-        Describe your production
-      </h2>
-
-      <div className="flex gap-10 justify-between">
-        <div className="left-form w-125 pt-10 flex flex-col gap-5">
-          <Field>
-            <FieldLabel htmlFor="prod_title" className="text-base">
-              Production Name
-            </FieldLabel>
-            <Input
-              name="prod_title"
-              id="prod_title"
-              onChange={(e) => setProdTitle(e.target.value)}
-              className="h-9 text-sm! rounded-none"
-              placeholder="The title of your show"
-            />
-          </Field>
-          <Field>
-            <FieldLabel htmlFor="summary" className="text-base">
-              Summary
-            </FieldLabel>
-            <Textarea
-              name="summary"
-              id="summary"
-              onChange={(e) => setSummary(e.target.value)}
-              className="h-18 text-sm! rounded-none"
-              maxLength={130}
-              placeholder="Describe your show in a few words"
-            />
-          </Field>
-          <Field>
-            <FieldLabel htmlFor="main_cta" className="text-base">
-              Link to Show
-            </FieldLabel>
-            <FieldDescription className="text-sm">
-              People are less likely to attend if not set
-            </FieldDescription>
-            <Input
-              name="main_cta"
-              id="main_cta"
-              onChange={(e) => setMainCTA(e.target.value)}
-              className="h-9 text-sm! rounded-none"
-              placeholder="Enter a URL to your website or ticket sales page"
-            />
-          </Field>
-          <div>
-            <FieldLabel className="text-base mb-1">Production Image</FieldLabel>
-            <FieldDescription className="text-sm">
-              This image is also used for the production page
-            </FieldDescription>
-            <ImageUploader image={image} setImage={setImage} />
-          </div>
-          <Button
-            size="lg"
-            className="text-base h-10 flex justify-center hover:cursor-pointer"
-            disabled={true}
-          >
-            Next <ChevronRight />
-          </Button>
+      <h1 className="text-2xl font-bold pb-3">Add New Production</h1>
+      <div className="flex items-center">
+        <div className="bg-primary w-8 h-8 text-white flex justify-center items-center rounded-4xl">
+          {steps[currentStep - 1].id}
         </div>
-        <div className="right-preview">
-          <PreviewCard
-            image={image?.objectUrl || ''}
-            title={prodTitle}
-            summary={
-              summary ||
-              'A short description of the production that appears in listings and cards to give a quick overview before opening the full page.'
-            }
-          />
+        <div className="ml-3">
+          <p className="text-xs">
+            Step {steps[currentStep - 1].id} of {steps.length}
+          </p>
+          <h2 className="font-semibold">{steps[currentStep - 1].name}</h2>
         </div>
       </div>
+      <h2 className="text-base font-base text-muted-foreground"></h2>
+
+      {currentStep === 1 ? (
+        <div className="flex gap-10 justify-between">
+          <div className="left-form w-125 pt-10 flex flex-col gap-5">
+            <Field>
+              <FieldLabel htmlFor="prod_title" className="text-base">
+                Production Name
+                <span className="text-red-500 -ml-1 -mt-1">*</span>
+              </FieldLabel>
+              <Input
+                name="prod_title"
+                id="prod_title"
+                onChange={(e) => setProdTitle(e.target.value)}
+                className="h-9 text-sm! rounded-none"
+                placeholder="The title of your show"
+                value={prodTitle}
+              />
+            </Field>
+            <Field>
+              <FieldLabel htmlFor="summary" className="text-base">
+                Summary
+              </FieldLabel>
+              <Textarea
+                name="summary"
+                id="summary"
+                onChange={(e) => setSummary(e.target.value)}
+                className="h-18 text-sm! rounded-none"
+                maxLength={130}
+                placeholder="Describe your show in a few words"
+                value={summary}
+              />
+            </Field>
+            <Field>
+              <FieldLabel htmlFor="main_cta" className="text-base">
+                Link to Show
+              </FieldLabel>
+              <FieldDescription className="text-sm">
+                People are less likely to attend if not set
+              </FieldDescription>
+              <Input
+                name="main_cta"
+                id="main_cta"
+                onChange={(e) => setMainCTA(e.target.value)}
+                className="h-9 text-sm! rounded-none"
+                placeholder="Enter a URL to your website or ticket sales page"
+                value={mainCTA}
+              />
+            </Field>
+            <div>
+              <FieldLabel className="text-base mb-1">
+                Production Image
+              </FieldLabel>
+              <FieldDescription className="text-sm">
+                This image is also used for the production page
+              </FieldDescription>
+              <ImageUploader image={image} setImage={setImage} />
+            </div>
+            <Button
+              size="lg"
+              className="text-base h-10 flex justify-center hover:cursor-pointer"
+              onClick={() => next()}
+            >
+              Next <ChevronRight />
+            </Button>
+          </div>
+          <div className="right-preview">
+            <PreviewCard
+              image={image?.objectUrl || ''}
+              title={prodTitle}
+              summary={
+                summary ||
+                'A short description of the production that appears in listings and cards to give a quick overview before opening the full page.'
+              }
+            />
+          </div>
+        </div>
+      ) : (
+        ''
+      )}
+
+      {currentStep === 2 ? (
+        <div className="flex gap-10 justify-between">
+          <div className="left-form w-125 pt-10 flex flex-col gap-5">
+            <Field className="gap-1">
+              <FieldLabel htmlFor="company" className="text-base">
+                Production Company
+              </FieldLabel>
+              <Combobox
+                multiple
+                autoHighlight
+                items={companies}
+                // defaultValue={[companies[0].productionCompany]}
+              >
+                <ComboboxChips
+                  ref={anchor}
+                  className="rounded-none min-h-9 py-1"
+                >
+                  <ComboboxValue>
+                    {(values: ProductionCompany[]) => (
+                      <React.Fragment>
+                        {values.map((value) => (
+                          <ComboboxChip
+                            key={value}
+                            className="h-6 rounded-none"
+                          >
+                            {value}
+                          </ComboboxChip>
+                        ))}
+                        <ComboboxChipsInput id="company" />
+                      </React.Fragment>
+                    )}
+                  </ComboboxValue>
+                </ComboboxChips>
+                <ComboboxContent anchor={anchor} className="rounded-none">
+                  <ComboboxEmpty>No companies found.</ComboboxEmpty>
+                  <ComboboxList>
+                    {(item: ProductionCompany) => (
+                      <ComboboxItem
+                        key={item.productionCompany}
+                        value={item.productionCompany}
+                        className="rounded-none"
+                      >
+                        {item.productionCompany}
+                      </ComboboxItem>
+                    )}
+                  </ComboboxList>
+                </ComboboxContent>
+              </Combobox>
+            </Field>
+            <Field>
+              <FieldLabel htmlFor="run_time" className="text-base">
+                Run Time
+              </FieldLabel>
+              <Input
+                name="run_time"
+                id="run_time"
+                onChange={(e) => setRunTime(e.target.value)}
+                className="h-9 text-sm! rounded-none"
+                placeholder="Example: 1hr 30mins (incl. interval)"
+                value={runTime}
+              />
+            </Field>
+            <Field>
+              <FieldLabel htmlFor="main_cta" className="text-base">
+                Link to Show
+              </FieldLabel>
+              <FieldDescription className="text-sm">
+                People are less likely to attend if not set
+              </FieldDescription>
+              <Input
+                name="main_cta"
+                id="main_cta"
+                onChange={(e) => setMainCTA(e.target.value)}
+                className="h-9 text-sm! rounded-none"
+                placeholder="Enter a URL to your website or ticket sales page"
+              />
+            </Field>
+            <div>
+              <FieldLabel className="text-base mb-1">
+                Production Image
+              </FieldLabel>
+              <FieldDescription className="text-sm">
+                This image is also used for the production page
+              </FieldDescription>
+              <ImageUploader image={image} setImage={setImage} />
+            </div>
+            <div className="flex w-full gap-2">
+              <Button
+                size="lg"
+                variant="outline"
+                className="flex-1 text-base h-10 flex justify-center hover:cursor-pointer"
+                onClick={() => previous()}
+              >
+                <ChevronLeft /> Back
+              </Button>
+              <Button
+                size="lg"
+                className="flex-1 text-base h-10 flex justify-center hover:cursor-pointer"
+                onClick={() => next()}
+              >
+                Next <ChevronRight />
+              </Button>
+            </div>
+          </div>
+          <div className="right-preview">
+            {/* <PreviewCard
+              image={image?.objectUrl || ''}
+              title={prodTitle}
+              summary={
+                summary ||
+                'A short description of the production that appears in listings and cards to give a quick overview before opening the full page.'
+              }
+            /> */}
+            {prodCompanies?.map((item, i) => {
+              return <p key={i}>{item.productionCompany}</p>
+            })}
+          </div>
+        </div>
+      ) : (
+        ''
+      )}
     </div>
   )
 }

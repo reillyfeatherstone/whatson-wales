@@ -11,13 +11,13 @@ interface LayoutProps {
 
 export default async function Layout({ children }: LayoutProps) {
   return (
-    <div className="[--header-height:calc(--spacing(25))]">
-      <SidebarProvider className="flex flex-col">
+    <div className="[--header-height:calc(--spacing(20))] h-screen overflow-hidden">
+      <SidebarProvider className="flex flex-col h-full">
         <DashboardHeader />
-        <main className="flex flex-1">
+        <main className="flex flex-1 min-h-0 overflow-hidden">
           <DashboardSidebar />
-          <SidebarInset>
-            <div className="p-5">{children}</div>
+          <SidebarInset className="flex-1 min-w-0 overflow-hidden">
+            <div className="p-5 h-full overflow-auto">{children}</div>
           </SidebarInset>
           <Toaster richColors />
         </main>

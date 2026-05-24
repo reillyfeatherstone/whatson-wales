@@ -15,6 +15,7 @@ import {
   SidebarMenuButton,
   SidebarMenuItem,
   SidebarMenuSub,
+  SidebarTrigger,
 } from '@/components/ui/sidebar'
 import { logoutAction } from '@/features/users/server/actions/logout'
 import { cn } from '@/utils/cn'
@@ -167,7 +168,10 @@ export function DashboardSidebar({
   const navItems = NavItems()
 
   return (
-    <Sidebar className="top-(--header-height) h-[calc(100svh-var(--header-height))]!">
+    <Sidebar
+      collapsible="icon"
+      className="top-(--header-height) h-[calc(100svh-var(--header-height))]!"
+    >
       <SidebarHeader>
         <SidebarMenu>
           <SidebarMenuItem>
@@ -231,16 +235,19 @@ export function DashboardSidebar({
         </SidebarGroup>
       </SidebarContent>
       <SidebarFooter>
-        <SidebarMenu className="mb-2">
-          {navItems.map((item, i) => {
-            if (item.position === 'bottom') {
-              return (
-                <SidebarMenuItem key={i} className="w-full">
-                  <SideNavItem {...item} />
-                </SidebarMenuItem>
-              )
-            }
-          })}
+        <SidebarMenu className="">
+          <div className="mb-2">
+            {navItems.map((item, i) => {
+              if (item.position === 'bottom') {
+                return (
+                  <SidebarMenuItem key={i} className="w-full">
+                    <SideNavItem {...item} />
+                  </SidebarMenuItem>
+                )
+              }
+            })}
+          </div>
+          <SidebarTrigger className="w-8 h-8 ml-auto" size="lg" />
         </SidebarMenu>
       </SidebarFooter>
     </Sidebar>
