@@ -202,13 +202,10 @@ export default function NewProductionForm({
                   className="rounded-none min-h-9 py-1"
                 >
                   <ComboboxValue>
-                    {(values: ProductionCompany[]) => (
+                    {(values: string[]) => (
                       <React.Fragment>
                         {values.map((value, i) => (
-                          <ComboboxChip
-                            key={i}
-                            className="h-6 rounded-none"
-                          >
+                          <ComboboxChip key={i} className="h-6 rounded-none">
                             {value}
                           </ComboboxChip>
                         ))}
