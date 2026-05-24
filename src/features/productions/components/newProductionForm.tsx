@@ -8,7 +8,6 @@ import {
   ComboboxChipsInput,
   ComboboxContent,
   ComboboxEmpty,
-  ComboboxInput,
   ComboboxItem,
   ComboboxList,
   ComboboxValue,
@@ -18,22 +17,12 @@ import { Field, FieldDescription, FieldLabel } from '@/components/ui/field'
 import { Input } from '@/components/ui/input'
 import { Textarea } from '@/components/ui/textarea'
 import { PreviewCard } from '@/features/dashboard/components/preview-card'
-import GetCompanies from '@/features/dashboard/server/getCompanies'
 import ImageUploader, {
   ImageState,
 } from '@/features/productions/components/ImageUploader'
 import { ProductionCompany } from '@/payload-types'
-import { ChevronLeft, ChevronRight, Info } from 'lucide-react'
-import { PaginatedDocs } from 'payload'
-import React, { Suspense, useEffect, useState } from 'react'
-import { SubmitHandler, useForm } from 'react-hook-form'
-
-type FormFields = {
-  prodTitle: string
-  summary: string
-  mainCTA: string
-  image: ImageState
-}
+import { ChevronLeft, ChevronRight } from 'lucide-react'
+import React, { useState } from 'react'
 
 /*
 
@@ -60,7 +49,6 @@ type FormFields = {
 const steps = [
   { id: 1, name: 'Basic Info' },
   { id: 2, name: 'Show Details' },
-  // { id: 'Step 3', name: 'NAME' },
 ]
 
 export default function NewProductionForm({
@@ -191,11 +179,18 @@ export default function NewProductionForm({
               <FieldLabel htmlFor="company" className="text-base">
                 Production Company
               </FieldLabel>
+              <FieldDescription className="text-sm">
+                Leave empty to publish independently
+              </FieldDescription>
               <Combobox
                 multiple
                 autoHighlight
                 items={companies}
-                // defaultValue={[companies[0].productionCompany]}
+                onValueChange={(ids: string[]) => {
+                  const selected = companies.filter((c) => ids.includes(c.id))
+                  setProdCompanies(selected)
+                }}
+                value={prodCompanies?.map((c) => c.id) || []}
               >
                 <ComboboxChips
                   ref={anchor}
@@ -204,11 +199,14 @@ export default function NewProductionForm({
                   <ComboboxValue>
                     {(values: string[]) => (
                       <React.Fragment>
-                        {values.map((value, i) => (
-                          <ComboboxChip key={i} className="h-6 rounded-none">
-                            {value}
-                          </ComboboxChip>
-                        ))}
+                        {values.map((id) => {
+                          const company = companies.find((c) => c.id === id)
+                          return (
+                            <ComboboxChip key={id} className="h-6 rounded-none">
+                              {company?.productionCompany}
+                            </ComboboxChip>
+                          )
+                        })}
                         <ComboboxChipsInput id="company" />
                       </React.Fragment>
                     )}
@@ -219,8 +217,8 @@ export default function NewProductionForm({
                   <ComboboxList>
                     {(item: ProductionCompany) => (
                       <ComboboxItem
-                        key={item.productionCompany}
-                        value={item.productionCompany}
+                        key={item.id}
+                        value={item.id}
                         className="rounded-none"
                       >
                         {item.productionCompany}
@@ -294,9 +292,6 @@ export default function NewProductionForm({
                 'A short description of the production that appears in listings and cards to give a quick overview before opening the full page.'
               }
             /> */}
-            {prodCompanies?.map((item, i) => {
-              return <p key={i}>{item.productionCompany}</p>
-            })}
           </div>
         </div>
       ) : (
