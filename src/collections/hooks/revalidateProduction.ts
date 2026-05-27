@@ -2,46 +2,87 @@ import type {
   CollectionAfterChangeHook,
   CollectionAfterDeleteHook,
 } from 'payload'
-import { revalidatePath } from 'next/cache'
+import { revalidateTag, revalidatePath } from 'next/cache'
 import type { Production } from '@/payload-types'
 
-const revalidateWhatsOnPages = async (payload: any) => {
-  const pages = await payload.find({
-    collection: 'pages',
-    where: {
-      'layout.blockType': { equals: 'whatsOn' },
-    },
-    limit: 0,
-    select: { slug: true },
-  })
-
-  for (const page of pages.docs) {
-    const path = page.slug === 'home' ? '/' : `/${page.slug}`
-    payload.logger.info(`Revalidating ${path} after production change`)
-    revalidatePath(path)
-  }
-}
-
-export const revalidateWhatsOnPagesOnChange: CollectionAfterChangeHook<
+export const revalidateProductionPageOnChange: CollectionAfterChangeHook<
   Production
 > = async ({ doc, req: { payload } }) => {
-  await revalidateWhatsOnPages(payload)
-
   const productionPath = `/productions/${doc.slug}`
   payload.logger.info(`Revalidating ${productionPath} after production change`)
-  revalidatePath(productionPath)
+  // revalidatePath(productionPath)
+  try {
+    revalidateTag('production_' + doc.slug)
+  } catch (error) {
+    payload.logger.error(
+      `Error updating cache tag for production ${doc.slug}: ${error}`,
+    )
+  }
 
   return doc
 }
 
-export const revalidateWhatsOnPagesOnDelete: CollectionAfterDeleteHook<
+export const revalidateProductionPageOnDelete: CollectionAfterDeleteHook<
   Production
 > = async ({ doc, req: { payload } }) => {
-  await revalidateWhatsOnPages(payload)
-
   const productionPath = `/productions/${doc.slug}`
   payload.logger.info(`Revalidating ${productionPath} after production delete`)
-  revalidatePath(productionPath)
+  // revalidatePath(productionPath)
+  try {
+    revalidateTag('production_' + doc.slug)
+  } catch (error) {
+    payload.logger.error(
+      `Error updating cache tag for production ${doc.slug}: ${error}`,
+    )
+  }
+
+  return doc
+}
+
+// export const revalidateHomePageOnChange: CollectionAfterChangeHook<
+//   Production
+// > = async ({ doc, req: { payload } }) => {
+//   const productionPath = `/`
+//   payload.logger.info(`Revalidating Home Page after production change`)
+//   revalidatePath(productionPath)
+
+//   return doc
+// }
+
+// export const revalidateHomePageOnDelete: CollectionAfterDeleteHook<
+//   Production
+// > = async ({ doc, req: { payload } }) => {
+//   const productionPath = `/`
+//   payload.logger.info(`Revalidating Home Page after production delete`)
+//   revalidatePath(productionPath)
+
+//   return doc
+// }
+
+export const revalidateHomePageOnChange: CollectionAfterChangeHook<
+  Production
+> = async ({ doc, req: { payload } }) => {
+  try {
+    revalidatePath('/')
+  } catch (error) {
+    payload.logger.error(
+      `Error updating cache tag for home page after production change: ${error}`,
+    )
+  }
+
+  return doc
+}
+
+export const revalidateHomePageOnDelete: CollectionAfterDeleteHook<
+  Production
+> = async ({ doc, req: { payload } }) => {
+  try {
+    revalidatePath('/')
+  } catch (error) {
+    payload.logger.error(
+      `Error updating cache tag for home page after production delete: ${error}`,
+    )
+  }
 
   return doc
 }

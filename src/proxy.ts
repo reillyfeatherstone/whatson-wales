@@ -19,14 +19,20 @@ export default async function proxy(request: NextRequest) {
   const cookie = (await cookies()).get('payload-token')?.value
   const session = await verifyPayloadJWT(cookie)
 
+  const isAccountSession = session?.collection === 'accounts'
+
   // 4. Redirect to /login if the user is not authenticated
-  if (!isPublicAuthRoute && !session) {
+  if (!isPublicAuthRoute && !isAccountSession) {
     return NextResponse.redirect(new URL('/account/login', request.nextUrl))
   }
 
   // 5. Redirect to /account if the user is authenticated
-  if (isPublicAuthRoute && session) {
+  if (isPublicAuthRoute && isAccountSession) {
     return NextResponse.redirect(new URL('/dashboard', request.nextUrl))
+  }
+
+  if (isPublicAuthRoute && !isAccountSession && session) {
+    return NextResponse.redirect(new URL('/admin', request.nextUrl))
   }
 
   // Allow route

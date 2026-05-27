@@ -1,8 +1,10 @@
 import { anyone } from '@/collections/access/anyone'
 import { authenticated } from '@/collections/access/authenticated'
 import {
-  revalidateWhatsOnPagesOnChange,
-  revalidateWhatsOnPagesOnDelete,
+  revalidateProductionPageOnDelete,
+  revalidateProductionPageOnChange,
+  revalidateHomePageOnDelete,
+  revalidateHomePageOnChange,
 } from '@/collections/hooks/revalidateProduction'
 import { slugField, type CollectionConfig } from 'payload'
 
@@ -21,6 +23,17 @@ export const Productions: CollectionConfig = {
     {
       name: 'title',
       type: 'text',
+    },
+    {
+      name: 'productionCompanies',
+      type: 'array',
+      fields: [
+        {
+          name: 'company',
+          type: 'relationship',
+          relationTo: 'productionCompanies',
+        },
+      ],
     },
     {
       name: 'dates',
@@ -51,10 +64,10 @@ export const Productions: CollectionConfig = {
         },
       ],
     },
-    {
-      name: 'productionCompany',
-      type: 'text',
-    },
+    // {
+    //   name: 'productionCompany',
+    //   type: 'text',
+    // },
     {
       name: 'runTime',
       type: 'text',
@@ -206,8 +219,8 @@ export const Productions: CollectionConfig = {
     // }
   ],
   hooks: {
-    afterChange: [revalidateWhatsOnPagesOnChange],
-    afterDelete: [revalidateWhatsOnPagesOnDelete],
+    afterChange: [revalidateProductionPageOnChange, revalidateHomePageOnChange],
+    afterDelete: [revalidateProductionPageOnDelete, revalidateHomePageOnDelete],
   },
 }
 

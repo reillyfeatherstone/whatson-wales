@@ -6,9 +6,10 @@ import Link from 'next/link'
 import { notFound } from 'next/navigation'
 import { getPayload } from 'payload'
 import formatDate from '@/features/productions/utils/formatDate'
-import { RichText } from '@/components/rich-text'
+import { RichText } from '@/components/RichText'
 import { Input } from '@/components/ui/input'
 import { ArrowRight, Search } from 'lucide-react'
+import { cacheTag } from 'next/cache'
 
 type Args = {
   params: Promise<{
@@ -45,7 +46,7 @@ export default async function ProductionPage({ params: paramsPromise }: Args) {
     dates,
     runTime,
     credits,
-    productionCompany,
+    productionCompanies,
     richDescription,
     venues,
   } = productionPage
@@ -79,7 +80,31 @@ export default async function ProductionPage({ params: paramsPromise }: Args) {
       <div className="max-w-7xl mx-auto px-5 lg:px-16 mt-12">
         <div className="section-1 flex flex-col md:flex-row gap-10">
           <div className="section-1-left md:w-[50%] lg:w-160">
-            <div className="text-xl font-medium">{productionCompany}</div>
+            {(() => {
+              if (!productionCompanies?.length) return null
+
+              const companies = productionCompanies
+                .map((company) => {
+                  const c = company.company
+                  if (!c || typeof c === 'string') return null
+                  return c.productionCompany
+                })
+                .filter(Boolean)
+
+              if (!companies.length) return null
+
+              const formattedCompanies =
+                companies.length === 1
+                  ? companies[0]
+                  : companies.slice(0).join(', ')
+
+              return (
+                <h2 className="font-normal text-lg pt-2">
+                  {formattedCompanies}
+                </h2>
+              )
+            })()}
+
             <h1 className="text-5xl lg:text-6xl font-bold mt-1">{title}</h1>
             {(() => {
               const writers = credits?.creatives?.filter(
@@ -288,6 +313,7 @@ export function Creatives({ credits }: { credits: Production['credits'] }) {
 
 const queryProductionBySlug = async ({ slug }: { slug: string }) => {
   'use cache'
+  cacheTag('production_' + slug)
   const payload = await getPayload({ config: payloadConfig })
   // const parsedSlug = decodeURIComponent(slug)
 

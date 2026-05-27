@@ -214,11 +214,16 @@ export interface ProductionCompany {
 export interface Production {
   id: string;
   title?: string | null;
+  productionCompanies?:
+    | {
+        company?: (string | null) | ProductionCompany;
+        id?: string | null;
+      }[]
+    | null;
   dates?: {
     start?: string | null;
     end?: string | null;
   };
-  productionCompany?: string | null;
   runTime?: string | null;
   genre?: ('Drama' | 'Comedy' | 'Musical' | 'Dance')[] | null;
   language?: ('English' | 'Welsh')[] | null;
@@ -491,13 +496,18 @@ export interface ProductionCompaniesSelect<T extends boolean = true> {
  */
 export interface ProductionsSelect<T extends boolean = true> {
   title?: T;
+  productionCompanies?:
+    | T
+    | {
+        company?: T;
+        id?: T;
+      };
   dates?:
     | T
     | {
         start?: T;
         end?: T;
       };
-  productionCompany?: T;
   runTime?: T;
   genre?: T;
   language?: T;
