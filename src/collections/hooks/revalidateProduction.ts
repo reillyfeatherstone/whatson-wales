@@ -12,7 +12,7 @@ export const revalidateProductionPageOnChange: CollectionAfterChangeHook<
   payload.logger.info(`Revalidating ${productionPath} after production change`)
   // revalidatePath(productionPath)
   try {
-    revalidateTag('production_' + doc.slug)
+    revalidateTag('production_' + doc.slug, 'max')
   } catch (error) {
     payload.logger.error(
       `Error updating cache tag for production ${doc.slug}: ${error}`,
@@ -29,7 +29,7 @@ export const revalidateProductionPageOnDelete: CollectionAfterDeleteHook<
   payload.logger.info(`Revalidating ${productionPath} after production delete`)
   // revalidatePath(productionPath)
   try {
-    revalidateTag('production_' + doc.slug)
+    revalidateTag('production_' + doc.slug, 'max')
   } catch (error) {
     payload.logger.error(
       `Error updating cache tag for production ${doc.slug}: ${error}`,
