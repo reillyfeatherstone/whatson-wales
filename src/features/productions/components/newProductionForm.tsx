@@ -6,9 +6,12 @@ import {
   ComboboxChip,
   ComboboxChips,
   ComboboxChipsInput,
+  ComboboxCollection,
   ComboboxContent,
   ComboboxEmpty,
+  ComboboxGroup,
   ComboboxItem,
+  ComboboxLabel,
   ComboboxList,
   ComboboxValue,
   useComboboxAnchor,
@@ -23,13 +26,11 @@ import ImageUploader, {
 import { ProductionCompany } from '@/payload-types'
 import { ChevronLeft, ChevronRight } from 'lucide-react'
 import React, { useState } from 'react'
+import { freqLanguages, Language, languages } from '@/utils/languages'
 
 /*
 
 2. Details
-  Production Company
-  Writer
-  Runtime
   Languages
   Full Description
 3. Venues
@@ -63,7 +64,10 @@ export default function NewProductionForm({
   const [mainCTA, setMainCTA] = useState('')
   const [prodCompanies, setProdCompanies] = useState<ProductionCompany[]>()
   const [runTime, setRunTime] = useState('')
-  const anchor = useComboboxAnchor()
+  const [writer, setWriter] = useState('')
+  const [prodLanguages, setProdLanguages] = useState<Language[]>()
+  const companyAnchor = useComboboxAnchor()
+  const languageAnchor = useComboboxAnchor()
 
   const next = () => {
     if (currentStep < steps.length) {
@@ -193,12 +197,12 @@ export default function NewProductionForm({
                 value={prodCompanies?.map((c) => c.id) || []}
               >
                 <ComboboxChips
-                  ref={anchor}
+                  ref={companyAnchor}
                   className="rounded-none min-h-9 py-1"
                 >
                   <ComboboxValue>
                     {(values: string[]) => (
-                      <React.Fragment>
+                      <>
                         {values.map((id) => {
                           const company = companies.find((c) => c.id === id)
                           return (
@@ -207,12 +211,21 @@ export default function NewProductionForm({
                             </ComboboxChip>
                           )
                         })}
-                        <ComboboxChipsInput id="company" />
-                      </React.Fragment>
+                        <ComboboxChipsInput
+                          id="company"
+                          className="text-sm text-foreground placeholder:text-muted-foreground"
+                          placeholder={
+                            values.length === 0 ? 'Select a company' : ''
+                          }
+                        />
+                      </>
                     )}
                   </ComboboxValue>
                 </ComboboxChips>
-                <ComboboxContent anchor={anchor} className="rounded-none">
+                <ComboboxContent
+                  anchor={companyAnchor}
+                  className="rounded-none"
+                >
                   <ComboboxEmpty>No companies found.</ComboboxEmpty>
                   <ComboboxList>
                     {(item: ProductionCompany) => (
@@ -242,29 +255,101 @@ export default function NewProductionForm({
               />
             </Field>
             <Field>
-              <FieldLabel htmlFor="main_cta" className="text-base">
-                Link to Show
+              <FieldLabel htmlFor="writer" className="text-base">
+                Writer / Creator
               </FieldLabel>
-              <FieldDescription className="text-sm">
-                People are less likely to attend if not set
-              </FieldDescription>
               <Input
-                name="main_cta"
-                id="main_cta"
-                onChange={(e) => setMainCTA(e.target.value)}
+                name="writer"
+                id="writer"
+                onChange={(e) => setWriter(e.target.value)}
                 className="h-9 text-sm! rounded-none"
-                placeholder="Enter a URL to your website or ticket sales page"
+                placeholder="Dylan Thomas"
+                value={writer}
               />
             </Field>
-            <div>
-              <FieldLabel className="text-base mb-1">
-                Production Image
+            <Field className="gap-1">
+              <FieldLabel htmlFor="languages" className="text-base">
+                Language(s)
               </FieldLabel>
-              <FieldDescription className="text-sm">
-                This image is also used for the production page
-              </FieldDescription>
-              <ImageUploader image={image} setImage={setImage} />
-            </div>
+              <Combobox
+                multiple
+                autoHighlight
+                items={languages}
+                onValueChange={(ids: string[]) => {
+                  const selected = ids
+                    .map((id) => languages.find((l) => l.id === id))
+                    .filter(Boolean) as Language[]
+                  setProdLanguages(selected)
+                }}
+                value={prodLanguages?.map((c) => c.id) || []}
+              >
+                <ComboboxChips
+                  ref={languageAnchor}
+                  className="rounded-none min-h-9 py-1"
+                >
+                  <ComboboxValue>
+                    {(values: string[]) => (
+                      <>
+                        {values.map((id) => {
+                          const language = languages.find((l) => l.id === id)
+
+                          return (
+                            <ComboboxChip key={id} className="h-6 rounded-none">
+                              {language?.value}
+                            </ComboboxChip>
+                          )
+                        })}
+
+                        <ComboboxChipsInput
+                          id="languages"
+                          className="text-sm text-foreground placeholder:text-muted-foreground"
+                          placeholder={
+                            values.length === 0 ? 'Select languages' : ''
+                          }
+                        />
+                      </>
+                    )}
+                  </ComboboxValue>
+                </ComboboxChips>
+                <ComboboxContent
+                  anchor={languageAnchor}
+                  className="rounded-none"
+                >
+                  <ComboboxEmpty>No languages found.</ComboboxEmpty>
+                  <ComboboxList>
+                    <ComboboxGroup key="freq_lang" items={freqLanguages}>
+                      <ComboboxLabel>Frequently Selected</ComboboxLabel>
+                      <ComboboxCollection>
+                        {(item: Language) => (
+                          <ComboboxItem
+                            key={item.id}
+                            value={item.id}
+                            className="rounded-none"
+                          >
+                            {item.value}
+                          </ComboboxItem>
+                        )}
+                      </ComboboxCollection>
+                    </ComboboxGroup>
+
+                    <ComboboxGroup key="all" items={languages}>
+                      <ComboboxLabel>All Languages</ComboboxLabel>
+                      <ComboboxCollection>
+                        {(item: Language) => (
+                          <ComboboxItem
+                            key={item.id}
+                            value={item.id}
+                            className="rounded-none"
+                          >
+                            {item.value}
+                          </ComboboxItem>
+                        )}
+                      </ComboboxCollection>
+                    </ComboboxGroup>
+                  </ComboboxList>
+                </ComboboxContent>
+              </Combobox>
+            </Field>
             <div className="flex w-full gap-2">
               <Button
                 size="lg"
