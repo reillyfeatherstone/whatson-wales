@@ -10,6 +10,7 @@ import {
   ComboboxContent,
   ComboboxEmpty,
   ComboboxGroup,
+  ComboboxInput,
   ComboboxItem,
   ComboboxLabel,
   ComboboxList,
@@ -23,39 +24,63 @@ import { PreviewCard } from '@/features/dashboard/components/preview-card'
 import ImageUploader, {
   ImageState,
 } from '@/features/productions/components/ImageUploader'
-import { ProductionCompany } from '@/payload-types'
-import { ChevronLeft, ChevronRight } from 'lucide-react'
-import React, { useState } from 'react'
+import { ProductionCompany, Venue } from '@/payload-types'
+import { ChevronLeft, ChevronRight, Trash2Icon } from 'lucide-react'
+import { useState } from 'react'
 import { freqLanguages, Language, languages } from '@/utils/languages'
-
-/*
-
-2. Details
-  Languages
-  Full Description
-3. Venues
-  Venue Name
-  Venue Date Range
-  Venue-specific ticket link
-4. Cast
-  Name
-  Role
-5. Creatives
-  Name
-  Job title
-6. Review & Publish
-
-*/
+import { Card } from '@/components/ui/card'
+import { DatePicker } from '@/components/ui/date-picker'
 
 const steps = [
   { id: 1, name: 'Basic Info' },
   { id: 2, name: 'Show Details' },
+  { id: 3, name: 'Venues & Tour Dates' },
 ]
+
+const NavButtons = ({
+  onNext,
+  onBack,
+}: {
+  onNext?: () => void
+  onBack?: () => void
+}) => (
+  <div className="flex w-full gap-2">
+    {onBack && (
+      <Button
+        size="lg"
+        variant="outline"
+        className="flex-1 text-base h-10 flex justify-center hover:cursor-pointer"
+        onClick={onBack}
+      >
+        <ChevronLeft /> Back
+      </Button>
+    )}
+    {onNext && (
+      <Button
+        size="lg"
+        className="flex-1 text-base h-10 flex justify-center hover:cursor-pointer"
+        onClick={onNext}
+      >
+        Next <ChevronRight />
+      </Button>
+    )}
+  </div>
+)
+
+type TourEntry = {
+  id: number
+  venue: Venue
+  fromDate?: Date
+  toDate?: Date
+  link?: string
+}
 
 export default function NewProductionForm({
   companies,
+  venues,
 }: {
   companies: ProductionCompany[]
+  venues: Venue[]
 }) {
   const [currentStep, setCurrentStep] = useState(1)
   const [prodTitle, setProdTitle] = useState('')
@@ -66,8 +91,12 @@ export default function NewProductionForm({
   const [runTime, setRunTime] = useState('')
   const [writer, setWriter] = useState('')
   const [prodLanguages, setProdLanguages] = useState<Language[]>()
+  const [description, setDescription] = useState('')
+  const [prodVenues, setProdVenues] = useState<TourEntry[]>([])
+
   const companyAnchor = useComboboxAnchor()
   const languageAnchor = useComboboxAnchor()
+  const venueAnchor = useComboboxAnchor()
 
   const next = () => {
     if (currentStep < steps.length) {
@@ -95,7 +124,6 @@ export default function NewProductionForm({
           <h2 className="font-semibold">{steps[currentStep - 1].name}</h2>
         </div>
       </div>
-      <h2 className="text-base font-base text-muted-foreground"></h2>
 
       {currentStep === 1 ? (
         <div className="flex gap-10 justify-between">
@@ -153,13 +181,7 @@ export default function NewProductionForm({
               </FieldDescription>
               <ImageUploader image={image} setImage={setImage} />
             </div>
-            <Button
-              size="lg"
-              className="text-base h-10 flex justify-center hover:cursor-pointer"
-              onClick={() => next()}
-            >
-              Next <ChevronRight />
-            </Button>
+            <NavButtons onNext={next} />
           </div>
           <div className="right-preview">
             <PreviewCard
@@ -350,23 +372,19 @@ export default function NewProductionForm({
                 </ComboboxContent>
               </Combobox>
             </Field>
-            <div className="flex w-full gap-2">
-              <Button
-                size="lg"
-                variant="outline"
-                className="flex-1 text-base h-10 flex justify-center hover:cursor-pointer"
-                onClick={() => previous()}
-              >
-                <ChevronLeft /> Back
-              </Button>
-              <Button
-                size="lg"
-                className="flex-1 text-base h-10 flex justify-center hover:cursor-pointer"
-                onClick={() => next()}
-              >
-                Next <ChevronRight />
-              </Button>
-            </div>
+            <Field>
+              <FieldLabel htmlFor="description" className="text-base">
+                Full Description
+              </FieldLabel>
+              <Textarea
+                id="description"
+                className="text-sm! rounded-none h-48 placeholder:text-sm resize-y!"
+                placeholder="A coastal Welsh community holds onto its stories as the sea rises closer each day…"
+                onChange={(e) => setDescription(e.target.value)}
+                value={description}
+              />
+            </Field>
+            <NavButtons onNext={next} onBack={previous} />
           </div>
           <div className="right-preview">
             {/* <PreviewCard
@@ -382,6 +400,156 @@ export default function NewProductionForm({
       ) : (
         ''
       )}
+
+      {currentStep === 3 ? (
+        <div className="flex gap-10 justify-between">
+          <div className="left-form w-125 pt-10 flex">
+            <form
+              className="flex flex-col gap-5"
+              onSubmit={(e) => {
+                e.preventDefault()
+                const data = new FormData(e.currentTarget)
+                const venueName = data.get('venue')
+                const selected = venues.find((v) => v.venueName === venueName)
+                if (!selected) return
+                setProdVenues((prev) => [
+                  ...prev,
+                  {
+                    id: prev.length + 1,
+                    venue: selected,
+                    fromDate: data.get('venueFromDate')
+                      ? new Date(data.get('venueFromDate') as string)
+                      : undefined,
+                    toDate: data.get('venueToDate')
+                      ? new Date(data.get('venueToDate') as string)
+                      : undefined,
+                    link: data.get('venueLink') as string,
+                  },
+                ])
+              }}
+            >
+              {/* <pre>{JSON.stringify(venues[0], null, 2)}</pre> */}
+              <Card className="p-8 rounded-none shadow-md">
+                <Field className="gap-1">
+                  <FieldLabel htmlFor="venue" className="text-base">
+                    Search Venue
+                  </FieldLabel>
+                  <Combobox autoHighlight items={venues}>
+                    <ComboboxInput
+                      id="venue"
+                      name="venue"
+                      className="h-9 rounded-none placeholder:text-sm"
+                      placeholder="Select a venue"
+                    />
+                    <ComboboxContent
+                      anchor={venueAnchor}
+                      className="rounded-none"
+                    >
+                      <ComboboxEmpty>No venues found.</ComboboxEmpty>
+                      <ComboboxList>
+                        {(item: Venue) => (
+                          <ComboboxItem
+                            key={item.id}
+                            value={item.venueName}
+                            className="rounded-none"
+                          >
+                            {item.venueName}
+                          </ComboboxItem>
+                        )}
+                      </ComboboxList>
+                    </ComboboxContent>
+                  </Combobox>
+                </Field>
+                <Field>
+                  <FieldLabel className="text-base">Run Dates</FieldLabel>
+                  <div className="flex gap-3">
+                    <DatePicker
+                      id="venueFromDate"
+                      name="venueFromDate"
+                      className="h-8 text-xs bg-input/20 flex-1"
+                    />
+                    <span className="flex items-center">-</span>
+                    <DatePicker
+                      id="venueToDate"
+                      name="venueToDate"
+                      className="h-8 text-xs bg-input/20 flex-1"
+                    />
+                  </div>
+                </Field>
+                <Field>
+                  <FieldLabel htmlFor="venueLink" className="text-base">
+                    Venue Ticket Link
+                  </FieldLabel>
+                  <Input
+                    id="venueLink"
+                    name="venueLink"
+                    className="h-9 text-sm! rounded-none"
+                    placeholder="https://example.co.uk/show-name"
+                  />
+                </Field>
+                <Button
+                  type="submit"
+                  size="lg"
+                  variant="default"
+                  className="mt-2 h-9 hover:cursor-pointer"
+                >
+                  Add to Schedule
+                </Button>
+              </Card>
+              <div className="flex flex-col gap-2">
+                {prodVenues &&
+                  prodVenues.map((venue) => (
+                    <div
+                      key={venue.id}
+                      className="p-4 border rounded-none flex flex-row shadow-xs"
+                    >
+                      <div className="flex flex-col flex-1">
+                        <h3 className="font-semibold">
+                          {venue.venue.venueName}
+                        </h3>
+                        <p className="text-sm text-muted-foreground">
+                          {venue.fromDate?.toLocaleDateString()} -{' '}
+                          {venue.toDate?.toLocaleDateString()}
+                        </p>
+                      </div>
+                      <div className="flex justify-end items-center pr-2">
+                        <button
+                          onClick={() =>
+                            setProdVenues((prev) =>
+                              prev.filter((v) => v.id !== venue.id),
+                            )
+                          }
+                        >
+                          <Trash2Icon className="h-5 w-5 text-red-500 hover:text-red-700 cursor-pointer" />
+                        </button>
+                      </div>
+                    </div>
+                  ))}
+              </div>
+              <NavButtons onNext={next} onBack={previous} />
+            </form>
+          </div>
+          <div className="right-preview"></div>
+        </div>
+      ) : (
+        ''
+      )}
     </div>
   )
 }
+
+/*
+
+3. Venues
+  Venue Name
+  Venue Date Range
+  Venue-specific ticket link
+4. Cast
+  Name
+  Role
+5. Creatives
+  Name
+  Job title
+6. Review & Publish
+
+*/

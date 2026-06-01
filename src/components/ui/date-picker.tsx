@@ -1,6 +1,5 @@
 'use client'
 
-import * as React from 'react'
 import { format } from 'date-fns'
 import { ChevronDownIcon } from 'lucide-react'
 
@@ -11,9 +10,14 @@ import {
   PopoverContent,
   PopoverTrigger,
 } from '@/components/ui/popover'
+import { cn } from '@/utils/cn'
+import { useState } from 'react'
 
-export function DatePicker() {
-  const [date, setDate] = React.useState<Date>()
+export function DatePicker({
+  className,
+  ...props
+}: React.ComponentPropsWithoutRef<typeof Button>) {
+  const [date, setDate] = useState<Date>()
 
   return (
     <Popover>
@@ -21,7 +25,11 @@ export function DatePicker() {
         <Button
           variant="outline"
           data-empty={!date}
-          className="w-53 justify-between text-left font-normal data-[empty=true]:text-muted-foreground"
+          className={cn(
+            'w-53 justify-between text-left font-normal data-[empty=true]:text-muted-foreground',
+            className,
+          )}
+          {...props}
         >
           {date ? format(date, 'PPP') : <span>Pick a date</span>}
           <ChevronDownIcon />
@@ -35,6 +43,11 @@ export function DatePicker() {
           defaultMonth={date}
         />
       </PopoverContent>
+      <input
+        type="hidden"
+        name={props.name}
+        value={date?.toISOString() ?? ''}
+      />
     </Popover>
   )
 }
