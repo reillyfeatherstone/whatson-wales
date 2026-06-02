@@ -34,7 +34,9 @@ import { DatePicker } from '@/components/ui/date-picker'
 const steps = [
   { id: 1, name: 'Basic Info' },
   { id: 2, name: 'Show Details' },
-  { id: 3, name: 'Venues & Tour Dates' },
+  { id: 3, name: 'Venues & Dates' },
+  { id: 4, name: 'Cast Members' },
+  { id: 5, name: 'Creative Team' },
 ]
 
 const NavButtons = ({
@@ -47,6 +49,7 @@ const NavButtons = ({
   <div className="flex w-full gap-2">
     {onBack && (
       <Button
+        type="button"
         size="lg"
         variant="outline"
         className="flex-1 text-base h-10 flex justify-center hover:cursor-pointer"
@@ -57,6 +60,7 @@ const NavButtons = ({
     )}
     {onNext && (
       <Button
+        type="button"
         size="lg"
         className="flex-1 text-base h-10 flex justify-center hover:cursor-pointer"
         onClick={onNext}
@@ -73,6 +77,12 @@ type TourEntry = {
   fromDate?: Date
   toDate?: Date
   link?: string
+}
+
+type Person = {
+  order: number
+  name: string
+  role: string
 }
 
 export default function NewProductionForm({
@@ -93,6 +103,8 @@ export default function NewProductionForm({
   const [prodLanguages, setProdLanguages] = useState<Language[]>()
   const [description, setDescription] = useState('')
   const [prodVenues, setProdVenues] = useState<TourEntry[]>([])
+  const [cast, setCast] = useState<Person[]>([])
+  const [creatives, setCreatives] = useState<Person[]>([])
 
   const companyAnchor = useComboboxAnchor()
   const languageAnchor = useComboboxAnchor()
@@ -405,7 +417,7 @@ export default function NewProductionForm({
         <div className="flex gap-10 justify-between">
           <div className="left-form w-125 pt-10 flex">
             <form
-              className="flex flex-col gap-5"
+              className="flex flex-col gap-6 w-full"
               onSubmit={(e) => {
                 e.preventDefault()
                 const data = new FormData(e.currentTarget)
@@ -428,7 +440,6 @@ export default function NewProductionForm({
                 ])
               }}
             >
-              {/* <pre>{JSON.stringify(venues[0], null, 2)}</pre> */}
               <Card className="p-8 rounded-none shadow-md">
                 <Field className="gap-1">
                   <FieldLabel htmlFor="venue" className="text-base">
@@ -497,36 +508,228 @@ export default function NewProductionForm({
                 </Button>
               </Card>
               <div className="flex flex-col gap-2">
-                {prodVenues &&
-                  prodVenues.map((venue) => (
-                    <div
-                      key={venue.id}
-                      className="p-4 border rounded-none flex flex-row shadow-xs"
-                    >
-                      <div className="flex flex-col flex-1">
-                        <h3 className="font-semibold">
-                          {venue.venue.venueName}
-                        </h3>
-                        <p className="text-sm text-muted-foreground">
-                          {venue.fromDate?.toLocaleDateString()} -{' '}
-                          {venue.toDate?.toLocaleDateString()}
-                        </p>
+                <h3 className="font-medium">Scheduled Venue(s)</h3>
+                {(prodVenues.length < 1 && (
+                  <p className="text-sm text-muted-foreground">
+                    No venues added yet.
+                  </p>
+                )) ||
+                  (prodVenues.length > 0 &&
+                    prodVenues.map((venue) => (
+                      <div
+                        key={venue.id}
+                        className="p-4 border rounded-none flex flex-row shadow-xs"
+                      >
+                        <div className="flex flex-col flex-1">
+                          <h3 className="font-semibold">
+                            {venue.venue.venueName}
+                          </h3>
+                          <p className="text-sm text-muted-foreground">
+                            {venue.fromDate?.toLocaleDateString()} -{' '}
+                            {venue.toDate?.toLocaleDateString()}
+                          </p>
+                        </div>
+                        <div className="flex justify-end items-center pr-2">
+                          <button
+                            onClick={() =>
+                              setProdVenues((prev) =>
+                                prev.filter((v) => v.id !== venue.id),
+                              )
+                            }
+                          >
+                            <Trash2Icon className="h-5 w-5 text-red-500 hover:text-red-700 cursor-pointer" />
+                          </button>
+                        </div>
                       </div>
-                      <div className="flex justify-end items-center pr-2">
-                        <button
-                          onClick={() =>
-                            setProdVenues((prev) =>
-                              prev.filter((v) => v.id !== venue.id),
-                            )
-                          }
-                        >
-                          <Trash2Icon className="h-5 w-5 text-red-500 hover:text-red-700 cursor-pointer" />
-                        </button>
-                      </div>
-                    </div>
-                  ))}
+                    )))}
               </div>
               <NavButtons onNext={next} onBack={previous} />
+            </form>
+          </div>
+          <div className="right-preview"></div>
+        </div>
+      ) : (
+        ''
+      )}
+
+      {currentStep === 4 ? (
+        <div className="flex gap-10 justify-between">
+          <div className="left-form w-125 pt-10 flex">
+            <form
+              className="flex flex-col gap-6 w-full"
+              onSubmit={(e) => {
+                e.preventDefault()
+                const data = new FormData(e.currentTarget)
+                setCast((prev) => [
+                  ...prev,
+                  {
+                    order: prev.length + 1,
+                    name: data.get('cast_member') as string,
+                    role: data.get('role') as string,
+                  },
+                ])
+                e.currentTarget.reset()
+              }}
+            >
+              <Card className="p-8 rounded-none shadow-md">
+                <Field className="gap-1">
+                  <FieldLabel htmlFor="cast_member" className="text-base">
+                    Name
+                  </FieldLabel>
+                  <Input
+                    name="cast_member"
+                    id="cast_member"
+                    className="h-9 rounded-none"
+                    placeholder="Enter a name"
+                  />
+                </Field>
+                <Field>
+                  <FieldLabel htmlFor="role" className="text-base">
+                    Role
+                  </FieldLabel>
+                  <Input
+                    id="role"
+                    name="role"
+                    className="h-9 rounded-none"
+                    placeholder="Enter role or leave blank"
+                  />
+                </Field>
+                <Button
+                  type="submit"
+                  size="lg"
+                  variant="default"
+                  className="mt-2 h-9 hover:cursor-pointer"
+                >
+                  Add to Cast
+                </Button>
+              </Card>
+              <div className="flex flex-col gap-2">
+                <h3 className="font-medium">Cast Member(s)</h3>
+                {(cast.length < 1 && (
+                  <p className="text-sm text-muted-foreground">
+                    No cast added yet.
+                  </p>
+                )) ||
+                  (cast.length > 0 &&
+                    cast.map((cast) => (
+                      <div
+                        key={cast.order}
+                        className="p-4 border rounded-none flex flex-row shadow-xs"
+                      >
+                        <div className="flex flex-col flex-1">
+                          <h3 className="font-semibold">{cast.name}</h3>
+                          <p className="text-sm text-muted-foreground">
+                            {cast.role}
+                          </p>
+                        </div>
+                        <div className="flex justify-end items-center pr-2">
+                          <button
+                            onClick={() =>
+                              setCast((prev) =>
+                                prev.filter((c) => c.order !== cast.order),
+                              )
+                            }
+                          >
+                            <Trash2Icon className="h-5 w-5 text-red-500 hover:text-red-700 cursor-pointer" />
+                          </button>
+                        </div>
+                      </div>
+                    )))}
+              </div>
+              <NavButtons onNext={next} onBack={previous} />
+            </form>
+          </div>
+          <div className="right-preview"></div>
+        </div>
+      ) : (
+        ''
+      )}
+
+      {currentStep === 5 ? (
+        <div className="flex gap-10 justify-between">
+          <div className="left-form w-125 pt-10 flex">
+            <form
+              className="flex flex-col gap-6 w-full"
+              onSubmit={(e) => {
+                e.preventDefault()
+                const data = new FormData(e.currentTarget)
+                setCreatives((prev) => [
+                  ...prev,
+                  {
+                    order: prev.length + 1,
+                    name: data.get('creative_name') as string,
+                    role: data.get('creative_role') as string,
+                  },
+                ])
+                e.currentTarget.reset()
+              }}
+            >
+              <Card className="p-8 rounded-none shadow-md">
+                <Field className="gap-1">
+                  <FieldLabel htmlFor="creative_name" className="text-base">
+                    Name
+                  </FieldLabel>
+                  <Input
+                    name="creative_name"
+                    id="creative_name"
+                    className="h-9 rounded-none"
+                    placeholder="Enter a name"
+                  />
+                </Field>
+                <Field>
+                  <FieldLabel htmlFor="creative_role" className="text-base">
+                    Role
+                  </FieldLabel>
+                  <Input
+                    id="creative_role"
+                    name="creative_role"
+                    className="h-9 rounded-none"
+                    placeholder="Enter role or leave blank"
+                  />
+                </Field>
+                <Button
+                  type="submit"
+                  size="lg"
+                  variant="default"
+                  className="mt-2 h-9 hover:cursor-pointer"
+                >
+                  Add to Creative Team
+                </Button>
+              </Card>
+              <div className="flex flex-col gap-2">
+                <h3 className="font-medium">Creative(s)</h3>
+                {(creatives.length < 1 && (
+                  <p className="text-sm text-muted-foreground">
+                    No creatives added yet.
+                  </p>
+                )) ||
+                  (creatives.length > 0 &&
+                    creatives.map((creatives) => (
+                      <div
+                        key={creatives.order}
+                        className="p-4 border rounded-none flex flex-row shadow-xs"
+                      >
+                        <div className="flex flex-col flex-1">
+                          <h3 className="font-semibold">{creatives.name}</h3>
+                          <p className="text-sm text-muted-foreground">
+                            {creatives.role}
+                          </p>
+                        </div>
+                        <div className="flex justify-end items-center pr-2">
+                          <button
+                            onClick={() =>
+                              setCreatives((prev) =>
+                                prev.filter((c) => c.order !== creatives.order),
+                              )
+                            }
+                          >
+                            <Trash2Icon className="h-5 w-5 text-red-500 hover:text-red-700 cursor-pointer" />
+                          </button>
+                        </div>
+                      </div>
+                    )))}
+              </div>
+              <Button className="h-10">Submit</Button>
             </form>
           </div>
           <div className="right-preview"></div>
@@ -540,13 +743,7 @@ export default function NewProductionForm({
 
 /*
 
-3. Venues
-  Venue Name
-  Venue Date Range
-  Venue-specific ticket link
-4. Cast
-  Name
-  Role
+
 5. Creatives
   Name
   Job title
